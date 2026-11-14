@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "project": "Bibliotheca Protestante — Coleção Bibliotheca Reformata",
+  "version": "1.0.0",
+  "updated_at": "2026-11-14T01:30:00Z",
+  "catalog_policy": {
+    "quarantine_unverified": true,
+    "require_sha256": true,
+    "allowed_distribution_licenses": [
+      "CC0-1.0",
+      "Public Domain",
+      "CC-BY-3.0-BR",
+      "CC-BY-4.0",
+      "MIT",
+      "Apache-2.0"
+    ]
+  },
+  "sources": [
+    {
+      "id": "blivre",
+      "name": "Bíblia Livre (BLIVRE)",
+      "repo_url": "https://github.com/blivre/BibliaLivre.git",
+      "declared_license": "CC-BY-3.0-BR",
+      "status": "approved",
+      "distributable": true,
+      "type": "bible-text",
+      "language": "pt-BR",
+      "description": "Texto bíblico em língua portuguesa sob licença Creative Commons Atribuição 3.0 Brasil.",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "id": "euaggelion-biblia-publica",
+      "name": "Projeto Euaggelion - Bíblia Pública",
+      "repo_url": "https://github.com/Projeto-Euaggelion/biblia.publica.git",
+      "declared_license": "Mixed (Public Domain / CC-BY-SA / CC-BY-NC-ND)",
+      "status": "partially-approved",
+      "distributable": false,
+      "type": "bible-text",
+      "language": "pt-BR",
+      "description": "Edições bíblicas públicas e históricas. Requer filtragem rigorosa por tradução.",
+      "license_notes": "Excluir NT 1819a (CC BY-NC-ND); NVA está sob CC BY-SA."
+    },
+    {
+      "id": "biblia-conectada",
+      "name": "Bíblia Conectada",
+      "repo_url": "https://github.com/alexpiraginet-bot/biblia-conectada.git",
+      "declared_license": "MIT (código) / CC-BY-SA (dados)",
+      "status": "under-audit",
+      "distributable": false,
+      "type": "tools-and-data",
+      "language": "pt-BR",
+      "description": "Dados estruturados de versículos e ferramentas de conexão bíblica."
+    },
+    {
+      "id": "biblia-libera",
+      "name": "Bíblia Libera",
+      "repo_url": "https://github.com/biblialibera/biblialibera.git",
+      "declared_license": "CC-BY-4.0 (exceto LXX GPLv3)",
+      "status": "under-audit",
+      "distributable": false,
+      "type": "bible-text-and-tools",
+      "language": "pt-BR",
+      "description": "Iniciativa de Bíblia livre e aberta. Versões gregas LXX contêm módulos sob GPLv3."
+    },
+    {
+      "id": "neuu-classics",
+      "name": "NEUU Bible Classics Dataset",
+      "repo_url": "https://github.com/neuu-org/bible-classics-dataset.git",
+      "declared_license": "CC-BY-4.0",
+      "status": "approved-for-reference",
+      "distributable": false,
+      "type": "theological-classics",
+      "language": "en",
+      "description": "Dataset de clássicos teológicos cristãos em formato estruturado."
+    },
+    {
+      "id": "neuu-topics",
+      "name": "NEUU Bible Topics Dataset",
+      "repo_url": "https://github.com/neuu-org/bible-topics-dataset.git",
+      "declared_license": "CC-BY-4.0",
+      "status": "approved-for-reference",
+      "distributable": false,
+      "type": "topical-concordance",
+      "language": "en",
+      "description": "Tópicos bíblicos e correlações temáticas."
+    },
+    {
+      "id": "neuu-crossrefs",
+      "name": "NEUU Bible Crossrefs Dataset",
+      "repo_url": "https://github.com/neuu-org/bible-crossrefs-dataset.git",
+      "declared_license": "CC-BY-4.0",
+      "status": "approved-for-reference",
+      "distributable": false,
+      "type": "cross-references",
+      "language": "mul",
+      "description": "Grafo de referências cruzadas entre versículos de toda a Escritura."
+    },
+    {
+      "id": "neuu-gazetteers",
+      "name": "NEUU Bible Gazetteers Dataset",
+      "repo_url": "https://github.com/neuu-org/bible-gazetteers-dataset.git",
+      "declared_license": "CC-BY-4.0",
+      "status": "approved-for-reference",
+      "distributable": false,
+      "type": "geographical-gazetteer",
+      "language": "mul",
+      "description": "Geografia bíblica, coordenadas de cidades, montanhas e rios do cânon bíblico."
+    },
+    {
+      "id": "neuu-dictionary",
+      "name": "NEUU Bible Dictionary Dataset",
+      "repo_url": "https://github.com/neuu-org/bible-dictionary-dataset.git",
+      "declared_license": "CC-BY-4.0",
+      "status": "approved-for-reference",
+      "distributable": false,
+      "type": "lexicon-dictionary",
+      "language": "en",
+      "description": "Dicionário bíblico com termos léxicos e definições históricas."
+    },
+    {
+      "id": "scriptorium-divinum",
+      "name": "Scriptorium Divinum",
+      "repo_url": "https://github.com/rilsonjoas/scriptorium-divinum.git",
+      "declared_license": "MIT (código) / CC-BY-SA (textos declarados)",
+      "status": "local-only-quarantine",
+      "distributable": false,
+      "type": "corpus-collection",
+      "language": "pt-BR",
+      "description": "Coleção de textos cristãos e ferramentas. Fontes variadas sob auditoria."
+    },
+    {
+      "id": "abel-santos",
+      "name": "Abel Santos Traduções",
+      "repo_url": "https://github.com/separovichabel/abel-santos.git",
+      "declared_license": "CC-BY-NC-SA-4.0",
+      "status": "local-only-noncommercial",
+      "distributable": false,
+      "type": "theological-translations",
+      "language": "pt-BR",
+      "description": "Traduções teológicas reformadas de Abel Santos. Restrito por cláusula Não Comercial."
+    },
+    {
+      "id": "exegese360",
+      "name": "Exegese 360",
+      "repo_url": "https://github.com/mpraes/exegese360.git",
+      "declared_license": "Under-Audit",
+      "status": "local-only-quarantine",
+      "distributable": false,
+      "type": "exegetical-tools",
+      "language": "pt-BR",
+      "description": "Ferramentas e anotações exegéticas bíblicas."
+    },
+    {
+      "id": "cfw",
+      "name": "Confissão de Fé de Westminster em JSON",
+      "repo_url": "https://github.com/rickserrat/cfw.git",
+      "declared_license": "Unstated",
+      "status": "local-only-quarantine",
+      "distributable": false,
+      "type": "confessional-standards",
+      "language": "pt-BR",
+      "description": "Capítulos e referências da CFW estruturados em JSON."
+    },
+    {
+      "id": "ipb-andrew-jumper-referencias",
+      "name": "Acervos Teológicos Institucionais (IPB / Andrew Jumper / Cultura Cristã / Bucer)",
+      "repo_url": null,
+      "declared_license": "All Rights Reserved (Proprietário)",
+      "status": "metadata-and-links-only",
+      "distributable": false,
+      "type": "bibliographic-references",
+      "language": "pt-BR",
+      "description": "Catalogação de links, edições, índices e resumos bibliográficos da Revista Fides Reformata, Editora Cultura Cristã e Centro Presbiteriano de Pós-Graduação Andrew Jumper.",
+      "rules": "PROIBIDA a extração e distribuição de textos integrais protegidos sem autorização expressa dos detentores dos direitos."
+    }
+  ]
+}
