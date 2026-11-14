@@ -1,0 +1,43 @@
+# Ambientes virtuais e pacotes Python
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Bancos de dados locais (gerados pela CLI/FTS5)
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Clones de fontes upstream e dados brutos (NUNCA versionar upstream .git ou dados pesados)
+data/sources/
+data/raw/
+data/cache/
+
+# Quarentena de materiais não auditados ou sob licença restrita
+corpus/quarantine/
+
+# Scratch e arquivos temporários de automação
+scratch/
+
+# IDE e sistema operacional
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
