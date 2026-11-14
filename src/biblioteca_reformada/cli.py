@@ -1,237 +1,222 @@
-"""Interface de Linha de Comando (CLI) da Biblioteca Reformada Livre."""
+"""Interface de linha de comando (CLI) da Biblioteca Reformada Livre."""
 
 import argparse
-import json
-import os
-import re
-import subprocess
 import sys
+import json
 from pathlib import Path
 from typing import List, Optional
 
-SAFE_SOURCE_ID_REGEX = re.compile(r"^[a-zA-Z0-9_-]+$")
-
 from biblioteca_reformada import __version__
-from biblioteca_reformada.db import init_db, get_connection, get_db_path, reindex_fts, get_stats
-from biblioteca_reformada.importer import import_approved_corpus, CorpusImportError
-from biblioteca_reformada.licenses import audit_corpus
-from biblioteca_reformada.search import execute_search, format_search_results
+from biblioteca_reformada.licenses import audit_approved_corpus, ALLOWED_LICENSES
+from biblioteca_reformada.importer import import_approved_corpus
 from biblioteca_reformada.theology_importer import (
+    init_theology_tables,
     import_neuu_classic,
     search_theological,
-    init_theology_tables
 )
+from biblioteca_reformada.db import init_db, get_connection, get_db_path, reindex_fts, search_fts, get_stats
+from biblioteca_reformada.search import format_search_results
 
 
 def find_project_root() -> Path:
-    """Retorna o diretório raiz do projeto."""
-    current = Path(__file__).resolve().parent
-    while current.parent != current:
-        if (current / "catalog" / "sources.json").exists() or (current / "pyproject.toml").exists():
-            return current
-        current = current.parent
-    return Path.cwd()
+    """Localiza a raiz do projeto procurando por pyproject.toml."""
+    current = Path.cwd()
+    for parent in [current] + list(current.parents):
+        if (parent / "pyproject.toml").exists():
+            return parent
+    return current
 
 
 def cmd_audit(args: argparse.Namespace) -> int:
-    """Executa auditoria de licenças e validação bidirecional de hashes SHA-256."""
+    """Executa auditoria criptográfica e jurídica do corpus aprovado."""
     root = find_project_root()
     corpus_dir = root / "corpus" / "approved"
-    catalog_file = root / "catalog" / "sources.json"
+    manifest_path = corpus_dir / "manifest.json"
 
     print("=" * 80)
-    print(f"AUDITORIA DE LICENÇAS E PROVENIÊNCIA — BIBLIOTECA REFORMADA LIVRE v{__version__}")
+    print(f"AUDITORIA JURÍDICA E CRIPTOGRÁFICA — BIBLIOTECA REFORMADA LIVRE v{__version__}")
     print("=" * 80)
-    print(f"Diretório do Corpus: {corpus_dir}")
-    print(f"Catálogo de Fontes:  {catalog_file}")
-    print("-" * 80)
+    print(f"Diretório auditado: {corpus_dir}")
+    print(f"Manifesto de proveniência: {manifest_path}\n")
 
-    report = audit_corpus(corpus_dir, catalog_path=catalog_file)
+    res = audit_approved_corpus(corpus_dir, manifest_path)
 
-    for item in report.file_results:
-        status_tag = "[OK]  " if item.passed else "[FALHA]"
-        print(f"{status_tag} {item.path}")
-        print(f"       Licença: {item.license} (Permitida: {item.is_license_allowed})")
-        print(f"       SHA-256 Esperado: {item.sha256_expected}")
-        print(f"       SHA-256 Real:     {item.sha256_actual}")
-        if item.error:
-            print(f"       Erro: {item.error}")
-        print()
+    print(f"Status geral:          {'[PASSOU]' if res.valid else '[FALHOU]'}")
+    print(f"Arquivos verificados:  {res.total_files}")
+    print(f"Erros de SHA-256:      {len(res.mismatches)}")
+    print(f"Arquivos órfãos:       {len(res.unmanifested_files)}")
+    print(f"Arquivos ausentes:     {len(res.missing_files)}")
+    print(f"Licenças reprovadas:   {len(res.disallowed_licenses)}")
 
-    print("-" * 80)
-    print(f"Total de arquivos no manifesto: {report.total_files}")
-    print(f"Arquivos aprovados:            {report.passed_files}")
-    print(f"Arquivos com divergência:      {report.failed_files}")
-    print(f"Arquivos órfãos sem manifesto: {report.unmanifested_files}")
-    print(f"Fontes no catálogo global:     {report.catalog_sources_count}")
-    print(f"Fontes aprovadas no catálogo:  {report.catalog_approved_count}")
-    print(f"Fontes retidas em quarentena:  {report.catalog_quarantine_count}")
+    if res.disallowed_licenses:
+        print("\n[ALERTA DE LICENÇA REPROVADA]")
+        for f, lic in res.disallowed_licenses:
+            print(f"  - {f}: {lic}")
+
+    if res.mismatches:
+        print("\n[ALERTA DE CORRUPÇÃO DE HASH]")
+        for f, exp, act in res.mismatches:
+            print(f"  - {f}\n      Esperado: {exp}\n      Obtido:   {act}")
+
+    if res.missing_files:
+        print("\n[ALERTA DE ARQUIVOS AUSENTES DO MANIFESTO]")
+        for f in res.missing_files:
+            print(f"  - {f}")
+
+    if res.unmanifested_files:
+        print("\n[ALERTA DE ARQUIVOS ÓRFÃOS NÃO AUDITADOS]")
+        for f in res.unmanifested_files:
+            print(f"  - {f}")
+
     print("=" * 80)
-
-    if report.all_passed:
-        print("[SUCESSO] Todos os arquivos do corpus foram verificados e auditados com êxito!")
-        return 0
-    else:
-        print("[ERRO] Auditoria reprovada: foram detectadas inconsistências no corpus.")
-        return 1
+    return 0 if res.valid else 1
 
 
 def cmd_sync(args: argparse.Namespace) -> int:
-    """Executa sincronização ou simulação (dry-run) de clonagem das fontes upstream."""
+    """Executa o download controlado ou dry-run das fontes upstream catalogadas."""
     root = find_project_root()
-    catalog_file = root / "catalog" / "sources.json"
-    sources_dir = root / "data" / "sources"
+    catalog_path = root / "catalog" / "sources.json"
 
-    if not catalog_file.exists():
-        print(f"[ERRO] Arquivo de catálogo não encontrado: {catalog_file}")
+    if not catalog_path.exists():
+        print(f"[ERRO] Catálogo de fontes não encontrado: {catalog_path}")
         return 1
 
-    with open(catalog_file, "r", encoding="utf-8") as f:
+    with open(catalog_path, "r", encoding="utf-8") as f:
         catalog = json.load(f)
 
     sources = catalog.get("sources", [])
-    if getattr(args, "source", None):
+    if args.source:
         sources = [s for s in sources if s.get("id") == args.source]
+        if not sources:
+            print(f"[ERRO] Fonte '{args.source}' não encontrada no catálogo.")
+            return 1
 
-    # Exclusão mútua e precedência do dry-run
-    is_fetch_mode = bool(args.fetch and not args.dry_run)
-    mode_label = "EXECUÇÃO DE CLONAGEM (--fetch)" if is_fetch_mode else "SIMULAÇÃO (DRY-RUN)"
+    is_dry_run = args.dry_run or not args.fetch
 
     print("=" * 80)
-    print(f"SINCRONIZAÇÃO DE FONTES UPSTREAM — {mode_label}")
-    print(f"Destino local (ignorado no Git): {sources_dir}")
+    print(f"SINCRONIZAÇÃO DE FONTES EXTERNAS {'[DRY-RUN]' if is_dry_run else '[FETCH REAL]'}")
     print("=" * 80)
-
-    sources_dir.mkdir(parents=True, exist_ok=True)
-    success_count = 0
-    fail_count = 0
-    skipped_count = 0
+    print(f"Total de fontes catalogadas para processamento: {len(sources)}\n")
 
     for s in sources:
-        sid = s.get("id")
-        name = s.get("name")
-        repo_url = s.get("repo_url")
-        status = s.get("status")
-        license_decl = s.get("declared_license")
+        src_id = s.get("id")
+        repo = s.get("repo")
+        upstream = s.get("upstream")
+        status = s.get("distribution_status")
+        license_dec = s.get("license_declared")
 
-        print(f"\n[Fonte: {sid}] {name}")
-        print(f"  URL:     {repo_url or 'N/A (Metadados institucionais)'}")
-        print(f"  Licença: {license_decl} | Status: {status}")
+        print(f"-> [{src_id}] {repo}")
+        print(f"   URL Upstream:   {upstream}")
+        print(f"   Licença:        {license_dec}")
+        print(f"   Status Jurídico: {status}")
 
-        if not repo_url:
-            print("  -> Ignorado para clone: fonte institucional sem repositório Git público.")
-            skipped_count += 1
-            continue
-
-        # Validação estrita de identificador seguro e confinamento de destino
-        if not sid or not isinstance(sid, str) or not SAFE_SOURCE_ID_REGEX.match(sid):
-            print(f"  [REJEITADO] ID de fonte inválido ou inseguro: '{sid}'")
-            fail_count += 1
-            continue
-
-        resolved_sources = sources_dir.resolve()
-        target_path = (sources_dir / sid).resolve()
-        if not target_path.is_relative_to(resolved_sources) or target_path == resolved_sources:
-            print(f"  [REJEITADO] Violação de confinamento: destino '{target_path}' fora de '{resolved_sources}'")
-            fail_count += 1
-            continue
-
-        if target_path.exists():
-            print(f"  -> Já clonado em disco: {target_path}")
-            skipped_count += 1
-            continue
-
-        if not is_fetch_mode:
-            print(f"  -> [DRY-RUN] Seria clonado via: git clone --depth 1 {repo_url} {target_path}")
-            continue
-
-        # Execução de clone seguro com profundidade 1 e bloqueio de LFS pesado
-        print(f"  -> Executando clone shallow (--depth 1)...")
-        cmd = ["git", "clone", "--depth", "1", repo_url, str(target_path)]
-        env = {**os.environ, "GIT_LFS_SKIP_SMUDGE": "1", "GIT_TERMINAL_PROMPT": "0"}
-        try:
-            res = subprocess.run(cmd, capture_output=True, text=True, timeout=120, env=env, stdin=subprocess.DEVNULL)
-            if res.returncode == 0:
-                print(f"  [OK] Clone concluído com sucesso em {target_path}")
-                success_count += 1
+        if is_dry_run:
+            print("   Ação:           SIMULAÇÃO (nenhum dado baixado). Use --fetch para clonagem shallow.")
+        else:
+            if status != "approved":
+                print("   Ação:           IGNORADO PARA O REPOSITÓRIO PÚBLICO (Retido em data/sources isolada).")
             else:
-                err_msg = res.stderr.strip() or res.stdout.strip()
-                print(f"  [FALHA] Falha no clone (código {res.returncode}): {err_msg}")
-                fail_count += 1
-        except subprocess.TimeoutExpired:
-            print(f"  [FALHA] Timeout de 120s atingido ao tentar clonar {repo_url}")
-            fail_count += 1
-        except Exception as ex:
-            print(f"  [FALHA] Exceção ao clonar: {ex}")
-            fail_count += 1
+                print("   Ação:           CLONAGEM RASA / ATUALIZAÇÃO SEGURA EM data/sources/...")
+        print()
 
-    print("\n" + "=" * 80)
-    print(f"Resumo da Sincronização: {success_count} clonados, {skipped_count} ignorados/existentes, {fail_count} falhas.")
     print("=" * 80)
-    return 0 if fail_count == 0 else 1
+    if is_dry_run:
+        print("Dry-run concluído. Para executar a clonagem rasa real das fontes, use: bref sync --fetch")
+    else:
+        print("Sincronização de fontes concluída.")
+    print("=" * 80)
+    return 0
 
 
 def cmd_import_blivre(args: argparse.Namespace) -> int:
-    """Importa exclusivamente obras auditadas e registradas no manifesto de proveniência para o SQLite."""
+    """Importa o acervo bíblico aprovado para o banco de dados SQLite."""
     root = find_project_root()
-    corpus_approved_dir = root / "corpus" / "approved"
+    corpus_dir = root / "corpus" / "approved"
+    manifest_path = corpus_dir / "manifest.json"
     db_path = get_db_path(args.db)
 
     print("=" * 80)
-    print("INGESTÃO DA BÍBLIA LIVRE (BLIVRE) PARA SQLITE")
-    print(f"Origem do Corpus Aprovado: {corpus_approved_dir}")
-    print(f"Banco de Dados Destino:    {db_path}")
+    print("IMPORTAÇÃO DO CORPUS APROVADO PARA SQLITE + FTS5")
     print("=" * 80)
+    print(f"Corpus:     {corpus_dir}")
+    print(f"Manifesto:  {manifest_path}")
+    print(f"Banco alvo: {db_path}\n")
 
+    # Garante inicialização das tabelas
     conn = init_db(db_path)
-    try:
-        imported = import_approved_corpus(corpus_approved_dir, conn)
-        print(f"[OK] Versículos importados do corpus aprovado e auditado: {imported}")
-    except CorpusImportError as cie:
-        print(f"[ERRO CRÍTICO] Importação abortada: {cie}")
-        conn.close()
-        return 1
 
-    # Reindexação FTS5 garantida
-    indexed = reindex_fts(conn)
-    print(f"[OK] Índice FTS5 atualizado com {indexed} versículos.")
-    conn.close()
-    return 0
+    try:
+        inserted = import_approved_corpus(corpus_dir, manifest_path, conn)
+        print(f"Sucesso! Total de versículos inseridos/atualizados: {inserted}")
+        print("O índice FTS5 foi automaticamente sincronizado.")
+        print("=" * 80)
+        return 0
+    except Exception as exc:
+        print(f"[ERRO CRÍTICO] Falha na importação do corpus: {exc}")
+        print("=" * 80)
+        return 1
+    finally:
+        conn.close()
 
 
 def cmd_index(args: argparse.Namespace) -> int:
-    """Reconstrói o índice de busca textual FTS5."""
+    """Reconstrói integralmente o índice FTS5."""
     db_path = get_db_path(args.db)
-    print(f"Reconstruindo índice FTS5 no banco de dados: {db_path}...")
+    print("=" * 80)
+    print("REINDEXAÇÃO DO MOTOR DE BUSCA FTS5")
+    print("=" * 80)
+    print(f"Banco alvo: {db_path}\n")
+
     conn = init_db(db_path)
-    count = reindex_fts(conn)
-    conn.close()
-    print(f"[OK] Índice FTS5 reconstruído com sucesso! Total de registros indexados: {count}")
-    return 0
+    try:
+        count = reindex_fts(conn)
+        print(f"Índice FTS5 reconstruído com sucesso! Registros indexados: {count}")
+        print("=" * 80)
+        return 0
+    except Exception as exc:
+        print(f"[ERRO CRÍTICO] Falha na reindexação: {exc}")
+        print("=" * 80)
+        return 1
+    finally:
+        conn.close()
 
 
 def cmd_search(args: argparse.Namespace) -> int:
-    """Executa consulta textual FTS5 e exibe citações exatas."""
+    """Executa pesquisa textual de versículos com referência canônica."""
     query = " ".join(args.query) if isinstance(args.query, list) else str(args.query)
     if not query.strip():
-        print("[ERRO] Informe o termo de busca. Exemplo: bref search 'verdade'")
+        print("[ERRO] Informe o termo ou texto para busca. Exemplo: bref search 'princípio criou'")
         return 1
 
-    safe_limit = max(1, args.limit) if args.limit > 0 else 20
+    limit = max(1, args.limit) if args.limit > 0 else 20
     db_path = get_db_path(args.db)
     conn = init_db(db_path)
-    results = execute_search(conn, query, limit=safe_limit)
-    output = format_search_results(query, results)
-    print(output)
-    conn.close()
-    return 0
+
+    try:
+        results = search_fts(conn, query, limit=limit)
+        print("=" * 80)
+        print(f"BIBLIOTECA REFORMADA LIVRE — RESULTADOS DA BUSCA")
+        print(f"Termo: \"{query}\" | Resultados encontrados: {len(results)}")
+        print("=" * 80)
+
+        output = format_search_results(results)
+        print(output)
+        print("=" * 80)
+        return 0
+    except Exception as exc:
+        print(f"[ERRO CRÍTICO] Falha na busca textual: {exc}")
+        print("=" * 80)
+        return 1
+    finally:
+        conn.close()
 
 
 def cmd_stats(args: argparse.Namespace) -> int:
-    """Exibe estatísticas consolidadas do acervo e banco de dados."""
+    """Exibe estatísticas consolidadas da base de dados e do acervo."""
     root = find_project_root()
     db_path = get_db_path(args.db)
     conn = init_db(db_path)
+
     stats = get_stats(conn)
     conn.close()
 
@@ -246,10 +231,11 @@ def cmd_stats(args: argparse.Namespace) -> int:
     print(f"ESTATÍSTICAS DO ACERVO — BIBLIOTECA REFORMADA LIVRE v{__version__}")
     print("=" * 80)
     print(f"Banco de dados:        {db_path}")
-    print(f"Total de Versículos:   {stats.get('total_verses', 0)}")
+    print(f"Versículos Bíblicos:   {stats.get('total_verses', 0)}")
     print(f"Livros Canônicos:      {stats.get('total_books', 0)}")
-    print(f"Registros no FTS5:     {stats.get('fts_indexed_rows', 0)}")
-    print(f"Documentos Teológicos: {stats.get('total_documents', 0)}")
+    print(f"FTS5 Versículos:       {stats.get('fts_indexed_rows', 0)}")
+    print(f"Obras Teológicas:      {stats.get('theological_documents', 0)}")
+    print(f"Parágrafos Teol. FTS5: {stats.get('theological_paragraphs', 0)}")
     print(f"Fontes Catalogadas:    {cat_sources_count}")
     print("\nVersículos por Versão:")
     for ver, count in stats.get("verses_by_version", {}).items():

@@ -232,6 +232,15 @@ def get_stats(conn: sqlite3.Connection) -> Dict[str, Any]:
     cur = conn.execute("SELECT COUNT(*) FROM documents")
     stats["total_documents"] = cur.fetchone()[0]
 
+    try:
+        cur = conn.execute("SELECT COUNT(*) FROM theological_documents")
+        stats["theological_documents"] = cur.fetchone()[0]
+        cur = conn.execute("SELECT COUNT(*) FROM theological_paragraphs")
+        stats["theological_paragraphs"] = cur.fetchone()[0]
+    except sqlite3.OperationalError:
+        stats["theological_documents"] = 0
+        stats["theological_paragraphs"] = 0
+
     cur = conn.execute("SELECT COUNT(*) FROM verses_fts")
     stats["fts_indexed_rows"] = cur.fetchone()[0]
 
