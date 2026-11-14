@@ -1,0 +1,180 @@
+{
+  "metadata": {
+    "canonical_id": "luther:small-catechism",
+    "title": "O Catecismo Menor",
+    "title_en": "The Small Catechism",
+    "title_de": "Der Kleine Katechismus",
+    "author_full": "Martinho Lutero",
+    "author_short": "Martinho Lutero",
+    "author_pt": "Martinho Lutero",
+    "year": 1529,
+    "language": "pt",
+    "rights": "Public Domain",
+    "license": "Public Domain",
+    "tradition": "Luterana Magistral",
+    "subjects": [
+      "Teologia Luterana",
+      "Catequese Clássica",
+      "Doutrina Cristã",
+      "Reforma Protestante"
+    ],
+    "source_edition": "Wittenberg, 1529 (Domínio Público)",
+    "human_reviewed": false
+  },
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Os Dez Mandamentos de Deus",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "Primeiro Mandamento: 'Não terás outros deuses diante de mim.' O que significa isto? Resposta: Devemos temer e amar a Deus sobre todas as coisas e confiar Nele de todo o coração."
+        },
+        {
+          "id": "p2",
+          "text": "Segundo Mandamento: 'Não tomarás o nome do Senhor teu Deus em vão.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que não usemos Seu nome para amaldiçoar, jurar falso, praticar feitiçaria, mentir ou enganar, mas sim O invoquemos em todas as necessidades, oremos, louvemos e demos graças."
+        },
+        {
+          "id": "p3",
+          "text": "Terceiro Mandamento: 'Lembra-te do dia de sábado, para o santificar.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que não desprezemos a pregação e a Sua Palavra, mas a consideremos santa, a ouçamos de bom grado e a guardemos no coração."
+        },
+        {
+          "id": "p4",
+          "text": "Quarto Mandamento: 'Honra a teu pai e a tua mãe.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que não desprezemos nem irritemos nossos pais e superiores, mas lhes dediquemos respeito, os sirvamos, lhes obedeçamos, os amemos e tenhamos em alta estima."
+        },
+        {
+          "id": "p5",
+          "text": "Quinto Mandamento: 'Não matarás.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que não causemos dano ou sofrimento ao nosso próximo em seu corpo, mas sim o ajudemos e o socorramos em todas as necessidades corporais."
+        },
+        {
+          "id": "p6",
+          "text": "Sexto Mandamento: 'Não adulterarás.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que levemos uma vida pura e casta em palavras e ações, e cada um ame e honre seu cônjuge no matrimônio."
+        },
+        {
+          "id": "p7",
+          "text": "Sétimo Mandamento: 'Não furtarás.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que não tomemos o dinheiro ou os bens de nosso próximo, nem os obtenhamos com mercadoria falsificada ou negócios desonestos, mas o ajudemos a melhorar e proteger seus bens e seu sustento."
+        },
+        {
+          "id": "p8",
+          "text": "Oitavo Mandamento: 'Não dirás falso testemunho contra o teu próximo.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que não mintamos contra nosso próximo, não o traiamos, não o difamemos nem prejudiquemos sua reputação, mas o defendamos, falemos bem dele e interpretemos tudo da melhor maneira."
+        },
+        {
+          "id": "p9",
+          "text": "Nono Mandamento: 'Não cobiçarás a casa do teu próximo.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que não tramemos contra a herança ou casa de nosso próximo, nem a obtenhamos sob aparência de direito legítimo, mas o sirvamos para que a conserve."
+        },
+        {
+          "id": "p10",
+          "text": "Décimo Mandamento: 'Não cobiçarás a mulher do teu próximo, nem os seus servos, nem as suas servas, nem coisa alguma que lhe pertença.' O que significa isto? Resposta: Devemos temer e amar a Deus, para que não afastemos nem seduzamos o cônjuge, os servos ou o gado de nosso próximo, mas os exortemos a permanecer e cumprir com dedicação seus deveres."
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "O Credo Apostólico",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "Primeiro Artigo: Da Criação. 'Creio em Deus Pai Todo-Poderoso, Criador do céu e da terra.' O que significa isto? Resposta: Creio que Deus me criou juntamente com todas as criaturas, deu-me corpo e alma, olhos, ouvidos e todos os membros, razão e todos os sentidos, e ainda os preserva. Concede-me vestimentas e sapatos, comida e bebida, casa e lar, cônjuge e filhos, campos, gado e todos os bens; supre diária e abundantemente todas as necessidades deste corpo e vida. Guarda-me contra todo perigo e me protege de todo mal. Tudo isso faz unicamente por paterna e divina bondade e misericórdia, sem nenhum mérito ou dignidade de minha parte. Por tudo isso devo agradecer-Lhe, louvá-Lo, servi-Lo e obedecer-Lhe. Isto é certamente a verdade."
+        },
+        {
+          "id": "p2",
+          "text": "Segundo Artigo: Da Redenção. 'E em Jesus Cristo, Seu único Filho, nosso Senhor, o qual foi concebido por obra do Espírito Santo, nasceu da virgem Maria, padeceu sob o poder de Pôncio Pilatos, foi crucificado, morto e sepultado; desceu ao inferno; no terceiro dia ressuscitou dos mortos; subiu ao céu e está assentado à mão direita de Deus Pai Todo-Poderoso, donde há de vir a julgar os vivos e os mortos.' O que significa isto? Resposta: Creio que Jesus Cristo, verdadeiro Deus, gerado do Pai desde a eternidade, e também verdadeiro homem, nascido da virgem Maria, é meu Senhor. Ele me redimiu a mim, homem perdido e condenado, e me resgatou de todos os pecados, da morte e do poder do diabo, não com ouro ou prata, mas com Seu santo e precioso sangue e com Sua inocente paixão e morte, para que eu Lhe pertença, viva sob Seu reino e O sirva em eterna justiça, inocência e bem-aventurança, assim como Ele ressuscitou dos mortos, vive e reina eternamente. Isto é certamente a verdade."
+        },
+        {
+          "id": "p3",
+          "text": "Terceiro Artigo: Da Santificação. 'Creio no Espírito Santo, na santa Igreja cristã, na comunhão dos santos, na remissão dos pecados, na ressurreição da carne e na vida eterna. Amém.' O que significa isto? Resposta: Creio que por minha própria razão ou forças não posso crer em Jesus Cristo, meu Senhor, nem chegar a Ele; mas o Espírito Santo me chamou pelo Evangelho, iluminou-me com Seus dons, santificou-me e preservou-me na verdadeira fé. Do mesmo modo Ele chama, reúne, ilumina e santifica toda a Igreja cristã na terra e a preserva em Jesus Cristo na única e verdadeira fé. Nesta Igreja cristã Ele perdoa diária e plenamente todos os pecados a mim e a todos os crentes, e no último dia ressuscitará a mim e a todos os mortos, e dará a vida eterna a mim e a todos os crentes em Cristo. Isto é certamente a verdade."
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "A Oração do Senhor (O Pai Nosso)",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "Introdução: 'Pai nosso que estás nos céus.' O que significa isto? Resposta: Deus quer nos encorajar cordialmente a crer que Ele é nosso verdadeiro Pai e nós somos Seus verdadeiros filhos, para que Lhe peçamos com toda a coragem e confiança, como filhos queridos pedem a seu querido pai."
+        },
+        {
+          "id": "p2",
+          "text": "Primeira Petição: 'Santificado seja o Teu nome.' O que significa isto? Resposta: O nome de Deus é certamente santo em si mesmo; mas pedimos nesta oração que ele seja santificado também entre nós. Isto acontece quando a Palavra de Deus é ensinada com pureza e retidão, e nós, como filhos de Deus, vivemos santamente de acordo com ela."
+        },
+        {
+          "id": "p3",
+          "text": "Segunda Petição: 'Venha o Teu reino.' O que significa isto? Resposta: O reino de Deus vem por si mesmo, sem nossa oração; mas pedimos nesta petição que ele venha também a nós. Isto acontece quando o Pai celeste nos concede Seu Espírito Santo, para que pela Sua graça creiamos em Sua santa Palavra e levemos uma vida santa aqui no tempo e lá na eternidade."
+        },
+        {
+          "id": "p4",
+          "text": "Terceira Petição: 'Seja feita a Tua vontade, assim na terra como no céu.' O que significa isto? Resposta: A boa e graciosa vontade de Deus é feita certamente sem a nossa oração; mas pedimos nesta oração que ela se cumpra também entre nós. Isto acontece quando Deus quebra e anula todo mau propósito e vontade que nos impedem de santificar o nome de Deus e de permitir que Seu reino venha."
+        },
+        {
+          "id": "p5",
+          "text": "Quarta Petição: 'O pão nosso de cada dia nos dá hoje.' O que significa isto? Resposta: Deus dá o pão de cada dia mesmo sem nosso pedido, a todos os homens maus; mas pedimos nesta oração que Ele no-lo faça reconhecer e o recebamos com ações de graças."
+        },
+        {
+          "id": "p6",
+          "text": "Quinta Petição: 'E perdoa-nos as nossas dívidas, assim como nós perdoamos aos nossos devedores.' O que significa isto? Resposta: Pedimos nesta oração que o Pai celeste não olhe para os nossos pecados, nem nos negue nossos pedidos por causa deles, pois não somos dignos de nada do que pedimos; mas que nos conceda tudo pela graça, pois pecamos diariamente e merecemos apenas castigo. Da mesma forma queremos de coração perdoar e prontamente fazer o bem àqueles que pecam contra nós."
+        },
+        {
+          "id": "p7",
+          "text": "Sexta Petição: 'E não nos deixes cair em tentação.' O que significa isto? Resposta: Deus não tenta a ninguém; mas pedimos nesta oração que Deus nos guarde e preserve, para que o diabo, o mundo e nossa própria carne não nos enganem nem nos seduzam à incredulidade, ao desespero e a outros grandes pecados e vícios."
+        },
+        {
+          "id": "p8",
+          "text": "Sétima Petição: 'Mas livra-nos do mal.' O que significa isto? Resposta: Pedimos nesta oração, como num resumo, que o Pai celeste nos livre de todo o mal do corpo e da alma, dos bens e da honra, e finalmente, quando chegar a nossa última hora, nos conceda um fim bem-aventurado e nos leve graciosamente deste vale de lágrimas para Si no céu."
+        },
+        {
+          "id": "p9",
+          "text": "Conclusão: 'Pois Teu é o reino, o poder e a glória para sempre. Amém.' O que significa isto? Resposta: Devo ter certeza de que tais petições são agradáveis ao Pai celeste e são ouvidas por Ele; pois Ele mesmo nos ordenou orar assim e prometeu que nos ouvirá. Amém, amém, isto significa: sim, sim, assim há de ser."
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "O Sacramento do Santo Batismo",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "Primeiro: O que é o Batismo? Resposta: O Batismo não é apenas água simples, mas é a água contida no mandamento de Deus e unida à Palavra de Deus. Qual é esta palavra de Deus? Resposta: É aquela que nosso Senhor Jesus Cristo diz em Mateus, capítulo 28: 'Ide por todo o mundo, ensinai a todas as nações, batizando-as em nome do Pai e do Filho e do Espírito Santo'."
+        },
+        {
+          "id": "p2",
+          "text": "Segundo: Que dons ou benefícios o Batismo concede? Resposta: Ele opera o perdão dos pecados, livra da morte e do diabo, e dá a bem-aventurança eterna a todos os que creem no que dizem as palavras e promessas de Deus."
+        },
+        {
+          "id": "p3",
+          "text": "Terceiro: Como pode a água operar coisas tão grandes? Resposta: A água certamente não as opera, mas a Palavra de Deus que está com e junto à água, e a fé que confia nessa Palavra unida à água. Pois sem a Palavra de Deus a água é água simples e nenhum batismo; mas com a Palavra de Deus ela é um batismo, isto é, uma água graciosa de vida e um banho de novo nascimento no Espírito Santo, como São Paulo diz a Tito, no capítulo 3."
+        },
+        {
+          "id": "p4",
+          "text": "Quarto: O que significa este batismo com água? Resposta: Significa que o velho Adão em nós deve ser afogado pelo arrependimento diário e morrer com todos os pecados e maus desejos; e, por sua vez, deve surgir e ressuscitar diariamente um novo homem, que viva eternamente diante de Deus em justiça e pureza."
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "title": "O Sacramento do Altar (A Santa Ceia)",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "Primeiro: O que é o Sacramento do Altar? Resposta: É o verdadeiro corpo e sangue de nosso Senhor Jesus Cristo, sob o pão e o vinho, instituído pelo próprio Cristo para que nós, cristãos, o comamos e bebamos."
+        },
+        {
+          "id": "p2",
+          "text": "Onde está escrito isto? Resposta: Assim escrevem os santos evangelistas Mateus, Marcos, Lucas e São Paulo: 'Nosso Senhor Jesus Cristo, na noite em que foi traído, tomou o pão; e, tendo dado graças, o partiu e deu aos Seus discípulos, dizendo: Tomai, comei; isto é o Meu corpo que é dado por vós; fazei isto em memória de Mim. Semelhantemente, depois de cear, tomou o cálice; e, tendo dado graças, o deu a eles, dizendo: Bebei dele todos; este cálice é o novo testamento no Meu sangue, que é derramado por vós para remissão dos pecados; fazei isto, todas as vezes que o beberdes, em memória de Mim'."
+        },
+        {
+          "id": "p3",
+          "text": "Qual é o benefício de comer e beber assim? Resposta: Isto nos mostram estas palavras: 'Dado e derramado por vós para remissão dos pecados'. A saber, que no sacramento o perdão dos pecados, a vida e a bem-aventurança nos são concedidos por meio destas palavras; pois onde há remissão dos pecados, há também vida e bem-aventurança."
+        },
+        {
+          "id": "p4",
+          "text": "Como pode o comer e beber corporal operar coisas tão grandes? Resposta: O comer e beber certamente não as operam, mas sim aquelas palavras que estão ali: 'Dado e derramado por vós para remissão dos pecados'. Estas palavras são, juntamente com o comer e beber corporal, a coisa principal no sacramento; e quem crê nestas palavras tem precisamente o que elas declaram: a saber, o perdão dos pecados."
+        },
+        {
+          "id": "p5",
+          "text": "Quem recebe dignamente este sacramento? Resposta: Jejuar e preparar-se corporalmente é uma boa disciplina externa; mas verdadeiramente digno e bem preparado é aquele que tem fé nestas palavras: 'Dado e derramado por vós para remissão dos pecados'. Mas aquele que não crê nestas palavras ou duvida delas é indigno e inapto, pois a expressão 'por vós' exige corações verdadeiramente crentes."
+        }
+      ]
+    }
+  ]
+}
