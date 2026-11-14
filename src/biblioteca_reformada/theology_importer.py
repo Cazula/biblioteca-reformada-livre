@@ -52,10 +52,19 @@ def init_theology_tables(conn: sqlite3.Connection) -> None:
         conn.execute("CREATE INDEX IF NOT EXISTS idx_theol_para_doc ON theological_paragraphs(document_id)")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_theol_para_work ON theological_paragraphs(work_id)")
 
+        # Verifica se theological_fts precisa de migração (colunas chapter_num e paragraph_num)
+        cursor = conn.execute("PRAGMA table_info(theological_fts)")
+        existing_cols = {row[1] for row in cursor.fetchall()}
+        recreate_fts = existing_cols and ("chapter_num" not in existing_cols or "paragraph_num" not in existing_cols)
+        if recreate_fts:
+            conn.execute("DROP TABLE IF EXISTS theological_fts")
+
         conn.execute("""
             CREATE VIRTUAL TABLE IF NOT EXISTS theological_fts USING fts5(
                 document_id UNINDEXED,
                 work_id UNINDEXED,
+                chapter_num UNINDEXED,
+                paragraph_num UNINDEXED,
                 author,
                 title,
                 chapter_title,
@@ -64,6 +73,19 @@ def init_theology_tables(conn: sqlite3.Connection) -> None:
                 tokenize = 'unicode61 remove_diacritics 2'
             )
         """)
+
+        # Se a tabela foi recriada e existirem parágrafos, repopula theological_fts
+        if recreate_fts:
+            conn.execute("""
+                INSERT INTO theological_fts (
+                    document_id, work_id, chapter_num, paragraph_num, author, title,
+                    chapter_title, citation, text
+                )
+                SELECT p.document_id, p.work_id, p.chapter_num, p.paragraph_num, d.author, d.title,
+                       p.chapter_title, p.citation, p.text
+                FROM theological_paragraphs p
+                JOIN theological_documents d ON d.id = p.document_id
+            """)
 
 
 def import_neuu_classic(
@@ -193,6 +215,8 @@ def import_neuu_classic(
                 author = excluded.author,
                 tradition = excluded.tradition,
                 category = excluded.category,
+                language = excluded.language,
+                license = excluded.license,
                 attribution = excluded.attribution,
                 chapters_count = excluded.chapters_count,
                 paragraphs_count = excluded.paragraphs_count
@@ -220,10 +244,11 @@ def import_neuu_classic(
 
             conn.execute("""
                 INSERT INTO theological_fts (
-                    document_id, work_id, author, title, chapter_title, citation, text
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    document_id, work_id, chapter_num, paragraph_num, author, title,
+                    chapter_title, citation, text
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                p.document_id, p.work_id, doc.author, doc.title,
+                p.document_id, p.work_id, p.chapter_num, p.paragraph_num, doc.author, doc.title,
                 p.chapter_title, p.citation, p.text
             ))
 
@@ -256,7 +281,7 @@ def search_theological(
 
     try:
         cursor = conn.execute("""
-            SELECT document_id, work_id, author, title, chapter_title, citation, text, bm25(theological_fts) as rank
+            SELECT document_id, work_id, chapter_num, paragraph_num, author, title, chapter_title, citation, text, bm25(theological_fts) as rank
             FROM theological_fts
             WHERE theological_fts MATCH ?
             ORDER BY rank
@@ -268,7 +293,7 @@ def search_theological(
         if any(kw in err_msg for kw in ("syntax error", "fts5:", "malformed", "parse error", "match", "unterminated")):
             escaped_literal = clean_query.replace('"', '""')
             cursor = conn.execute("""
-                SELECT document_id, work_id, author, title, chapter_title, citation, text, bm25(theological_fts) as rank
+                SELECT document_id, work_id, chapter_num, paragraph_num, author, title, chapter_title, citation, text, bm25(theological_fts) as rank
                 FROM theological_fts
                 WHERE theological_fts MATCH ?
                 ORDER BY rank
@@ -285,9 +310,9 @@ def search_theological(
             work_id=row["work_id"],
             author=row["author"],
             title=row["title"],
-            chapter_num=1,
+            chapter_num=int(row["chapter_num"]) if row["chapter_num"] is not None else 1,
             chapter_title=row["chapter_title"] or "",
-            paragraph_num=1,
+            paragraph_num=int(row["paragraph_num"]) if row["paragraph_num"] is not None else 1,
             citation=row["citation"],
             text=row["text"],
             rank=float(row["rank"])

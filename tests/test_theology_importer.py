@@ -159,3 +159,53 @@ def test_import_approved_theology_baptist_confession_1689(memory_db):
     assert len(res) > 0
     assert "Escritura" in res[0].chapter_title
 
+
+def test_reimport_updates_license_on_conflict(memory_db):
+    """Garante que a reimportação atualiza a licença de um documento pré-existente (ON CONFLICT)."""
+    root = Path(__file__).resolve().parent.parent
+    baptist_json = root / "corpus" / "approved" / "theology" / "baptist-confession-1689.json"
+    assert baptist_json.exists()
+
+    doc_id = "baptist:confession-1689:pt"
+
+    # Simula documento antigo cadastrado com licença desatualizada 'Public Domain'
+    memory_db.execute("""
+        INSERT INTO theological_documents (
+            id, work_id, title, author, tradition, category, language,
+            license, attribution, chapters_count, paragraphs_count
+        ) VALUES (
+            ?, 'baptist:confession-1689', 'Confissão 1689',
+            'Batistas', 'Reformada', 'Confissões', 'pt', 'Public Domain',
+            'Antigo', 1, 1
+        )
+    """, (doc_id,))
+    cur = memory_db.execute("SELECT license FROM theological_documents WHERE id = ?", (doc_id,))
+    assert cur.fetchone()[0] == "Public Domain"
+
+    # Reimporta o arquivo atualizado que possui license CC-BY-4.0
+    doc, _ = import_neuu_classic(baptist_json, memory_db)
+    assert doc.id == doc_id
+    assert doc.license == "CC-BY-4.0"
+
+    # Valida no banco relacional se a licença persistida foi de fato atualizada
+    cur = memory_db.execute("SELECT license FROM theological_documents WHERE id = ?", (doc_id,))
+    assert cur.fetchone()[0] == "CC-BY-4.0"
+
+
+def test_search_theological_returns_accurate_chapter_and_paragraph_numbers(memory_db):
+    """Garante que o resultado FTS5 recupera o chapter_num e paragraph_num reais do texto."""
+    root = Path(__file__).resolve().parent.parent
+    baptist_json = root / "corpus" / "approved" / "theology" / "baptist-confession-1689.json"
+    import_neuu_classic(baptist_json, memory_db)
+
+    # Busca termo específico do Capítulo 4 ("ordenança")
+    res = search_theological(memory_db, "Batismo ordenança")
+    assert len(res) > 0
+    top = res[0]
+    # O resultado deve refletir o Capítulo 4 e o parágrafo real retornado pelo bm25
+    assert top.chapter_num == 4
+    assert top.paragraph_num in (2, 3)
+    assert "Da Igreja e dos Sacramentos" in top.chapter_title
+    assert f"§{top.paragraph_num}" in top.citation
+
+
