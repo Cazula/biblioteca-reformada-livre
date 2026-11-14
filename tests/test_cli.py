@@ -92,3 +92,23 @@ def test_cli_sync_rejects_unsafe_source_id(tmp_path: Path, monkeypatch, capsys):
     assert ret == 1
     captured = capsys.readouterr()
     assert "REJEITADO" in captured.out
+
+
+def test_cli_theology_import_and_search(tmp_path: Path, capsys):
+    test_db = tmp_path / "test_theol_cli.sqlite3"
+    root = Path(__file__).resolve().parent.parent
+    athanasius_json = root / "data" / "sources" / "neuu-classics" / "data" / "02_translated" / "pt" / "athanasius" / "incarnation.json"
+
+    if not athanasius_json.exists():
+        pytest.skip("Dataset local de Atanásio não presente")
+
+    ret_imp = main(["--db", str(test_db), "import-theology", "--path", str(athanasius_json)])
+    assert ret_imp == 0
+    captured_imp = capsys.readouterr()
+    assert "Atanásio" in captured_imp.out
+
+    ret_search = main(["--db", str(test_db), "search-theology", "Verbo"])
+    assert ret_search == 0
+    captured_search = capsys.readouterr()
+    assert "Atanásio" in captured_search.out
+    assert "Encarnação" in captured_search.out

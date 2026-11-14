@@ -55,6 +55,53 @@ class Document:
     source_url: Optional[str] = None
 
 
+@dataclass
+class TheologicalDocument:
+    """Representa uma obra teológica ou patrística completa com metadados editoriais."""
+    id: str
+    work_id: str
+    title: str
+    author: str
+    tradition: str
+    category: str
+    language: str
+    license: str
+    attribution: str
+    chapters_count: int = 0
+    paragraphs_count: int = 0
+
+
+@dataclass
+class TheologicalParagraph:
+    """Representa um parágrafo/seção indexável de uma obra teológica."""
+    id: str
+    document_id: str
+    work_id: str
+    chapter_num: int
+    chapter_title: str
+    paragraph_num: int
+    paragraph_id: str
+    text: str
+    language: str
+    citation: str
+
+
+@dataclass
+class TheologicalSearchResult:
+    """Resultado estruturado de busca textual em obras teológicas FTS5."""
+    document_id: str
+    work_id: str
+    author: str
+    title: str
+    chapter_num: int
+    chapter_title: str
+    paragraph_num: int
+    citation: str
+    text: str
+    rank: float = 0.0
+
+
+
 CANONICAL_BOOKS: List[Dict[str, Any]] = [
     # Antigo Testamento (39)
     {"id": "GEN", "name": "Gênesis", "abbr": "Gn", "testament": "AT", "order": 1},
