@@ -151,10 +151,16 @@ def import_neuu_classic(
         if raw_paras:
             valid_chapters += 1
             for p_idx, p in enumerate(raw_paras, start=1):
-                p_text = p.get("text", "").strip()
+                if isinstance(p, str):
+                    p_text = p.strip()
+                elif isinstance(p, dict):
+                    p_text = (p.get("text") or "").strip()
+                else:
+                    p_text = ""
+
                 if not p_text:
                     continue
-                p_id = p.get("id") or f"p{p_idx}"
+                p_id = p.get("id") if isinstance(p, dict) else f"p{p_idx}"
                 citation = f"{author_pt}, {title_pt}, {full_ch_title}, §{p_idx}"
                 paragraphs.append(TheologicalParagraph(
                     id=f"{doc_id}:ch{ch_num}:p{p_idx}",

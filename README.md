@@ -33,7 +33,7 @@ cd biblioteca-reformada-livre
 # 2. Crie o ambiente virtual e instale as dependências
 uv sync
 
-# 3. Execute a suíte de testes (47 testes unitários e de integração)
+# 3. Execute a suíte de testes (70 testes unitários e de integração)
 uv run pytest tests -v
 ```
 
@@ -49,19 +49,25 @@ Verifica se todos os arquivos do corpus aprovado correspondem aos seus hashes SH
 bref audit
 ```
 
-### 2. Ingestão da Bíblia Livre (66 Livros)
+### 2. Avaliação Formal de Obras Candidatas à Inclusão
+Executa a auditoria editorial e jurídica em todas as obras do catálogo, identificando quais estão aptas a entrar no corpus ou retidas em quarentena:
+```powershell
+bref evaluate-candidates
+```
+
+### 3. Ingestão da Bíblia Livre (66 Livros)
 Importa os 31.100 versículos canônicos da Bíblia Livre (CC BY 3.0 BR) para o SQLite local e reconstrói o índice FTS5:
 ```powershell
 bref import-blivre
 ```
 
-### 3. Ingestão do Acervo Teológico Histórico
+### 4. Ingestão do Acervo Teológico Histórico
 Importa as obras teológicas clássicas aprovadas (Patrística, Escolástica, Reformada, Puritana e Luterana):
 ```powershell
 bref import-theology --all
 ```
 
-### 4. Busca Textual Bíblica (FTS5)
+### 5. Busca Textual Bíblica (FTS5)
 Permite buscar termos, expressões compostas e prefixos com citações canônicas de livro, capítulo e versículo:
 ```powershell
 bref search "no princípio criou Deus"
@@ -79,7 +85,7 @@ Consulta: "no princípio criou Deus" | Resultados encontrados: 1
 ================================================================================
 ```
 
-### 5. Busca Textual Teológica Clássica
+### 6. Busca Textual Teológica Clássica
 Realiza busca de texto completo nas obras teológicas com citações estruturadas de autor, obra, capítulo e parágrafo:
 ```powershell
 bref search-theology "inferno"
@@ -101,7 +107,7 @@ Consulta: "inferno" | Resultados encontrados: 3
 ================================================================================
 ```
 
-### 6. Estatísticas do Acervo
+### 7. Estatísticas do Acervo
 ```powershell
 bref stats
 ```
@@ -125,7 +131,8 @@ bref stats
 
 ## 🛡️ Governança e Transparência
 
-- **CI / GitHub Actions:** A suíte de 47 testes passa 100% no ambiente local. O diagnóstico factual de provisionamento pré-runner no GitHub está documentado em [docs/CI-BLOCKER.md](docs/CI-BLOCKER.md).
+- **Matriz de Inclusão e Critérios de Promoção:** Análise detalhada obra a obra em [docs/QA-INCLUSION.md](docs/QA-INCLUSION.md).
+- **CI / GitHub Actions:** A suíte de 70 testes passa 100% no ambiente local. O diagnóstico factual com as anotações exatas da API do GitHub e o desbloqueio financeiro da conta estão documentados em [docs/CI-BLOCKER.md](docs/CI-BLOCKER.md).
 - **Inventário Completo de Obras:** Metadados e catálogo geral com status de quarentena em [catalog/works.json](catalog/works.json).
 - **Status Executivo do Projeto:** Relatório detalhado em [docs/STATUS.md](docs/STATUS.md).
 

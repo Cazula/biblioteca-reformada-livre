@@ -349,6 +349,62 @@ def cmd_search_theology(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_evaluate_candidates(args: argparse.Namespace) -> int:
+    """Avalia obras candidatas do catálogo contra os critérios de promoção canônica."""
+    from biblioteca_reformada.promotion import audit_all_catalog_works
+    root = find_project_root()
+    works_file = root / "catalog" / "works.json"
+
+    print("=" * 80)
+    print(f"AVALIAÇÃO DE CRITÉRIOS DE PROMOÇÃO EDITORIAL — BIBLIOTECA REFORMADA LIVRE v{__version__}")
+    print("=" * 80)
+    print(f"Catálogo de Obras: {works_file}")
+    print("-" * 80)
+
+    evaluations = audit_all_catalog_works(works_file)
+
+    approved_count = 0
+    approved_excerpt_count = 0
+    approved_abridged_count = 0
+    candidate_count = 0
+    rejected_count = 0
+
+    for ev in evaluations:
+        status_tag = f"[{ev.status.value.upper()}]"
+        print(f"{status_tag:22} {ev.work_id}")
+        meta = ev.metadata_snapshot
+        print(f"                       Título:  {meta.get('title')}")
+        print(f"                       Licença: {meta.get('license')} | Tipo: {meta.get('text_type')} | Completude: {meta.get('completeness')}")
+        if ev.reasons:
+            for r in ev.reasons:
+                print(f"                       [IMPEDIMENTO] {r}")
+        if ev.warnings:
+            for w in ev.warnings:
+                print(f"                       [AVISO] {w}")
+        print()
+
+        if ev.status.value == "approved":
+            approved_count += 1
+        elif ev.status.value == "approved-excerpt":
+            approved_excerpt_count += 1
+        elif ev.status.value == "approved-abridged":
+            approved_abridged_count += 1
+        elif ev.status.value == "candidate-eligible":
+            candidate_count += 1
+        else:
+            rejected_count += 1
+
+    print("-" * 80)
+    print(f"Total de obras avaliadas:            {len(evaluations)}")
+    print(f"Obras Aprovadas Integrais (Corpus):  {approved_count}")
+    print(f"Obras Aprovadas Extratos (Corpus):   {approved_excerpt_count}")
+    print(f"Obras Aprovadas Abreviadas (Corpus): {approved_abridged_count}")
+    print(f"Candidatas Elegíveis (Catálogo):     {candidate_count}")
+    print(f"Obras Retidas / Rejeitadas:          {rejected_count}")
+    print("=" * 80)
+    return 0
+
+
 
 def main(argv: Optional[List[str]] = None) -> int:
     """Ponto de entrada principal da CLI."""
@@ -402,6 +458,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     p_search_theol.add_argument("query", nargs="+", help="Termo ou expressão para buscar.")
     p_search_theol.add_argument("--limit", type=int, default=20, help="Limite máximo de resultados (padrão: 20).")
     p_search_theol.set_defaults(func=cmd_search_theology)
+
+    # evaluate-candidates
+    p_eval = subparsers.add_parser("evaluate-candidates", help="Avalia critérios de promoção editorial das obras do catálogo.")
+    p_eval.set_defaults(func=cmd_evaluate_candidates)
 
     args = parser.parse_args(argv)
     if not hasattr(args, "func"):
