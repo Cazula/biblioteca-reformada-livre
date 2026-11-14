@@ -1,63 +1,61 @@
-"""Importador de acervos bíblicos auditados para o SQLite relacional."""
+"""Módulo de importação e normalização rigorosa de textos canônicos aprovados para SQLite."""
 
 import json
-import sqlite3
+import hashlib
+import re
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Set, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Set
+import sqlite3
 
-from biblioteca_reformada.models import Verse
-from biblioteca_reformada.licenses import (
-    compute_sha256,
-    is_valid_sha256,
-    load_manifest,
-    ALLOWED_DISTRIBUTION_LICENSES
-)
-from biblioteca_reformada.db import insert_verses_batch
+from biblioteca_reformada.models import Verse, CANONICAL_BOOKS, resolve_canonical_book
+from biblioteca_reformada.db import insert_verses_batch, reindex_fts
+from biblioteca_reformada.licenses import load_manifest, ALLOWED_DISTRIBUTION_LICENSES
 
-PROTESTANT_CANON = {
-    # Antigo Testamento (39)
-    "Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio",
-    "Josué", "Juízes", "Rute", "1 Samuel", "2 Samuel",
-    "1 Reis", "2 Reis", "1 Crônicas", "2 Crônicas", "Esdras",
-    "Neemias", "Ester", "Jó", "Salmos", "Provérbios",
-    "Eclesiastes", "Cânticos", "Isaías", "Jeremias", "Lamentações",
-    "Ezequiel", "Daniel", "Oséias", "Joel", "Amós",
-    "Obadias", "Jonas", "Miquéias", "Naum", "Habacuque",
-    "Sofonias", "Ageu", "Zacarias", "Malaquias",
-    # Novo Testamento (27)
-    "Mateus", "Marcos", "Lucas", "João", "Atos",
-    "Romanos", "1 Coríntios", "2 Coríntios", "Gálatas", "Efésios",
-    "Filipenses", "Colossenses", "1 Tessalonicenses", "2 Tessalonicenses",
-    "1 Timóteo", "2 Timóteo", "Tito", "Filemom", "Hebreus",
-    "Tiago", "1 Pedro", "2 Pedro", "1 João", "2 João",
-    "3 João", "Judas", "Apocalipse"
-}
+HEX64_REGEX = re.compile(r"^[0-9a-fA-F]{64}$")
 
-OLD_TESTAMENT = set(list(PROTESTANT_CANON)[:39])
-NEW_TESTAMENT = set(list(PROTESTANT_CANON)[39:])
+
+def is_valid_sha256(val: Any) -> bool:
+    """Verifica se o valor é uma string estritamente composta por 64 dígitos hexadecimais."""
+    return isinstance(val, str) and bool(HEX64_REGEX.match(val.strip()))
 
 
 class CorpusImportError(Exception):
-    """Exceção levantada quando um arquivo de corpus viola integridade, formato ou licença."""
+    """Exceção levantada em caso de falha de validação ou importação de corpus."""
     pass
 
 
 def parse_book_json(file_path: Path, expected_hash: Optional[str] = None) -> List[Verse]:
-    """Lê, valida a integridade do hash e normaliza um livro da Bíblia Livre em JSON."""
+    """Valida e converte um arquivo JSON canônico em lista de objetos Verse com validação rigorosa.
+    
+    Lê o arquivo uma única vez como bytes, confere o hash SHA-256 e decodifica o JSON
+    a partir do mesmo buffer em memória.
+    """
     target = file_path.resolve()
     if not target.exists() or not target.is_file():
-        raise CorpusImportError(f"Arquivo não encontrado: {target}")
+        raise CorpusImportError(f"Arquivo não encontrado ou inválido: {target}")
 
-    if expected_hash:
-        actual_hash = compute_sha256(target)
-        if actual_hash.strip().lower() != expected_hash.strip().lower():
+    # Validação do hash esperado caso fornecido
+    if expected_hash is not None:
+        if not is_valid_sha256(expected_hash):
             raise CorpusImportError(
-                f"Corrupção de integridade em {target.name}: hash obtido '{actual_hash}' diverge do manifesto '{expected_hash}'"
+                f"Hash SHA-256 esperado inválido: '{expected_hash}' (deve ter exatamente 64 dígitos hexadecimais)"
+            )
+
+    # Leitura atômica de buffer único em memória
+    raw_bytes = target.read_bytes()
+    actual_hash = hashlib.sha256(raw_bytes).hexdigest()
+
+    if expected_hash is not None:
+        if actual_hash.lower() != expected_hash.strip().lower():
+            raise CorpusImportError(
+                f"Hash SHA-256 adulterado para {target.name}: esperado {expected_hash}, obtido {actual_hash}"
             )
 
     try:
-        with open(target, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        content_str = raw_bytes.decode("utf-8")
+        data = json.loads(content_str)
+    except UnicodeDecodeError as ude:
+        raise CorpusImportError(f"Arquivo {target} não é UTF-8 válido: {ude}")
     except json.JSONDecodeError as jde:
         raise CorpusImportError(f"Arquivo JSON corrompido em {target}: {jde}")
 
@@ -69,29 +67,35 @@ def parse_book_json(file_path: Path, expected_hash: Optional[str] = None) -> Lis
     if not isinstance(book_raw, str) or not book_raw.strip():
         raise CorpusImportError(f"Campo 'book' ausente ou inválido em {target}")
 
-    canonical_book_name = book_raw.strip()
-    if canonical_book_name not in PROTESTANT_CANON:
+    canonical_info = resolve_canonical_book(book_raw)
+    if not canonical_info:
+        raise CorpusImportError(f"Livro não reconhecido no cânon protestante de 66 livros: '{book_raw}' em {target}")
+
+    canonical_book_name = canonical_info["name"]
+    expected_testament = canonical_info["testament"]
+
+    version_id = data.get("version")
+    if not isinstance(version_id, str) or not version_id.strip():
+        raise CorpusImportError(f"Campo 'version' ausente ou inválido em {target}")
+
+    testament = data.get("testament")
+    if testament not in ("AT", "NT"):
+        raise CorpusImportError(f"Campo 'testament' deve ser 'AT' ou 'NT' em {target}")
+
+    if testament != expected_testament:
         raise CorpusImportError(
-            f"Livro '{canonical_book_name}' em {target} não pertence ao cânon bíblico protestante aceito."
+            f"Incompatibilidade canônica de testamento para '{canonical_book_name}' em {target}: "
+            f"esperado '{expected_testament}', obtido '{testament}'"
         )
 
-    version_id = data.get("version", "BLIVRE")
-    declared_testament = data.get("testament")
-    expected_testament = "AT" if canonical_book_name in OLD_TESTAMENT else "NT"
-
-    if declared_testament and declared_testament != expected_testament:
-        raise CorpusImportError(
-            f"Incompatibilidade testamentária para {canonical_book_name}: declarado {declared_testament}, esperado {expected_testament}"
-        )
-
-    chapters = data.get("chapters")
-    if not isinstance(chapters, list) or not chapters:
-        raise CorpusImportError(f"Nenhum capítulo encontrado no livro {canonical_book_name} ({target})")
+    raw_chapters = data.get("chapters")
+    if not isinstance(raw_chapters, list) or not raw_chapters:
+        raise CorpusImportError(f"Nenhum capítulo válido encontrado em {target}")
 
     verses: List[Verse] = []
     seen_intra_book: Set[Tuple[int, int]] = set()
 
-    for ch_idx, chap in enumerate(chapters, start=1):
+    for ch_idx, chap in enumerate(raw_chapters, start=1):
         if not isinstance(chap, dict):
             raise CorpusImportError(f"Estrutura inválida no capítulo {ch_idx} de {target}: deve ser um objeto JSON")
 
@@ -136,8 +140,8 @@ def parse_book_json(file_path: Path, expected_hash: Optional[str] = None) -> Lis
                 chapter=ch_num,
                 verse=v_num,
                 text=text.strip(),
-                version_id=version_id,
-                testament=expected_testament
+                version_id=version_id.strip(),
+                testament=testament
             ))
 
     return verses
@@ -218,27 +222,25 @@ def import_approved_corpus(
             key = (v.book, v.chapter, v.verse, v.version_id)
             if key in seen_global_keys:
                 raise CorpusImportError(
-                    f"Conflito de integridade: versículo {v.book} {v.chapter}:{v.verse} ({v.version_id}) "
-                    f"duplicado entre os arquivos '{seen_global_keys[key]}' e '{target_file.name}'."
+                    f"Colisão/duplicação canônica detectada no corpus: versículo "
+                    f"'{v.book} {v.chapter}:{v.verse}' (versão {v.version_id}) aparece repetido."
                 )
-            seen_global_keys[key] = target_file.name
+            seen_global_keys[key] = v.text
 
         parsed_batches.append(verses)
 
-    # Fase 2: Gravação atômica real em transação isolada
+    # Fase 2: Gravação atômica em lote com transação gerenciada externamente
     total_imported = 0
-    with conn:
-        for batch in parsed_batches:
-            try:
-                # sync_fts=False durante o loop de lote; reindexação atômica ao final
-                inserted = insert_verses_batch(conn, batch, sync_fts=False, in_transaction=True)
+    try:
+        with conn:
+            for verses in parsed_batches:
+                inserted = insert_verses_batch(conn, verses, sync_fts=False, in_transaction=True)
                 total_imported += inserted
-            except Exception as exc:
-                # Transação com 'with conn:' executa rollback automático em exceção não capturada
-                raise CorpusImportError(f"Falha operacional ao persistir lote no banco de dados: {exc}") from exc
 
-        # Reconstrói FTS5 atomicamente dentro da mesma transação
-        from biblioteca_reformada.db import reindex_fts
-        reindex_fts(conn, in_transaction=True)
+            # Sincroniza o índice FTS5 uma única vez em lote ao concluir a transação
+            reindex_fts(conn, in_transaction=True)
+
+    except Exception as exc:
+        raise CorpusImportError(f"Falha atômica durante a importação do corpus: {exc}") from exc
 
     return total_imported

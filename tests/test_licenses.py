@@ -171,3 +171,4 @@ def test_audit_rejects_sibling_prefix_traversal(tmp_path: Path):
     rep = audit_corpus(c_dir, manifest_path=m_file)
     assert rep.failed_files == 1
     assert rep.all_passed is False
+

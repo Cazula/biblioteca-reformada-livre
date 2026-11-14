@@ -86,7 +86,7 @@ def test_cli_sync_rejects_unsafe_source_id(tmp_path: Path, monkeypatch, capsys):
 
     monkeypatch.setattr("biblioteca_reformada.cli.find_project_root", lambda: fake_root)
 
-    args = argparse.Namespace(fetch=True, dry_run=False, source=None)
+    args = argparse.Namespace(fetch=True, dry_run=False)
     ret = cmd_sync(args)
     # Deve falhar ou rejeitar a fonte
     assert ret == 1
@@ -168,3 +168,6 @@ def test_cli_sync_rejects_unsafe_url_scheme(tmp_path: Path, monkeypatch, capsys)
     captured = capsys.readouterr()
     assert "REJEITADO" in captured.out
     assert "Esquema de URL não seguro" in captured.out
+
+
+

@@ -193,3 +193,4 @@ def resolve_canonical_book(name_or_abbr: str) -> Optional[Dict[str, Any]]:
     if lower in BOOK_BY_ABBR:
         return BOOK_BY_ABBR[lower]
     return None
+

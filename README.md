@@ -128,3 +128,4 @@ bref stats
 - **CI / GitHub Actions:** A suíte de 47 testes passa 100% no ambiente local. O diagnóstico factual de provisionamento pré-runner no GitHub está documentado em [docs/CI-BLOCKER.md](docs/CI-BLOCKER.md).
 - **Inventário Completo de Obras:** Metadados e catálogo geral com status de quarentena em [catalog/works.json](catalog/works.json).
 - **Status Executivo do Projeto:** Relatório detalhado em [docs/STATUS.md](docs/STATUS.md).
+

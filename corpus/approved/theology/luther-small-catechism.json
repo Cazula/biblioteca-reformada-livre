@@ -1,16 +1,19 @@
 {
   "metadata": {
     "canonical_id": "luther:small-catechism",
-    "title": "O Catecismo Menor",
-    "title_en": "The Small Catechism",
+    "title": "O Catecismo Menor (Seleção Doutrinária)",
+    "title_en": "The Small Catechism (Selected Doctrinal Summary)",
     "title_de": "Der Kleine Katechismus",
     "author_full": "Martinho Lutero",
     "author_short": "Martinho Lutero",
     "author_pt": "Martinho Lutero",
     "year": 1529,
     "language": "pt",
-    "rights": "Public Domain",
-    "license": "Public Domain",
+    "rights": "CC-BY-4.0 (Paráfrase/Seleção); Edição original histórica de 1529 em Domínio Público universal",
+    "license": "CC-BY-4.0",
+    "completeness": "excerpt",
+    "text_type": "paraphrase",
+    "translation_method": "experimental-synthesis",
     "tradition": "Luterana Magistral",
     "subjects": [
       "Teologia Luterana",
@@ -18,8 +21,10 @@
       "Doutrina Cristã",
       "Reforma Protestante"
     ],
-    "source_edition": "Wittenberg, 1529 (Domínio Público)",
-    "human_reviewed": false
+    "source_edition": "Wittenberg (1529); Livro de Concórdia (1580, Domínio Público universal); Gutenberg eBook #16012",
+    "provenance_url": "https://www.gutenberg.org/ebooks/16012",
+    "human_reviewed": false,
+    "editorial_notes": "Seleção e paráfrase doutrinária condensada em português (31 seções essenciais: Decálogo, Credo, Pai Nosso, Sacramentos) do Catecismo Menor de 1529. Não substitui o texto integral do Livro de Concórdia de 1580 em Domínio Público. Licenciado sob CC BY 4.0 para pesquisa."
   },
   "chapters": [
     {

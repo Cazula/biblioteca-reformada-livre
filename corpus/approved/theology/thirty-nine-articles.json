@@ -1,15 +1,18 @@
 {
   "metadata": {
     "canonical_id": "anglican:thirty-nine-articles",
-    "title": "Os Trinta e Nove Artigos de Religião",
-    "title_en": "The Thirty-Nine Articles of Religion",
+    "title": "Os Trinta e Nove Artigos de Religião (Seleção Doutrinária)",
+    "title_en": "The Thirty-Nine Articles of Religion (Selected Articles)",
     "author_full": "Convocação de Cantuária e Bispos da Igreja da Inglaterra",
     "author_short": "Convocação Anglicana",
     "author_pt": "Igreja da Inglaterra (1571)",
     "year": 1571,
     "language": "pt",
-    "rights": "Public Domain",
-    "license": "Public Domain",
+    "rights": "CC-BY-4.0 (Paráfrase/Seleção); Edição histórica original de 1571 em Domínio Público universal",
+    "license": "CC-BY-4.0",
+    "completeness": "excerpt",
+    "text_type": "paraphrase",
+    "translation_method": "experimental-synthesis",
     "tradition": "Anglicana Reformada",
     "subjects": [
       "Confissões de Fé",
@@ -17,8 +20,10 @@
       "Anglicanismo Histórico",
       "Doutrina Protestante"
     ],
-    "source_edition": "Book of Common Prayer, 1571/1662 (Domínio Público)",
-    "human_reviewed": false
+    "source_edition": "Book of Common Prayer (1571/1662, Domínio Público universal)",
+    "provenance_url": "https://www.churchofengland.org/prayer-and-worship/worship-texts-and-resources/book-common-prayer/articles-religion",
+    "human_reviewed": false,
+    "editorial_notes": "Seleção e extrato em português de 19 artigos representativos dos 39 Artigos da Igreja da Inglaterra (1571). Não contém a totalidade dos 39 artigos originais. Licenciado sob CC BY 4.0 para pesquisa."
   },
   "chapters": [
     {

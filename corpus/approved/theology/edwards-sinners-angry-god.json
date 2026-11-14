@@ -1,15 +1,18 @@
 {
   "metadata": {
     "canonical_id": "edwards:sinners-in-the-hands-of-an-angry-god",
-    "title": "Pecadores nas Mãos de um Deus Irado",
-    "title_en": "Sinners in the Hands of an Angry God",
+    "title": "Pecadores nas Mãos de um Deus Irado (Extrato Selecionado)",
+    "title_en": "Sinners in the Hands of an Angry God (Selected Excerpt)",
     "author_full": "Jonathan Edwards",
     "author_short": "Jonathan Edwards",
     "author_pt": "Jonathan Edwards",
     "year": 1741,
     "language": "pt",
-    "rights": "Public Domain",
-    "license": "Public Domain",
+    "rights": "CC-BY-4.0 (Paráfrase/Seleção); Edição original de 1741 em Domínio Público universal",
+    "license": "CC-BY-4.0",
+    "completeness": "excerpt",
+    "text_type": "paraphrase",
+    "translation_method": "experimental-synthesis",
     "tradition": "Puritana Reformada",
     "subjects": [
       "Teologia Reformada",
@@ -17,8 +20,10 @@
       "Homilética Puritana",
       "Primeiro Grande Despertar"
     ],
-    "source_edition": "Publicado originalmente em Boston por S. Kneeland e T. Green, 1741 (Domínio Público)",
-    "human_reviewed": false
+    "source_edition": "Edição original histórica publicada em Boston por S. Kneeland e T. Green (1741, Domínio Público universal); Gutenberg eBook #34632",
+    "provenance_url": "https://www.gutenberg.org/ebooks/34632",
+    "human_reviewed": false,
+    "editorial_notes": "Extrato e seleção condensada em português (20 parágrafos doutrinários representativos) do sermão histórico proferido em 1741 sobre Dt 32:35. Não constitui tradução integral nem substitui a edição de referência em Domínio Público universal (Gutenberg #34632). Licenciado sob CC BY 4.0 para pesquisa."
   },
   "chapters": [
     {

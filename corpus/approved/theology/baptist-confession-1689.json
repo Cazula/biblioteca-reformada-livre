@@ -1,15 +1,18 @@
 {
   "metadata": {
     "canonical_id": "baptist:confession-1689",
-    "title": "A Confissão de Fé Batista de 1689",
-    "title_en": "The 1689 London Baptist Confession of Faith",
+    "title": "A Confissão de Fé Batista de 1689 (Extrato de 4 Capítulos)",
+    "title_en": "The 1689 London Baptist Confession of Faith (Selected Chapters)",
     "author_full": "Ministros e Mensageiros de Igrejas Batistas Particulares",
     "author_short": "Assembleia Batista de Londres (1689)",
     "author_pt": "Batistas Particulares (1689)",
     "year": 1689,
     "language": "pt",
-    "rights": "Public Domain",
-    "license": "Public Domain",
+    "rights": "CC-BY-4.0 (Paráfrase/Seleção); Edição original histórica de 1689 em Domínio Público universal",
+    "license": "CC-BY-4.0",
+    "completeness": "excerpt",
+    "text_type": "paraphrase",
+    "translation_method": "experimental-synthesis",
     "tradition": "Batista Particular Reformada",
     "subjects": [
       "Confissões de Fé",
@@ -17,8 +20,10 @@
       "Batismo de Crentes",
       "Puritanismo Batista"
     ],
-    "source_edition": "Londres, 1689 (Domínio Público)",
-    "human_reviewed": false
+    "source_edition": "Londres (1689, Domínio Público universal)",
+    "provenance_url": "https://www.reformedreader.org/ccc/1689lbc/1689bcf.htm",
+    "human_reviewed": false,
+    "editorial_notes": "Extrato representativo condensado em português de 4 capítulos essenciais (Escritura, Trindade, Decreto/Salvação, Igreja/Sacramentos) dos 32 capítulos da Segunda Confissão Londrina de 1689. Não contém os 32 capítulos completos nem as referências bíblicas integrais. Licenciado sob CC BY 4.0 para pesquisa."
   },
   "chapters": [
     {

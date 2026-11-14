@@ -132,3 +132,4 @@ def test_search_fts_missing_table_propagates_error(memory_db):
     with pytest.raises(sqlite3.OperationalError) as exc_info:
         search_fts(memory_db, "qualquer termo")
     assert "no such table" in str(exc_info.value).lower()
+

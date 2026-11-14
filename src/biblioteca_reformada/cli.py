@@ -184,83 +184,60 @@ def cmd_import_blivre(args: argparse.Namespace) -> int:
     db_path = get_db_path(args.db)
 
     print("=" * 80)
-    print("IMPORTAÇÃO DO CORPUS APROVADO PARA SQLITE + FTS5")
+    print("INGESTÃO DA BÍBLIA LIVRE (BLIVRE) PARA SQLITE")
+    print(f"Origem do Corpus Aprovado: {corpus_approved_dir}")
+    print(f"Banco de Dados Destino:    {db_path}")
     print("=" * 80)
-    print(f"Diretório do Corpus: {corpus_approved_dir}")
-    print(f"Banco de dados alvo: {db_path}\n")
 
     conn = init_db(db_path)
     try:
-        total_verses = import_approved_corpus(corpus_approved_dir, conn)
-        print(f"Sucesso! Total de versículos importados/atualizados: {total_verses}")
-        print("=" * 80)
-        return 0
+        imported = import_approved_corpus(corpus_approved_dir, conn)
+        print(f"[OK] Versículos importados do corpus aprovado e auditado: {imported}")
     except CorpusImportError as cie:
-        print(f"[ERRO DE INTEGRIDADE] {cie}")
-        print("=" * 80)
-        return 1
-    except Exception as exc:
-        print(f"[ERRO CRÍTICO] Falha durante a importação: {exc}")
-        print("=" * 80)
-        return 1
-    finally:
+        print(f"[ERRO CRÍTICO] Importação abortada: {cie}")
         conn.close()
+        return 1
+
+    # Reindexação FTS5 garantida
+    indexed = reindex_fts(conn)
+    print(f"[OK] Índice FTS5 atualizado com {indexed} versículos.")
+    conn.close()
+    return 0
 
 
 def cmd_index(args: argparse.Namespace) -> int:
-    """Reconstrói integralmente o índice FTS5 a partir da tabela relacional de versículos."""
-    root = find_project_root()
+    """Reconstrói o índice de busca textual FTS5."""
     db_path = get_db_path(args.db)
-
-    print("=" * 80)
-    print("REINDEXAÇÃO DO MOTOR DE BUSCA FTS5")
-    print("=" * 80)
-    print(f"Banco de dados: {db_path}\n")
-
+    print(f"Reconstruindo índice FTS5 no banco de dados: {db_path}...")
     conn = init_db(db_path)
-    try:
-        total_indexed = reindex_fts(conn)
-        print(f"Sucesso! Total de registros indexados no FTS5: {total_indexed}")
-        print("=" * 80)
-        return 0
-    except Exception as exc:
-        print(f"[ERRO CRÍTICO] Falha durante a reindexação: {exc}")
-        print("=" * 80)
-        return 1
-    finally:
-        conn.close()
+    count = reindex_fts(conn)
+    conn.close()
+    print(f"[OK] Índice FTS5 reconstruído com sucesso! Total de registros indexados: {count}")
+    return 0
 
 
 def cmd_search(args: argparse.Namespace) -> int:
-    """Pesquisa textual FTS5 com suporte a frases e operadores booleanos."""
-    query_str = " ".join(args.query) if isinstance(args.query, list) else str(args.query)
-    if not query_str.strip():
-        print("[ERRO] Informe o termo de busca. Exemplo: bref search 'princípio criou'")
+    """Executa consulta textual FTS5 e exibe citações exatas."""
+    query = " ".join(args.query) if isinstance(args.query, list) else str(args.query)
+    if not query.strip():
+        print("[ERRO] Informe o termo de busca. Exemplo: bref search 'verdade'")
         return 1
 
-    limit = max(1, args.limit) if args.limit > 0 else 20
+    safe_limit = max(1, args.limit) if args.limit > 0 else 20
     db_path = get_db_path(args.db)
     conn = init_db(db_path)
-
-    results = execute_search(conn, query_str, limit=limit)
-    print("=" * 80)
-    print("BIBLIOTECA REFORMADA LIVRE — BUSCA TEXTUAL FTS5")
-    print(f"Consulta: \"{query_str}\" | Resultados encontrados: {len(results)}")
-    print("=" * 80)
-
-    output = format_search_results(results)
+    results = execute_search(conn, query, limit=safe_limit)
+    output = format_search_results(query, results)
     print(output)
-    print("=" * 80)
     conn.close()
     return 0
 
 
 def cmd_stats(args: argparse.Namespace) -> int:
-    """Exibe estatísticas de acervo, livros canônicos e integridade do banco."""
+    """Exibe estatísticas consolidadas do acervo e banco de dados."""
     root = find_project_root()
     db_path = get_db_path(args.db)
     conn = init_db(db_path)
-
     stats = get_stats(conn)
     conn.close()
 

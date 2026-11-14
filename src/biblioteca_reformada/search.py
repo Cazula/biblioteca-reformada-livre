@@ -33,3 +33,4 @@ def format_search_results(query: str, results: List[SearchResult]) -> str:
 
     lines.append(sep)
     return "\n".join(lines)
+

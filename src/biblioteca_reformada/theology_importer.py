@@ -1,4 +1,4 @@
-"""Importador de obras teológicas clássicas e indexador FTS5."""
+"""Módulo de importação e busca FTS5 de obras teológicas e patrísticas clássicas."""
 
 import json
 import sqlite3
@@ -13,7 +13,7 @@ from biblioteca_reformada.models import (
 
 
 def init_theology_tables(conn: sqlite3.Connection) -> None:
-    """Cria tabelas relacionais e a tabela virtual FTS5 para documentos teológicos."""
+    """Cria tabelas relacionais e índice virtual FTS5 para literatura teológica."""
     with conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS theological_documents (
@@ -23,11 +23,11 @@ def init_theology_tables(conn: sqlite3.Connection) -> None:
                 author TEXT NOT NULL,
                 tradition TEXT NOT NULL,
                 category TEXT NOT NULL,
-                language TEXT NOT NULL DEFAULT 'pt',
+                language TEXT NOT NULL,
                 license TEXT NOT NULL,
                 attribution TEXT NOT NULL,
-                chapters_count INTEGER NOT NULL DEFAULT 0,
-                paragraphs_count INTEGER NOT NULL DEFAULT 0,
+                chapters_count INTEGER DEFAULT 0,
+                paragraphs_count INTEGER DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
@@ -38,19 +38,19 @@ def init_theology_tables(conn: sqlite3.Connection) -> None:
                 document_id TEXT NOT NULL,
                 work_id TEXT NOT NULL,
                 chapter_num INTEGER NOT NULL,
-                chapter_title TEXT NOT NULL,
+                chapter_title TEXT,
                 paragraph_num INTEGER NOT NULL,
-                paragraph_id TEXT NOT NULL,
+                paragraph_id TEXT,
                 text TEXT NOT NULL,
-                language TEXT NOT NULL DEFAULT 'pt',
+                language TEXT NOT NULL,
                 citation TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (document_id) REFERENCES theological_documents(id)
             )
         """)
 
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_theol_lookup ON theological_paragraphs(work_id, chapter_num)")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_theol_doc ON theological_paragraphs(document_id)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_theol_para_doc ON theological_paragraphs(document_id)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_theol_para_work ON theological_paragraphs(work_id)")
 
         conn.execute("""
             CREATE VIRTUAL TABLE IF NOT EXISTS theological_fts USING fts5(
@@ -59,7 +59,7 @@ def init_theology_tables(conn: sqlite3.Connection) -> None:
                 author,
                 title,
                 chapter_title,
-                citation,
+                citation UNINDEXED,
                 text,
                 tokenize = 'unicode61 remove_diacritics 2'
             )
@@ -71,7 +71,11 @@ def import_neuu_classic(
     conn: sqlite3.Connection,
     tradition_override: Optional[str] = None
 ) -> Tuple[TheologicalDocument, int]:
-    """Importa uma obra teológica do dataset clássico para SQLite e FTS5."""
+    """Importa uma obra teológica do dataset NEUU Classics (formato JSON estruturado).
+    
+    Suporta tanto a versão traduzida para português (02_translated/pt/) quanto a versão em inglês (01_parsed/en/).
+    Garante integridade transacional e indexação FTS5 automática.
+    """
     target = file_path.resolve()
     if not target.exists() or not target.is_file():
         raise FileNotFoundError(f"Arquivo de obra clássica não encontrado: {target}")
@@ -226,19 +230,13 @@ def import_neuu_classic(
     return doc, len(paragraphs)
 
 
-def _escape_fts_theol_token(token: str) -> str:
-    """Escapa aspas duplas internas para token FTS5."""
-    clean = token.replace('"', '""')
-    return f'"{clean}"'
-
-
 def search_theological(
     conn: sqlite3.Connection,
     query: str,
     limit: int = 20,
     offset: int = 0
 ) -> List[TheologicalSearchResult]:
-    """Busca textual FTS5 na literatura teológica com ranking BM25 e sanitização."""
+    """Busca textual FTS5 em documentos teológicos com ranking bm25 e escape defensivo."""
     clean_query = query.strip()
     if not clean_query:
         return []
@@ -251,14 +249,14 @@ def search_theological(
         safe_term = clean_query.replace('"', '""')
         fts_query = f'"{safe_term}"*'
     elif all(not any(c in t for c in ('"', '*', 'NEAR', 'AND', 'OR', 'NOT')) for t in terms):
-        fts_query = " ".join([_escape_fts_theol_token(t) for t in terms])
+        clean_terms = [t.replace('"', '""') for t in terms]
+        fts_query = " ".join([f'"{ct}"' for ct in clean_terms])
     else:
         fts_query = clean_query
 
     try:
         cursor = conn.execute("""
-            SELECT document_id, work_id, author, title, chapter_title, citation, text,
-                   bm25(theological_fts) as rank
+            SELECT document_id, work_id, author, title, chapter_title, citation, text, bm25(theological_fts) as rank
             FROM theological_fts
             WHERE theological_fts MATCH ?
             ORDER BY rank
@@ -269,18 +267,14 @@ def search_theological(
         err_msg = str(op_err).lower()
         if any(kw in err_msg for kw in ("syntax error", "fts5:", "malformed", "parse error", "match", "unterminated")):
             escaped_literal = clean_query.replace('"', '""')
-            try:
-                cursor = conn.execute("""
-                    SELECT document_id, work_id, author, title, chapter_title, citation, text,
-                           bm25(theological_fts) as rank
-                    FROM theological_fts
-                    WHERE theological_fts MATCH ?
-                    ORDER BY rank
-                    LIMIT ? OFFSET ?
-                """, (f'"{escaped_literal}"', safe_limit, safe_offset))
-                rows = cursor.fetchall()
-            except sqlite3.OperationalError:
-                return []
+            cursor = conn.execute("""
+                SELECT document_id, work_id, author, title, chapter_title, citation, text, bm25(theological_fts) as rank
+                FROM theological_fts
+                WHERE theological_fts MATCH ?
+                ORDER BY rank
+                LIMIT ? OFFSET ?
+            """, (f'"{escaped_literal}"', safe_limit, safe_offset))
+            rows = cursor.fetchall()
         else:
             raise
 
@@ -291,9 +285,12 @@ def search_theological(
             work_id=row["work_id"],
             author=row["author"],
             title=row["title"],
-            chapter_title=row["chapter_title"],
+            chapter_num=1,
+            chapter_title=row["chapter_title"] or "",
+            paragraph_num=1,
             citation=row["citation"],
             text=row["text"],
             rank=float(row["rank"])
         ))
     return results
+

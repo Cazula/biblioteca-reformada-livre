@@ -170,3 +170,4 @@ def rebuild_manifest():
 
 if __name__ == "__main__":
     rebuild_manifest()
+
