@@ -1,5 +1,6 @@
 """Testes da interface de linha de comando (CLI)."""
 
+import json
 from pathlib import Path
 import pytest
 
@@ -57,3 +58,37 @@ def test_cli_import_and_search(tmp_path: Path, capsys):
     # Estatísticas
     ret_stats = main(["--db", str(test_db), "stats"])
     assert ret_stats == 0
+
+
+def test_cli_sync_rejects_unsafe_source_id(tmp_path: Path, monkeypatch, capsys):
+    from biblioteca_reformada.cli import cmd_sync
+    import argparse
+
+    fake_root = tmp_path / "proj"
+    fake_root.mkdir()
+    cat_dir = fake_root / "catalog"
+    cat_dir.mkdir()
+    cat_file = cat_dir / "sources.json"
+
+    # Catálogo contendo id malicioso com path traversal
+    bad_catalog = {
+        "sources": [
+            {
+                "id": "../../malicious_escape",
+                "name": "Fonte Maliciosa",
+                "repo_url": "https://github.com/exemplo/malicioso.git",
+                "status": "quarantine",
+                "declared_license": "MIT"
+            }
+        ]
+    }
+    cat_file.write_text(json.dumps(bad_catalog), encoding="utf-8")
+
+    monkeypatch.setattr("biblioteca_reformada.cli.find_project_root", lambda: fake_root)
+
+    args = argparse.Namespace(fetch=True, dry_run=False)
+    ret = cmd_sync(args)
+    # Deve falhar ou rejeitar a fonte
+    assert ret == 1
+    captured = capsys.readouterr()
+    assert "REJEITADO" in captured.out
