@@ -99,13 +99,56 @@ def audit_corpus(corpus_dir: Path, manifest_path: Optional[Path] = None, catalog
             report.catalog_approved_count = sum(1 for s in sources if s.get("status") in ("approved", "approved-for-reference"))
             report.catalog_quarantine_count = sum(1 for s in sources if "quarantine" in s.get("status", "") or "local" in s.get("status", ""))
 
-    manifest = load_manifest(manifest_file)
+    try:
+        manifest = load_manifest(manifest_file)
+    except Exception as exc:
+        report.failed_files += 1
+        report.file_results.append(FileAuditResult(
+            path=manifest_file.name,
+            sha256_expected="",
+            sha256_actual="",
+            license="",
+            is_license_allowed=False,
+            is_hash_matching=False,
+            exists=manifest_file.exists(),
+            error=f"Falha ao decodificar manifesto: {exc}"
+        ))
+        return report
+
+    if not isinstance(manifest, dict) or not isinstance(manifest.get("files"), list):
+        report.failed_files += 1
+        report.file_results.append(FileAuditResult(
+            path=manifest_file.name,
+            sha256_expected="",
+            sha256_actual="",
+            license="",
+            is_license_allowed=False,
+            is_hash_matching=False,
+            exists=True,
+            error="Estrutura do manifesto corrompida: 'files' deve ser uma lista"
+        ))
+        return report
+
     entries = manifest.get("files", [])
     report.total_files = len(entries)
 
     manifested_paths: Set[str] = set()
 
     for entry in entries:
+        if not isinstance(entry, dict):
+            report.failed_files += 1
+            report.file_results.append(FileAuditResult(
+                path="<entrada_invalida>",
+                sha256_expected="",
+                sha256_actual="",
+                license="",
+                is_license_allowed=False,
+                is_hash_matching=False,
+                exists=False,
+                error="Entrada do manifesto deve ser um objeto JSON"
+            ))
+            continue
+
         rel_path = entry.get("path", "")
         expected_hash = entry.get("sha256", "")
         declared_license = entry.get("license", "")
@@ -163,7 +206,7 @@ def audit_corpus(corpus_dir: Path, manifest_path: Optional[Path] = None, catalog
             report.file_results.append(res)
             continue
 
-        if not target_file.exists():
+        if not target_file.exists() or not target_file.is_file():
             res = FileAuditResult(
                 path=rel_path,
                 sha256_expected=expected_hash,
@@ -171,15 +214,31 @@ def audit_corpus(corpus_dir: Path, manifest_path: Optional[Path] = None, catalog
                 license=declared_license,
                 is_license_allowed=declared_license in ALLOWED_DISTRIBUTION_LICENSES,
                 is_hash_matching=False,
-                exists=False,
-                error="Arquivo não encontrado em disco"
+                exists=target_file.exists(),
+                error="Arquivo regular não encontrado em disco (ou é um diretório)"
             )
             report.failed_files += 1
             report.file_results.append(res)
             continue
 
-        actual_hash = compute_sha256(target_file)
-        hash_ok = (actual_hash.lower() == expected_hash.lower())
+        try:
+            actual_hash = compute_sha256(target_file)
+        except OSError as ose:
+            res = FileAuditResult(
+                path=rel_path,
+                sha256_expected=expected_hash,
+                sha256_actual="",
+                license=declared_license,
+                is_license_allowed=declared_license in ALLOWED_DISTRIBUTION_LICENSES,
+                is_hash_matching=False,
+                exists=True,
+                error=f"Falha de leitura no arquivo: {ose}"
+            )
+            report.failed_files += 1
+            report.file_results.append(res)
+            continue
+
+        hash_ok = (actual_hash.strip().lower() == expected_hash.strip().lower())
         license_ok = (declared_license in ALLOWED_DISTRIBUTION_LICENSES)
 
         res = FileAuditResult(

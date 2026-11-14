@@ -100,42 +100,90 @@ def test_import_approved_corpus():
     conn.close()
 
 
-def test_import_approved_corpus_atomic_rollback(tmp_path: Path):
-    """Verifica que se o 2º arquivo falhar, o 1º é revertido e verses/verses_fts ficam limpos."""
+def test_parse_book_json_non_dict_structures(tmp_path: Path):
+    # Raiz não é objeto
+    f1 = tmp_path / "root_list.json"
+    f1.write_text('[]', encoding="utf-8")
+    with pytest.raises(CorpusImportError) as exc1:
+        parse_book_json(f1)
+    assert "raiz deve ser um objeto" in str(exc1.value).lower()
+
+    # Capítulo é null ou não é objeto
+    f2 = tmp_path / "null_chapter.json"
+    f2.write_text('{"book": "3 João", "version": "BLIVRE", "testament": "NT", "chapters": [null]}', encoding="utf-8")
+    with pytest.raises(CorpusImportError) as exc2:
+        parse_book_json(f2)
+    assert "estrutura inválida no capítulo" in str(exc2.value).lower()
+
+    # Versículo é int ou não é objeto
+    f3 = tmp_path / "int_verse.json"
+    f3.write_text('{"book": "3 João", "version": "BLIVRE", "testament": "NT", "chapters": [{"chapter": 1, "verses": [1]}]}', encoding="utf-8")
+    with pytest.raises(CorpusImportError) as exc3:
+        parse_book_json(f3)
+    assert "estrutura inválida no versículo" in str(exc3.value).lower()
+
+
+def test_import_approved_corpus_atomic_rollback(tmp_path: Path, monkeypatch):
+    """Verifica atomicidade real na fase de gravação: falha no 2º arquivo reverte tudo e preserva dados preexistentes."""
+    import biblioteca_reformada.importer
+    import sqlite3
+
     c_dir = tmp_path / "approved"
     c_dir.mkdir()
 
-    # Livro 1 válido
+    # Livro 1 válido: 3 João (1 versículo para teste)
     b1 = c_dir / "livro1.json"
     b1_content = '{"book": "3 João", "version": "BLIVRE", "testament": "NT", "chapters": [{"chapter": 1, "verses": [{"verse": 1, "text": "Gaio amado"}]}]}'.encode("utf-8")
     b1.write_bytes(b1_content)
     h1 = hashlib.sha256(b1_content).hexdigest()
 
-    # Livro 2 inválido (hash adulterado)
+    # Livro 2 válido em formato e hash: Judas
     b2 = c_dir / "livro2.json"
     b2_content = '{"book": "Judas", "version": "BLIVRE", "testament": "NT", "chapters": [{"chapter": 1, "verses": [{"verse": 1, "text": "Judas servo"}]}]}'.encode("utf-8")
     b2.write_bytes(b2_content)
+    h2 = hashlib.sha256(b2_content).hexdigest()
 
     manifest = {
         "version": "1.0.0",
         "files": [
             {"path": "livro1.json", "sha256": h1, "license": "CC-BY-3.0-BR"},
-            {"path": "livro2.json", "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "license": "CC-BY-3.0-BR"}
+            {"path": "livro2.json", "sha256": h2, "license": "CC-BY-3.0-BR"}
         ]
     }
     m_file = c_dir / "manifest.json"
     m_file.write_text(json.dumps(manifest), encoding="utf-8")
 
+    # Prepara banco com dados preexistentes
     conn = init_db(":memory:")
+    pre_verses = [
+        Verse(book="Gênesis", chapter=1, verse=1, text="No princípio criou Deus", version_id="BLIVRE", testament="AT")
+    ]
+    insert_verses_batch(conn, pre_verses, sync_fts=True)
+    assert conn.execute("SELECT COUNT(*) FROM verses").fetchone()[0] == 1
+    assert conn.execute("SELECT COUNT(*) FROM verses_fts").fetchone()[0] == 1
+
+    # Induz falha operacional durante a gravação do 2º livro (após o 1º ter sido processado)
+    original_insert = biblioteca_reformada.importer.insert_verses_batch
+
+    def faulty_insert(connection, verses, sync_fts=True, in_transaction=False):
+        if verses and verses[0].book == "Judas":
+            raise sqlite3.OperationalError("Simulação de falha de I/O de disco durante o segundo lote")
+        return original_insert(connection, verses, sync_fts=sync_fts, in_transaction=in_transaction)
+
+    monkeypatch.setattr("biblioteca_reformada.importer.insert_verses_batch", faulty_insert)
+
     with pytest.raises(CorpusImportError):
         import_approved_corpus(c_dir, conn, manifest_path=m_file)
 
-    # Atomicidade estrita: nenhum versículo foi gravado
+    # Comprova rollback atômico: o 1º arquivo (3 João) NÃO foi gravado e os dados preexistentes estão intocados
     cur = conn.execute("SELECT COUNT(*) FROM verses")
-    assert cur.fetchone()[0] == 0
+    assert cur.fetchone()[0] == 1  # Apenas Gênesis 1:1
+
+    cur_check = conn.execute("SELECT COUNT(*) FROM verses WHERE book='3 João'")
+    assert cur_check.fetchone()[0] == 0
 
     cur_fts = conn.execute("SELECT COUNT(*) FROM verses_fts")
-    assert cur_fts.fetchone()[0] == 0
+    assert cur_fts.fetchone()[0] == 1
     conn.close()
 
 

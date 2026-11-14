@@ -59,6 +59,9 @@ def parse_book_json(file_path: Path, expected_hash: Optional[str] = None) -> Lis
     except json.JSONDecodeError as jde:
         raise CorpusImportError(f"Arquivo JSON corrompido em {target}: {jde}")
 
+    if not isinstance(data, dict):
+        raise CorpusImportError(f"Estrutura JSON inválida em {target}: raiz deve ser um objeto")
+
     # Validação do livro e conformidade com o cânon bíblico protestante
     book_raw = data.get("book")
     if not isinstance(book_raw, str) or not book_raw.strip():
@@ -93,6 +96,9 @@ def parse_book_json(file_path: Path, expected_hash: Optional[str] = None) -> Lis
     seen_intra_book: Set[Tuple[int, int]] = set()
 
     for ch_idx, chap in enumerate(raw_chapters, start=1):
+        if not isinstance(chap, dict):
+            raise CorpusImportError(f"Estrutura inválida no capítulo {ch_idx} de {target}: deve ser um objeto JSON")
+
         ch_num = chap.get("chapter")
         # type is int estrito (rejeita booleano como True/False que herdam de int)
         if type(ch_num) is not int or ch_num <= 0:
@@ -106,6 +112,11 @@ def parse_book_json(file_path: Path, expected_hash: Optional[str] = None) -> Lis
             raise CorpusImportError(f"Capítulo {ch_num} sem versículos em {target}")
 
         for v_idx, v in enumerate(raw_verses, start=1):
+            if not isinstance(v, dict):
+                raise CorpusImportError(
+                    f"Estrutura inválida no versículo {v_idx} do capítulo {ch_num} de {target}: deve ser um objeto JSON"
+                )
+
             v_num = v.get("verse")
             if type(v_num) is not int or v_num <= 0:
                 raise CorpusImportError(
@@ -155,16 +166,26 @@ def import_approved_corpus(
     if not manifest_file.exists():
         raise CorpusImportError(f"Manifesto de proveniência não encontrado: {manifest_file}")
 
-    manifest = load_manifest(manifest_file)
-    entries = manifest.get("files", [])
-    if not entries:
-        raise CorpusImportError("Manifesto vazio: nenhuma obra aprovada para importação.")
+    try:
+        manifest = load_manifest(manifest_file)
+    except Exception as exc:
+        raise CorpusImportError(f"Falha ao ler ou decodificar o manifesto {manifest_file}: {exc}") from exc
+
+    if not isinstance(manifest, dict):
+        raise CorpusImportError(f"Estrutura do manifesto inválida em {manifest_file}: raiz deve ser um objeto JSON")
+
+    entries = manifest.get("files")
+    if not isinstance(entries, list) or not entries:
+        raise CorpusImportError("Manifesto vazio ou inválido: nenhuma obra aprovada para importação.")
 
     parsed_batches: List[List[Verse]] = []
     seen_global_keys: Dict[Tuple[str, int, int, str], str] = {}
 
     # Fase 1: Validação rigorosa de todos os arquivos em memória antes de tocar no banco
     for entry in entries:
+        if not isinstance(entry, dict):
+            raise CorpusImportError("Entrada inválida no manifesto: cada item deve ser um objeto JSON.")
+
         rel_path = entry.get("path")
         if not rel_path or not isinstance(rel_path, str) or not rel_path.strip():
             raise CorpusImportError("Entrada no manifesto com campo 'path' ausente ou inválido.")

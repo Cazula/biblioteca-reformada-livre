@@ -49,6 +49,54 @@ def test_insert_and_fts_search(memory_db):
     assert results_comp[0].book == "Gênesis"
 
 
+def test_conflict_resolution_and_update(memory_db):
+    # Insere versículo inicial
+    v1 = [Verse(book="Romanos", chapter=1, verse=1, text="Texto original", version_id="BLIVRE")]
+    insert_verses_batch(memory_db, v1)
+    res1 = search_fts(memory_db, "original")
+    assert len(res1) == 1
+
+    # Reinsere com texto corrigido
+    v2 = [Verse(book="Romanos", chapter=1, verse=1, text="Texto corrigido e atualizado", version_id="BLIVRE")]
+    insert_verses_batch(memory_db, v2)
+
+    # Verifica que o texto foi atualizado no relacional e no FTS5 sem duplicatas
+    res_old = search_fts(memory_db, "original")
+    assert len(res_old) == 0
+
+    res_new = search_fts(memory_db, "corrigido")
+    assert len(res_new) == 1
+    assert res_new[0].text == "Texto corrigido e atualizado"
+
+    cur = memory_db.execute("SELECT COUNT(*) FROM verses WHERE book='Romanos' AND chapter=1 AND verse=1")
+    assert cur.fetchone()[0] == 1
+
+
+def test_search_fts_unbalanced_quotes(memory_db):
+    verses = [
+        Verse(book="3 João", chapter=1, verse=3, text="Testificaram da tua verdade", version_id="BLIVRE"),
+    ]
+    insert_verses_batch(memory_db, verses)
+
+    # Consulta com aspas desbalanceadas não deve lançar OperationalError
+    res1 = search_fts(memory_db, 'verdade"')
+    assert isinstance(res1, list)
+
+    res2 = search_fts(memory_db, '""verdade')
+    assert isinstance(res2, list)
+
+
+def test_search_fts_negative_limit(memory_db):
+    verses = [
+        Verse(book="3 João", chapter=1, verse=1, text="Gaio amado", version_id="BLIVRE"),
+    ]
+    insert_verses_batch(memory_db, verses)
+
+    # Limite negativo é normalizado para o padrão positivo
+    res = search_fts(memory_db, "amado", limit=-5)
+    assert len(res) == 1
+
+
 def test_reindex_fts(memory_db):
     verses = [
         Verse(book="Romanos", chapter=8, verse=1, text="Portanto, agora nenhuma condenação há para os que estão em Cristo Jesus.", version_id="BLIVRE"),
@@ -75,3 +123,12 @@ def test_stats(memory_db):
     assert stats["total_books"] == 1
     assert stats["fts_indexed_rows"] == 2
     assert stats["verses_by_version"].get("BLIVRE") == 2
+
+
+def test_search_fts_missing_table_propagates_error(memory_db):
+    import sqlite3
+    # Dropar tabela FTS para simular indisponibilidade
+    memory_db.execute("DROP TABLE verses_fts")
+    with pytest.raises(sqlite3.OperationalError) as exc_info:
+        search_fts(memory_db, "qualquer termo")
+    assert "no such table" in str(exc_info.value).lower()
