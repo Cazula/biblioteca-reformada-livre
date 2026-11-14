@@ -16,6 +16,11 @@ from biblioteca_reformada.db import init_db, get_connection, get_db_path, reinde
 from biblioteca_reformada.importer import import_approved_corpus, CorpusImportError
 from biblioteca_reformada.licenses import audit_corpus
 from biblioteca_reformada.search import execute_search, format_search_results
+from biblioteca_reformada.theology_importer import (
+    import_neuu_classic,
+    search_theological,
+    init_theology_tables
+)
 
 
 def find_project_root() -> Path:
@@ -253,6 +258,70 @@ def cmd_stats(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_import_theology(args: argparse.Namespace) -> int:
+    """Importa obras teológicas e patrísticas para a base SQLite e FTS5."""
+    root = find_project_root()
+    db_path = get_db_path(args.db)
+    conn = init_db(db_path)
+    init_theology_tables(conn)
+
+    target_file = Path(args.path) if args.path else (
+        root / "data" / "sources" / "neuu-classics" / "data" / "02_translated" / "pt" / "athanasius" / "incarnation.json"
+    )
+
+    if not target_file.exists():
+        print(f"[ERRO] Arquivo de obra teológica não encontrado: {target_file}")
+        conn.close()
+        return 1
+
+    try:
+        doc, count = import_neuu_classic(target_file, conn)
+        print("=" * 80)
+        print("IMPORTAÇÃO DE OBRA TEOLÓGICA CONCLUÍDA")
+        print("=" * 80)
+        print(f"Obra:            {doc.title}")
+        print(f"Autor:           {doc.author}")
+        print(f"Tradição:        {doc.tradition}")
+        print(f"Capítulos:       {doc.chapters_count}")
+        print(f"Parágrafos FTS5: {count}")
+        print(f"Licença:         {doc.license}")
+        print("=" * 80)
+    except Exception as exc:
+        print(f"[ERRO CRÍTICO] Falha na importação teológica: {exc}")
+        conn.close()
+        return 1
+
+    conn.close()
+    return 0
+
+
+def cmd_search_theology(args: argparse.Namespace) -> int:
+    """Busca em obras teológicas clássicas com citação canônica exata."""
+    query = " ".join(args.query) if isinstance(args.query, list) else str(args.query)
+    if not query.strip():
+        print("[ERRO] Informe o termo de busca teológica. Exemplo: bref search-theology 'Verbo'")
+        return 1
+
+    safe_limit = max(1, args.limit) if args.limit > 0 else 20
+    db_path = get_db_path(args.db)
+    conn = init_db(db_path)
+    init_theology_tables(conn)
+
+    results = search_theological(conn, query, limit=safe_limit)
+    print("=" * 80)
+    print("BIBLIOTECA REFORMADA LIVRE — BUSCA TEOLÓGICA FTS5")
+    print(f"Consulta: \"{query}\" | Resultados encontrados: {len(results)}")
+    print("=" * 80)
+    for idx, r in enumerate(results, start=1):
+        print(f"[{idx}] {r.citation}")
+        print(f"    \"{r.text}\"")
+        print()
+    print("=" * 80)
+    conn.close()
+    return 0
+
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Ponto de entrada principal da CLI."""
     parser = argparse.ArgumentParser(
@@ -293,6 +362,17 @@ def main(argv: Optional[List[str]] = None) -> int:
     # stats
     p_stats = subparsers.add_parser("stats", help="Exibe estatísticas de acervo e conformidade.")
     p_stats.set_defaults(func=cmd_stats)
+
+    # import-theology
+    p_imp_theol = subparsers.add_parser("import-theology", help="Importa obras teológicas clássicas para a base FTS5.")
+    p_imp_theol.add_argument("--path", type=str, default=None, help="Caminho do arquivo JSON da obra.")
+    p_imp_theol.set_defaults(func=cmd_import_theology)
+
+    # search-theology
+    p_search_theol = subparsers.add_parser("search-theology", help="Pesquisa em obras teológicas com citação exata.")
+    p_search_theol.add_argument("query", nargs="+", help="Termo ou expressão para buscar.")
+    p_search_theol.add_argument("--limit", type=int, default=20, help="Limite máximo de resultados (padrão: 20).")
+    p_search_theol.set_defaults(func=cmd_search_theology)
 
     args = parser.parse_args(argv)
     if not hasattr(args, "func"):
