@@ -86,7 +86,7 @@ def test_cli_sync_rejects_unsafe_source_id(tmp_path: Path, monkeypatch, capsys):
 
     monkeypatch.setattr("biblioteca_reformada.cli.find_project_root", lambda: fake_root)
 
-    args = argparse.Namespace(fetch=True, dry_run=False)
+    args = argparse.Namespace(fetch=True, dry_run=False, source=None)
     ret = cmd_sync(args)
     # Deve falhar ou rejeitar a fonte
     assert ret == 1
@@ -112,3 +112,59 @@ def test_cli_theology_import_and_search(tmp_path: Path, capsys):
     captured_search = capsys.readouterr()
     assert "Atanásio" in captured_search.out
     assert "Encarnação" in captured_search.out
+
+
+def test_cli_theology_import_all_and_search_multiple(tmp_path: Path, capsys):
+    test_db = tmp_path / "test_all_theology.sqlite3"
+
+    # Importa todas as obras do corpus aprovado
+    ret_imp = main(["--db", str(test_db), "import-theology", "--all"])
+    assert ret_imp == 0
+    captured_imp = capsys.readouterr()
+    assert "IMPORTAÇÃO DE OBRAS TEOLÓGICAS" in captured_imp.out
+    assert "obras importadas" in captured_imp.out
+
+    # Busca em Jonathan Edwards
+    ret_search1 = main(["--db", str(test_db), "search-theology", "inferno"])
+    assert ret_search1 == 0
+    captured1 = capsys.readouterr()
+    assert "Jonathan Edwards" in captured1.out or "Inglaterra" in captured1.out
+
+    # Busca em Lutero
+    ret_search2 = main(["--db", str(test_db), "search-theology", "Mandamento"])
+    assert ret_search2 == 0
+    captured2 = capsys.readouterr()
+    assert "Martinho Lutero" in captured2.out
+
+
+def test_cli_sync_rejects_unsafe_url_scheme(tmp_path: Path, monkeypatch, capsys):
+    from biblioteca_reformada.cli import cmd_sync
+    import argparse
+
+    fake_root = tmp_path / "proj_bad_url"
+    fake_root.mkdir()
+    cat_dir = fake_root / "catalog"
+    cat_dir.mkdir()
+    cat_file = cat_dir / "sources.json"
+
+    bad_catalog = {
+        "sources": [
+            {
+                "id": "unsafe_url_source",
+                "name": "Fonte com URL Perigosa",
+                "repo_url": "file:///etc/passwd",
+                "status": "quarantine",
+                "declared_license": "MIT"
+            }
+        ]
+    }
+    cat_file.write_text(json.dumps(bad_catalog), encoding="utf-8")
+
+    monkeypatch.setattr("biblioteca_reformada.cli.find_project_root", lambda: fake_root)
+
+    args = argparse.Namespace(fetch=True, dry_run=False, source=None)
+    ret = cmd_sync(args)
+    assert ret == 1
+    captured = capsys.readouterr()
+    assert "REJEITADO" in captured.out
+    assert "Esquema de URL não seguro" in captured.out

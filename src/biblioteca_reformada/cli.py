@@ -1,158 +1,206 @@
-"""Interface de linha de comando (CLI) da Biblioteca Reformada Livre."""
+"""Interface de Linha de Comando (CLI) da Biblioteca Reformada Livre."""
 
 import argparse
-import sys
 import json
+import os
+import re
+import subprocess
+import sys
 from pathlib import Path
 from typing import List, Optional
 
+SAFE_SOURCE_ID_REGEX = re.compile(r"^[a-zA-Z0-9_-]+$")
+
 from biblioteca_reformada import __version__
-from biblioteca_reformada.licenses import audit_approved_corpus, ALLOWED_LICENSES
-from biblioteca_reformada.importer import import_approved_corpus
+from biblioteca_reformada.db import init_db, get_connection, get_db_path, reindex_fts, get_stats
+from biblioteca_reformada.importer import import_approved_corpus, CorpusImportError
+from biblioteca_reformada.licenses import audit_corpus
+from biblioteca_reformada.search import execute_search, format_search_results
 from biblioteca_reformada.theology_importer import (
-    init_theology_tables,
     import_neuu_classic,
     search_theological,
+    init_theology_tables
 )
-from biblioteca_reformada.db import init_db, get_connection, get_db_path, reindex_fts, search_fts, get_stats
-from biblioteca_reformada.search import format_search_results
 
 
 def find_project_root() -> Path:
-    """Localiza a raiz do projeto procurando por pyproject.toml."""
-    current = Path.cwd()
-    for parent in [current] + list(current.parents):
-        if (parent / "pyproject.toml").exists():
-            return parent
-    return current
+    """Retorna o diretório raiz do projeto."""
+    current = Path(__file__).resolve().parent
+    while current.parent != current:
+        if (current / "catalog" / "sources.json").exists() or (current / "pyproject.toml").exists():
+            return current
+        current = current.parent
+    return Path.cwd()
 
 
 def cmd_audit(args: argparse.Namespace) -> int:
-    """Executa auditoria criptográfica e jurídica do corpus aprovado."""
+    """Executa auditoria de licenças e validação bidirecional de hashes SHA-256."""
     root = find_project_root()
     corpus_dir = root / "corpus" / "approved"
-    manifest_path = corpus_dir / "manifest.json"
+    catalog_file = root / "catalog" / "sources.json"
 
     print("=" * 80)
-    print(f"AUDITORIA JURÍDICA E CRIPTOGRÁFICA — BIBLIOTECA REFORMADA LIVRE v{__version__}")
+    print(f"AUDITORIA DE LICENÇAS E PROVENIÊNCIA — BIBLIOTECA REFORMADA LIVRE v{__version__}")
     print("=" * 80)
-    print(f"Diretório auditado: {corpus_dir}")
-    print(f"Manifesto de proveniência: {manifest_path}\n")
+    print(f"Diretório do Corpus: {corpus_dir}")
+    print(f"Catálogo de Fontes:  {catalog_file}")
+    print("-" * 80)
 
-    res = audit_approved_corpus(corpus_dir, manifest_path)
+    report = audit_corpus(corpus_dir, catalog_path=catalog_file)
 
-    print(f"Status geral:          {'[PASSOU]' if res.valid else '[FALHOU]'}")
-    print(f"Arquivos verificados:  {res.total_files}")
-    print(f"Erros de SHA-256:      {len(res.mismatches)}")
-    print(f"Arquivos órfãos:       {len(res.unmanifested_files)}")
-    print(f"Arquivos ausentes:     {len(res.missing_files)}")
-    print(f"Licenças reprovadas:   {len(res.disallowed_licenses)}")
+    for item in report.file_results:
+        status_tag = "[OK]  " if item.passed else "[FALHA]"
+        print(f"{status_tag} {item.path}")
+        print(f"       Licença: {item.license} (Permitida: {item.is_license_allowed})")
+        print(f"       SHA-256 Esperado: {item.sha256_expected}")
+        print(f"       SHA-256 Real:     {item.sha256_actual}")
+        if item.error:
+            print(f"       Erro: {item.error}")
+        print()
 
-    if res.disallowed_licenses:
-        print("\n[ALERTA DE LICENÇA REPROVADA]")
-        for f, lic in res.disallowed_licenses:
-            print(f"  - {f}: {lic}")
-
-    if res.mismatches:
-        print("\n[ALERTA DE CORRUPÇÃO DE HASH]")
-        for f, exp, act in res.mismatches:
-            print(f"  - {f}\n      Esperado: {exp}\n      Obtido:   {act}")
-
-    if res.missing_files:
-        print("\n[ALERTA DE ARQUIVOS AUSENTES DO MANIFESTO]")
-        for f in res.missing_files:
-            print(f"  - {f}")
-
-    if res.unmanifested_files:
-        print("\n[ALERTA DE ARQUIVOS ÓRFÃOS NÃO AUDITADOS]")
-        for f in res.unmanifested_files:
-            print(f"  - {f}")
-
+    print("-" * 80)
+    print(f"Total de arquivos no manifesto: {report.total_files}")
+    print(f"Arquivos aprovados:            {report.passed_files}")
+    print(f"Arquivos com divergência:      {report.failed_files}")
+    print(f"Arquivos órfãos sem manifesto: {report.unmanifested_files}")
+    print(f"Fontes no catálogo global:     {report.catalog_sources_count}")
+    print(f"Fontes aprovadas no catálogo:  {report.catalog_approved_count}")
+    print(f"Fontes retidas em quarentena:  {report.catalog_quarantine_count}")
     print("=" * 80)
-    return 0 if res.valid else 1
+
+    if report.all_passed:
+        print("[SUCESSO] Todos os arquivos do corpus foram verificados e auditados com êxito!")
+        return 0
+    else:
+        print("[ERRO] Auditoria reprovada: foram detectadas inconsistências no corpus.")
+        return 1
 
 
 def cmd_sync(args: argparse.Namespace) -> int:
-    """Executa o download controlado ou dry-run das fontes upstream catalogadas."""
+    """Executa sincronização ou simulação (dry-run) de clonagem das fontes upstream."""
     root = find_project_root()
-    catalog_path = root / "catalog" / "sources.json"
+    catalog_file = root / "catalog" / "sources.json"
+    sources_dir = root / "data" / "sources"
 
-    if not catalog_path.exists():
-        print(f"[ERRO] Catálogo de fontes não encontrado: {catalog_path}")
+    if not catalog_file.exists():
+        print(f"[ERRO] Arquivo de catálogo não encontrado: {catalog_file}")
         return 1
 
-    with open(catalog_path, "r", encoding="utf-8") as f:
+    with open(catalog_file, "r", encoding="utf-8") as f:
         catalog = json.load(f)
 
     sources = catalog.get("sources", [])
-    if args.source:
+    if getattr(args, "source", None):
         sources = [s for s in sources if s.get("id") == args.source]
-        if not sources:
-            print(f"[ERRO] Fonte '{args.source}' não encontrada no catálogo.")
-            return 1
 
-    is_dry_run = args.dry_run or not args.fetch
+    # Exclusão mútua e precedência do dry-run
+    is_fetch_mode = bool(args.fetch and not args.dry_run)
+    mode_label = "EXECUÇÃO DE CLONAGEM (--fetch)" if is_fetch_mode else "SIMULAÇÃO (DRY-RUN)"
 
     print("=" * 80)
-    print(f"SINCRONIZAÇÃO DE FONTES EXTERNAS {'[DRY-RUN]' if is_dry_run else '[FETCH REAL]'}")
+    print(f"SINCRONIZAÇÃO DE FONTES UPSTREAM — {mode_label}")
+    print(f"Destino local (ignorado no Git): {sources_dir}")
     print("=" * 80)
-    print(f"Total de fontes catalogadas para processamento: {len(sources)}\n")
+
+    sources_dir.mkdir(parents=True, exist_ok=True)
+    success_count = 0
+    fail_count = 0
+    skipped_count = 0
 
     for s in sources:
-        src_id = s.get("id")
-        repo = s.get("repo")
-        upstream = s.get("upstream")
-        status = s.get("distribution_status")
-        license_dec = s.get("license_declared")
+        sid = s.get("id")
+        name = s.get("name")
+        repo_url = s.get("repo_url")
+        status = s.get("status")
+        license_decl = s.get("declared_license")
 
-        print(f"-> [{src_id}] {repo}")
-        print(f"   URL Upstream:   {upstream}")
-        print(f"   Licença:        {license_dec}")
-        print(f"   Status Jurídico: {status}")
+        print(f"\n[Fonte: {sid}] {name}")
+        print(f"  URL:     {repo_url or 'N/A (Metadados institucionais)'}")
+        print(f"  Licença: {license_decl} | Status: {status}")
 
-        if is_dry_run:
-            print("   Ação:           SIMULAÇÃO (nenhum dado baixado). Use --fetch para clonagem shallow.")
-        else:
-            if status != "approved":
-                print("   Ação:           IGNORADO PARA O REPOSITÓRIO PÚBLICO (Retido em data/sources isolada).")
+        if not repo_url:
+            print("  -> Ignorado para clone: fonte institucional sem repositório Git público.")
+            skipped_count += 1
+            continue
+
+        # Validação estrita de URL para evitar injeção de parâmetros no git
+        if not (repo_url.startswith("https://") or repo_url.startswith("http://") or repo_url.startswith("git://")):
+            print(f"  [REJEITADO] Esquema de URL não seguro para clone: '{repo_url}'")
+            fail_count += 1
+            continue
+
+        # Validação estrita de identificador seguro e confinamento de destino
+        if not sid or not isinstance(sid, str) or not SAFE_SOURCE_ID_REGEX.match(sid):
+            print(f"  [REJEITADO] ID de fonte inválido ou inseguro: '{sid}'")
+            fail_count += 1
+            continue
+
+        resolved_sources = sources_dir.resolve()
+        target_path = (sources_dir / sid).resolve()
+        if not target_path.is_relative_to(resolved_sources) or target_path == resolved_sources:
+            print(f"  [REJEITADO] Violação de confinamento: destino '{target_path}' fora de '{resolved_sources}'")
+            fail_count += 1
+            continue
+
+        if target_path.exists():
+            print(f"  -> Já clonado em disco: {target_path}")
+            skipped_count += 1
+            continue
+
+        if not is_fetch_mode:
+            print(f"  -> [DRY-RUN] Seria clonado via: git clone --depth 1 {repo_url} {target_path}")
+            continue
+
+        # Execução de clone seguro com profundidade 1 e bloqueio de LFS pesado
+        print(f"  -> Executando clone shallow (--depth 1)...")
+        cmd = ["git", "clone", "--depth", "1", repo_url, str(target_path)]
+        env = {**os.environ, "GIT_LFS_SKIP_SMUDGE": "1", "GIT_TERMINAL_PROMPT": "0"}
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=120, env=env, stdin=subprocess.DEVNULL)
+            if res.returncode == 0:
+                print(f"  [OK] Clone concluído com sucesso em {target_path}")
+                success_count += 1
             else:
-                print("   Ação:           CLONAGEM RASA / ATUALIZAÇÃO SEGURA EM data/sources/...")
-        print()
+                err_msg = res.stderr.strip() or res.stdout.strip()
+                print(f"  [FALHA] Falha no clone (código {res.returncode}): {err_msg}")
+                fail_count += 1
+        except subprocess.TimeoutExpired:
+            print(f"  [FALHA] Timeout de 120s atingido ao tentar clonar {repo_url}")
+            fail_count += 1
+        except Exception as ex:
+            print(f"  [FALHA] Exceção ao clonar: {ex}")
+            fail_count += 1
 
+    print("\n" + "=" * 80)
+    print(f"Resumo da Sincronização: {success_count} clonados, {skipped_count} ignorados/existentes, {fail_count} falhas.")
     print("=" * 80)
-    if is_dry_run:
-        print("Dry-run concluído. Para executar a clonagem rasa real das fontes, use: bref sync --fetch")
-    else:
-        print("Sincronização de fontes concluída.")
-    print("=" * 80)
-    return 0
+    return 0 if fail_count == 0 else 1
 
 
 def cmd_import_blivre(args: argparse.Namespace) -> int:
-    """Importa o acervo bíblico aprovado para o banco de dados SQLite."""
+    """Importa exclusivamente obras auditadas e registradas no manifesto de proveniência para o SQLite."""
     root = find_project_root()
-    corpus_dir = root / "corpus" / "approved"
-    manifest_path = corpus_dir / "manifest.json"
+    corpus_approved_dir = root / "corpus" / "approved"
     db_path = get_db_path(args.db)
 
     print("=" * 80)
     print("IMPORTAÇÃO DO CORPUS APROVADO PARA SQLITE + FTS5")
     print("=" * 80)
-    print(f"Corpus:     {corpus_dir}")
-    print(f"Manifesto:  {manifest_path}")
-    print(f"Banco alvo: {db_path}\n")
+    print(f"Diretório do Corpus: {corpus_approved_dir}")
+    print(f"Banco de dados alvo: {db_path}\n")
 
-    # Garante inicialização das tabelas
     conn = init_db(db_path)
-
     try:
-        inserted = import_approved_corpus(corpus_dir, manifest_path, conn)
-        print(f"Sucesso! Total de versículos inseridos/atualizados: {inserted}")
-        print("O índice FTS5 foi automaticamente sincronizado.")
+        total_verses = import_approved_corpus(corpus_approved_dir, conn)
+        print(f"Sucesso! Total de versículos importados/atualizados: {total_verses}")
         print("=" * 80)
         return 0
+    except CorpusImportError as cie:
+        print(f"[ERRO DE INTEGRIDADE] {cie}")
+        print("=" * 80)
+        return 1
     except Exception as exc:
-        print(f"[ERRO CRÍTICO] Falha na importação do corpus: {exc}")
+        print(f"[ERRO CRÍTICO] Falha durante a importação: {exc}")
         print("=" * 80)
         return 1
     finally:
@@ -160,21 +208,23 @@ def cmd_import_blivre(args: argparse.Namespace) -> int:
 
 
 def cmd_index(args: argparse.Namespace) -> int:
-    """Reconstrói integralmente o índice FTS5."""
+    """Reconstrói integralmente o índice FTS5 a partir da tabela relacional de versículos."""
+    root = find_project_root()
     db_path = get_db_path(args.db)
+
     print("=" * 80)
     print("REINDEXAÇÃO DO MOTOR DE BUSCA FTS5")
     print("=" * 80)
-    print(f"Banco alvo: {db_path}\n")
+    print(f"Banco de dados: {db_path}\n")
 
     conn = init_db(db_path)
     try:
-        count = reindex_fts(conn)
-        print(f"Índice FTS5 reconstruído com sucesso! Registros indexados: {count}")
+        total_indexed = reindex_fts(conn)
+        print(f"Sucesso! Total de registros indexados no FTS5: {total_indexed}")
         print("=" * 80)
         return 0
     except Exception as exc:
-        print(f"[ERRO CRÍTICO] Falha na reindexação: {exc}")
+        print(f"[ERRO CRÍTICO] Falha durante a reindexação: {exc}")
         print("=" * 80)
         return 1
     finally:
@@ -182,37 +232,31 @@ def cmd_index(args: argparse.Namespace) -> int:
 
 
 def cmd_search(args: argparse.Namespace) -> int:
-    """Executa pesquisa textual de versículos com referência canônica."""
-    query = " ".join(args.query) if isinstance(args.query, list) else str(args.query)
-    if not query.strip():
-        print("[ERRO] Informe o termo ou texto para busca. Exemplo: bref search 'princípio criou'")
+    """Pesquisa textual FTS5 com suporte a frases e operadores booleanos."""
+    query_str = " ".join(args.query) if isinstance(args.query, list) else str(args.query)
+    if not query_str.strip():
+        print("[ERRO] Informe o termo de busca. Exemplo: bref search 'princípio criou'")
         return 1
 
     limit = max(1, args.limit) if args.limit > 0 else 20
     db_path = get_db_path(args.db)
     conn = init_db(db_path)
 
-    try:
-        results = search_fts(conn, query, limit=limit)
-        print("=" * 80)
-        print(f"BIBLIOTECA REFORMADA LIVRE — RESULTADOS DA BUSCA")
-        print(f"Termo: \"{query}\" | Resultados encontrados: {len(results)}")
-        print("=" * 80)
+    results = execute_search(conn, query_str, limit=limit)
+    print("=" * 80)
+    print("BIBLIOTECA REFORMADA LIVRE — BUSCA TEXTUAL FTS5")
+    print(f"Consulta: \"{query_str}\" | Resultados encontrados: {len(results)}")
+    print("=" * 80)
 
-        output = format_search_results(results)
-        print(output)
-        print("=" * 80)
-        return 0
-    except Exception as exc:
-        print(f"[ERRO CRÍTICO] Falha na busca textual: {exc}")
-        print("=" * 80)
-        return 1
-    finally:
-        conn.close()
+    output = format_search_results(results)
+    print(output)
+    print("=" * 80)
+    conn.close()
+    return 0
 
 
 def cmd_stats(args: argparse.Namespace) -> int:
-    """Exibe estatísticas consolidadas da base de dados e do acervo."""
+    """Exibe estatísticas de acervo, livros canônicos e integridade do banco."""
     root = find_project_root()
     db_path = get_db_path(args.db)
     conn = init_db(db_path)
@@ -251,34 +295,55 @@ def cmd_import_theology(args: argparse.Namespace) -> int:
     conn = init_db(db_path)
     init_theology_tables(conn)
 
-    target_file = Path(args.path) if args.path else (
-        root / "data" / "sources" / "neuu-classics" / "data" / "02_translated" / "pt" / "athanasius" / "incarnation.json"
-    )
+    theology_dir = root / "corpus" / "approved" / "theology"
+    target_files = []
 
-    if not target_file.exists():
-        print(f"[ERRO] Arquivo de obra teológica não encontrado: {target_file}")
-        conn.close()
-        return 1
+    if getattr(args, "path", None):
+        p = Path(args.path)
+        if not p.is_absolute():
+            p = (root / p).resolve()
+        if not p.exists():
+            print(f"[ERRO] Arquivo de obra teológica não encontrado: {p}")
+            conn.close()
+            return 1
+        target_files.append(p)
+    elif theology_dir.exists() and any(theology_dir.glob("*.json")):
+        target_files = sorted(list(theology_dir.glob("*.json")))
+    else:
+        # Fallback legado para fontes em data/sources
+        fallback = root / "data" / "sources" / "neuu-classics" / "data" / "02_translated" / "pt" / "athanasius" / "incarnation.json"
+        if fallback.exists():
+            target_files.append(fallback)
+        else:
+            print(f"[ERRO] Diretório de teologia aprovada não encontrado: {theology_dir}")
+            conn.close()
+            return 1
 
-    try:
-        doc, count = import_neuu_classic(target_file, conn)
-        print("=" * 80)
-        print("IMPORTAÇÃO DE OBRA TEOLÓGICA CONCLUÍDA")
-        print("=" * 80)
-        print(f"Obra:            {doc.title}")
-        print(f"Autor:           {doc.author}")
-        print(f"Tradição:        {doc.tradition}")
-        print(f"Capítulos:       {doc.chapters_count}")
-        print(f"Parágrafos FTS5: {count}")
-        print(f"Licença:         {doc.license}")
-        print("=" * 80)
-    except Exception as exc:
-        print(f"[ERRO CRÍTICO] Falha na importação teológica: {exc}")
-        conn.close()
-        return 1
+    total_docs = 0
+    total_paragraphs = 0
+    fail_count = 0
 
+    print("=" * 80)
+    print("IMPORTAÇÃO DE OBRAS TEOLÓGICAS PARA SQLITE E FTS5")
+    print(f"Total de arquivos a processar: {len(target_files)}")
+    print("=" * 80)
+
+    for target_file in target_files:
+        try:
+            doc, count = import_neuu_classic(target_file, conn)
+            print(f"-> [OK] {doc.title} ({doc.author})")
+            print(f"   Tradição: {doc.tradition} | Capítulos: {doc.chapters_count} | Parágrafos FTS5: {count}")
+            total_docs += 1
+            total_paragraphs += count
+        except Exception as exc:
+            print(f"-> [FALHA] Erro em {target_file.name}: {exc}")
+            fail_count += 1
+
+    print("=" * 80)
+    print(f"Importação concluída: {total_docs} obras importadas ({total_paragraphs} parágrafos no FTS5). Falhas: {fail_count}")
+    print("=" * 80)
     conn.close()
-    return 0
+    return 0 if fail_count == 0 else 1
 
 
 def cmd_search_theology(args: argparse.Namespace) -> int:
@@ -352,6 +417,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     # import-theology
     p_imp_theol = subparsers.add_parser("import-theology", help="Importa obras teológicas clássicas para a base FTS5.")
     p_imp_theol.add_argument("--path", type=str, default=None, help="Caminho do arquivo JSON da obra.")
+    p_imp_theol.add_argument("--all", action="store_true", default=False, help="Importa todas as obras de corpus/approved/theology/.")
     p_imp_theol.set_defaults(func=cmd_import_theology)
 
     # search-theology
