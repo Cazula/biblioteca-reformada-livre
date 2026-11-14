@@ -7,78 +7,90 @@ from pathlib import Path
 root_dir = Path(__file__).resolve().parent.parent
 
 works = [
-    # --- OBRAS APROVADAS PARA DISTRIBUIÇÃO PÚBLICA (CORPUS APPROVED THEOLOGY) ---
+    # --- OBRAS DO CORPUS APROVADO: TEOLOGIA HISTÓRICA & CLÁSSICOS ---
     {
         "work_id": "edwards:sinners-in-the-hands-of-an-angry-god",
-        "title": "Pecadores nas Mãos de um Deus Irado",
-        "title_original": "Sinners in the Hands of an Angry God (1741)",
+        "title": "Pecadores nas Mãos de um Deus Irado (Extrato Selecionado)",
+        "title_original": "Sinners in the Hands of an Angry God (Selected Excerpt, 1741)",
         "author": "Jonathan Edwards",
         "author_dates": "1703–1758",
         "tradition": "Puritana Reformada / Primeiro Grande Despertar",
         "category": "Homilética Puritana e Soteriologia",
         "language": "pt-BR",
         "source_repo": "corpus/approved/theology/edwards-sinners-angry-god.json",
-        "availability": "approved-public-domain",
-        "license": "Public Domain",
+        "availability": "approved-excerpt",
+        "license": "CC-BY-4.0",
+        "completeness": "excerpt",
+        "text_type": "paraphrase",
+        "translation_method": "experimental-synthesis",
         "distribution_allowed": True,
-        "source_edition": "Publicado originalmente em Boston por S. Kneeland e T. Green (1741); Domínio Público universal",
+        "source_edition": "Publicado originalmente em Boston por S. Kneeland e T. Green (1741, Domínio Público universal); Edição de referência: Gutenberg eBook #34632",
         "provenance_url": "https://www.gutenberg.org/ebooks/34632",
         "human_reviewed": False,
-        "notes": "Sermão clássico da tradição puritana reformada sobre Deuteronômio 32:35. Texto em Domínio Público universal."
+        "notes": "Extrato doutrinário representativo em português (20 parágrafos) do célebre sermão puritano de 1741. Não substitui o texto integral de referência. Licenciado sob CC BY 4.0 para pesquisa."
     },
     {
         "work_id": "luther:small-catechism",
-        "title": "O Catecismo Menor",
-        "title_original": "Der Kleine Katechismus (1529)",
+        "title": "O Catecismo Menor (Seleção Doutrinária)",
+        "title_original": "Der Kleine Katechismus (Selected Summary, 1529)",
         "author": "Martinho Lutero",
         "author_dates": "1483–1546",
         "tradition": "Luterana Magistral",
         "category": "Catequese Clássica e Confissões de Fé",
         "language": "pt-BR",
         "source_repo": "corpus/approved/theology/luther-small-catechism.json",
-        "availability": "approved-public-domain",
-        "license": "Public Domain",
+        "availability": "approved-excerpt",
+        "license": "CC-BY-4.0",
+        "completeness": "excerpt",
+        "text_type": "paraphrase",
+        "translation_method": "experimental-synthesis",
         "distribution_allowed": True,
-        "source_edition": "Wittenberg (1529); Livro de Concórdia (1580); Domínio Público universal",
+        "source_edition": "Wittenberg (1529); Livro de Concórdia (1580, Domínio Público universal); Gutenberg eBook #16012",
         "provenance_url": "https://www.gutenberg.org/ebooks/16012",
         "human_reviewed": False,
-        "notes": "Catecismo de referência histórica da Reforma Luterana com as 6 partes doutrinárias essenciais. Domínio Público universal."
+        "notes": "Seleção doutrinária condensada em português (31 seções: Decálogo, Credo, Pai Nosso, Sacramentos). Não substitui a edição canônica integral do Livro de Concórdia. Licenciado sob CC BY 4.0 para pesquisa."
     },
     {
         "work_id": "anglican:thirty-nine-articles",
-        "title": "Os Trinta e Nove Artigos de Religião",
-        "title_original": "The Thirty-Nine Articles of Religion (1563/1571)",
+        "title": "Os Trinta e Nove Artigos de Religião (Seleção Doutrinária)",
+        "title_original": "The Thirty-Nine Articles of Religion (Selected Articles, 1563/1571)",
         "author": "Convocação de Cantuária e Bispos da Igreja da Inglaterra",
         "author_dates": "1563–1571",
         "tradition": "Anglicana Reformada",
         "category": "Confissões de Fé Históricas",
         "language": "pt-BR",
         "source_repo": "corpus/approved/theology/thirty-nine-articles.json",
-        "availability": "approved-public-domain",
-        "license": "Public Domain",
+        "availability": "approved-excerpt",
+        "license": "CC-BY-4.0",
+        "completeness": "excerpt",
+        "text_type": "paraphrase",
+        "translation_method": "experimental-synthesis",
         "distribution_allowed": True,
-        "source_edition": "Book of Common Prayer (1571/1662); Domínio Público universal",
+        "source_edition": "Book of Common Prayer (1571/1662, Domínio Público universal)",
         "provenance_url": "https://www.churchofengland.org/our-faith/what-we-believe/thirty-nine-articles-religion",
         "human_reviewed": False,
-        "notes": "Documento confessional histórico da Reforma Inglesa, cobrindo justificação pela fé só, soberania e sacramentos. Domínio Público universal."
+        "notes": "Extrato representativo de 19 artigos fundamentais dos 39 Artigos da Igreja da Inglaterra (1571). Não contém a totalidade dos 39 artigos originais. Licenciado sob CC BY 4.0 para pesquisa."
     },
     {
         "work_id": "baptist:confession-1689",
-        "title": "A Confissão de Fé Batista de 1689 (2LCF)",
-        "title_original": "The 1689 London Baptist Confession of Faith",
+        "title": "A Confissão de Fé Batista de 1689 (Extrato de 4 Capítulos)",
+        "title_original": "The 1689 London Baptist Confession of Faith (Selected Chapters)",
         "author": "Ministros e Mensageiros de Igrejas Batistas Particulares",
         "author_dates": "1677/1689",
         "tradition": "Batista Particular Reformada",
         "category": "Confissões de Fé e Teologia Federal",
         "language": "pt-BR",
         "source_repo": "corpus/approved/theology/baptist-confession-1689.json",
-        "availability": "approved-public-domain",
-        "license": "Public Domain",
+        "availability": "approved-excerpt",
+        "license": "CC-BY-4.0",
+        "completeness": "excerpt",
+        "text_type": "paraphrase",
+        "translation_method": "experimental-synthesis",
         "distribution_allowed": True,
-        "source_edition": "Londres (1689); Domínio Público universal",
+        "source_edition": "Londres (1689, Domínio Público universal)",
         "provenance_url": "https://www.the1689confession.com/",
         "human_reviewed": False,
-        "notes": "Confissão clássica do puritanismo batista particular, baseada na Confissão de Westminster e Declaração de Savoy. Domínio Público universal."
+        "notes": "Extrato de 4 capítulos essenciais dos 32 capítulos da Segunda Confissão Londrina de 1689. Não contém os 32 capítulos completos nem as notas marginais. Licenciado sob CC BY 4.0 para pesquisa."
     },
     {
         "work_id": "athanasius:incarnation",
@@ -101,11 +113,11 @@ works = [
     {
         "work_id": "anselm:meditations",
         "title": "Orações e Meditações de Santo Anselmo",
-        "title_original": "Orationes sive Meditationes (c. 1070–1080)",
+        "title_original": "Orationes sive Meditationes (c. 1070–1104)",
         "author": "Santo Anselmo de Cantuária",
         "author_dates": "1033–1109",
-        "tradition": "Escolástica Primitiva / Tradição Ocidental",
-        "category": "Teologia Devocional e Meditações",
+        "tradition": "Escolástica Primitiva / Teologia Monástica",
+        "category": "Teologia Espiritual e Devocional Clássica",
         "language": "pt-BR / en",
         "source_repo": "corpus/approved/theology/anselm-meditations.json",
         "availability": "approved-public-domain",
@@ -155,11 +167,11 @@ works = [
 
     # --- OBRAS CANDIDATAS DE DOMÍNIO PÚBLICO (PENDENTES DE INGESTÃO ESTRUTURADA) ---
     {
-        "work_id": "calvin:institutes-beveridge-1845",
-        "title": "Institutas da Religião Cristã (Tradução Henry Beveridge)",
-        "title_original": "Institutes of the Christian Religion (1845 Translation)",
-        "author": "João Calvino / Henry Beveridge (Trad.)",
-        "author_dates": "1509–1564 / 1799–1863",
+        "work_id": "calvin:institutes-allen-1816",
+        "title": "Institutas da Religião Cristã (Tradução John Allen)",
+        "title_original": "Institutes of the Christian Religion (1813/1816 Translation by John Allen)",
+        "author": "João Calvino / John Allen (Trad.)",
+        "author_dates": "1509–1564 / 1771–1839",
         "tradition": "Reformada Magisterial (Genebra)",
         "category": "Teologia Sistemática e Dogmática",
         "language": "en (candidata para tradução auditada pt-BR)",
@@ -167,10 +179,10 @@ works = [
         "availability": "candidate-public-domain-en",
         "license": "Public Domain",
         "distribution_allowed": True,
-        "source_edition": "The Calvin Translation Society, Edinburgh (1845); Projeto Gutenberg eBook #45001 (Domínio Público)",
+        "source_edition": "London: J. Walker (1813/1816) / Philadelphia: Presbyterian Board of Publication; Projeto Gutenberg eBook #45001 (Vol. 1 of 2, Domínio Público)",
         "provenance_url": "https://www.gutenberg.org/ebooks/45001",
         "human_reviewed": False,
-        "notes": "Obra magna da Teologia Reformada. Edição inglesa de Beveridge (1845) comprovadamente em Domínio Público universal. Registrada como candidata para ingestão estruturada."
+        "notes": "Obra magna da Teologia Reformada. Edição inglesa traduzida por John Allen (1771–1839), publicada em Londres (1813/1816) e digitalizada no Projeto Gutenberg eBook #45001 (Volume 1 de 2). Não confundir com a tradução de Henry Beveridge (1845, Calvin Translation Society). Obra e tradução em Domínio Público universal. Registrada como candidata para ingestão estruturada."
     },
     {
         "work_id": "bunyan:pilgrims-progress-1678",
@@ -188,7 +200,7 @@ works = [
         "source_edition": "Londres por Nathaniel Ponder (1678); Projeto Gutenberg eBook #131 (Domínio Público)",
         "provenance_url": "https://www.gutenberg.org/ebooks/131",
         "human_reviewed": False,
-        "notes": "Maior alegoria espiritual da literatura protestante inglesa. Domínio Público universal comprovado."
+        "notes": "Maior alegoria espiritual da literatura protestante inglesa. Domínio Público universal comprovado (autor falecido em 1688, > 300 anos; eBook #131 sob status de Domínio Público universal)."
     },
 
     # --- COLEÇÃO REFORMADA & PURITANA (ABEL SANTOS - CC BY-NC-SA 4.0: APENAS CATÁLOGO E LINK) ---
@@ -216,133 +228,131 @@ works = [
         "title_original": "A Commentary on the Confession of Faith (1869)",
         "author": "Archibald Alexander Hodge",
         "author_dates": "1823–1886",
-        "tradition": "Reformada / Presbiteriana de Princeton",
-        "category": "Teologia Sistemática e Comentários Confessionais",
-        "language": "pt-BR / en",
-        "source_repo": "data/sources/abel-santos/content/hodge-archibald-alexander/um-comentario-sobre-a-confissao-de-fe",
+        "tradition": "Teologia de Princeton / Presbiteriana",
+        "category": "Comentários Confessionais e Dogmática",
+        "language": "pt-BR",
+        "source_repo": "data/sources/abel-santos/content/archibald-alexander-hodge",
         "availability": "catalog-only-noncommercial",
         "license": "CC-BY-NC-SA-4.0",
-        "distribution_allowed": False,
+        "distribution_allowed": false,
         "source_edition": "Presbyterian Board of Publication (1869); Tradução por Abel Santos",
         "provenance_url": "https://github.com/separovichabel/abel-santos",
         "human_reviewed": False,
-        "notes": "Original em inglês em Domínio Público; tradução em português sob CC BY-NC-SA 4.0 (não comercial)."
+        "notes": "Tradução sob CC BY-NC-SA 4.0 retida em quarentena local para fins educacionais."
     },
     {
-        "work_id": "calvin:institutes-abel",
-        "title": "As Institutas da Religião Cristã (Edição Preliminar)",
-        "title_original": "Institutio Christianae Religionis (1536/1559)",
+        "work_id": "calvin:institutas-abel",
+        "title": "As Institutas da Religião Cristã (Edição Traduzida)",
+        "title_original": "Institutio Christianae Religionis (1559)",
         "author": "João Calvino",
         "author_dates": "1509–1564",
         "tradition": "Reformada Magisterial (Genebra)",
         "category": "Teologia Sistemática e Dogmática",
         "language": "pt-BR",
-        "source_repo": "data/sources/abel-santos/content/joao-calvino/as-institutas",
+        "source_repo": "data/sources/abel-santos/content/joao-calvino",
         "availability": "catalog-only-noncommercial",
         "license": "CC-BY-NC-SA-4.0",
-        "distribution_allowed": False,
-        "source_edition": "Índice e fragmentos traduzidos por Abel Santos",
+        "distribution_allowed": false,
+        "source_edition": "Edição latina de 1559; Tradução para português por Abel Santos",
         "provenance_url": "https://github.com/separovichabel/abel-santos",
         "human_reviewed": False,
-        "notes": "Original latino e francês em Domínio Público universal; fragmentos traduzidos sob CC BY-NC-SA 4.0."
+        "notes": "Tradução sob licença Não Comercial. Mantida exclusivamente local em conformidade com as regras de copyright."
     },
     {
-        "work_id": "calvin:ephesians-commentary",
+        "work_id": "calvin:comentario-efesios-abel",
         "title": "Comentário da Epístola aos Efésios",
-        "title_original": "Commentarius in Epistolam ad Ephesios",
+        "title_original": "Commentarius in Epistolam ad Ephesios (1548)",
         "author": "João Calvino",
         "author_dates": "1509–1564",
         "tradition": "Reformada Magisterial (Genebra)",
-        "category": "Comentários Exegéticos",
+        "category": "Exegese e Comentários Bíblicos",
         "language": "pt-BR",
-        "source_repo": "data/sources/abel-santos/content/joao-calvino/efesios",
+        "source_repo": "data/sources/abel-santos/content/joao-calvino",
         "availability": "catalog-only-noncommercial",
         "license": "CC-BY-NC-SA-4.0",
-        "distribution_allowed": False,
-        "source_edition": "Calvin Translation Society / Tradução por Abel Santos (cap. 1:1-12 e argumento)",
+        "distribution_allowed": false,
+        "source_edition": "Genebra (1548); Tradução por Abel Santos",
         "provenance_url": "https://github.com/separovichabel/abel-santos",
         "human_reviewed": False,
-        "notes": "Trechos traduzidos sob CC BY-NC-SA 4.0."
+        "notes": "Exegese reformada de Calvino. Quarentena local por licença Não Comercial."
     },
     {
-        "work_id": "calvin:isaiah-ch7",
-        "title": "Comentário sobre Isaías 7",
-        "title_original": "Commentarius in Isaiam Prophetam",
+        "work_id": "calvin:comentario-isaias-7-abel",
+        "title": "Comentário sobre Isaías 7: A Profecia do Emanuel",
+        "title_original": "Commentarii in Isaiam Prophetam (1551)",
         "author": "João Calvino",
         "author_dates": "1509–1564",
         "tradition": "Reformada Magisterial (Genebra)",
-        "category": "Comentários Exegéticos",
+        "category": "Exegese e Comentários Bíblicos",
         "language": "pt-BR",
-        "source_repo": "data/sources/abel-santos/content/joao-calvino/isaias",
+        "source_repo": "data/sources/abel-santos/content/joao-calvino",
         "availability": "catalog-only-noncommercial",
         "license": "CC-BY-NC-SA-4.0",
-        "distribution_allowed": False,
-        "source_edition": "Calvin Translation Society / Tradução por Abel Santos",
+        "distribution_allowed": false,
+        "source_edition": "Genebra (1551); Tradução por Abel Santos",
         "provenance_url": "https://github.com/separovichabel/abel-santos",
         "human_reviewed": False,
-        "notes": "Tradução sob CC BY-NC-SA 4.0."
+        "notes": "Comentário profético messiânico de Calvino. Quarentena local."
     },
     {
-        "work_id": "caryl:job-exposition",
-        "title": "Exposição com Observações Práticas sobre o Livro de Jó",
+        "work_id": "caryl:exposition-job-abel",
+        "title": "Uma Exposição Prática com Observações sobre o Livro de Jó",
         "title_original": "An Exposition with Practical Observations upon the Book of Job (1647–1666)",
         "author": "Joseph Caryl",
         "author_dates": "1602–1673",
-        "tradition": "Puritana Não-Conformista",
-        "category": "Comentários Exegéticos e Teologia Prática",
+        "tradition": "Puritana Reformada / Teologia da Aflição",
+        "category": "Exegese Puritana e Vida Cristã",
         "language": "pt-BR",
-        "source_repo": "data/sources/abel-santos/content/joseph-caryl/exposicao_jo",
+        "source_repo": "data/sources/abel-santos/content/joseph-caryl",
         "availability": "catalog-only-noncommercial",
         "license": "CC-BY-NC-SA-4.0",
-        "distribution_allowed": False,
-        "source_edition": "Londres (1647); Tradução de capítulos selecionados por Abel Santos",
+        "distribution_allowed": false,
+        "source_edition": "Londres (1647–1666); Tradução para português por Abel Santos",
         "provenance_url": "https://github.com/separovichabel/abel-santos",
         "human_reviewed": False,
-        "notes": "Comentário clássico puritano monumental. Tradução em português sob CC BY-NC-SA 4.0."
+        "notes": "Clássico puritano monumental sobre a providência e o sofrimento. Quarentena local por licença Não Comercial."
     },
 
-    # --- SÍMBOLOS DE WESTMINSTER (CFW - RICKSENAT / DOMÍNIO PÚBLICO COM LICENÇA PENDENTE) ---
+    # --- MATRIZ DE QUARENTENA TÉCNICA E LEGAL ---
     {
-        "work_id": "westminster:cfw-rickserrat",
-        "title": "Confissão de Fé de Westminster (Estruturada em JSON)",
-        "title_original": "The Westminster Confession of Faith (1646)",
+        "work_id": "westminster:cfw-json-rickserrat",
+        "title": "Confissão de Fé de Westminster (Formato JSON Estruturado)",
+        "title_original": "The Westminster Confession of Faith",
         "author": "Assembleia de Westminster",
         "author_dates": "1643–1649",
         "tradition": "Reformada Presbiteriana",
-        "category": "Símbolos de Fé Confessionais",
+        "category": "Confissões de Fé Históricas",
         "language": "pt-BR",
-        "source_repo": "data/sources/cfw/cfw.json",
-        "availability": "in-review-quarantine",
-        "license": "Unknown",
+        "source_repo": "data/sources/cfw-json/cfw.json",
+        "availability": "catalog-only-quarantine",
+        "license": "Unspecified / Quarentena",
         "distribution_allowed": False,
-        "source_edition": "Edição estruturada por rickserrat (sem licença explícita no upstream)",
-        "provenance_url": "https://github.com/rickserrat/cfw",
+        "source_edition": "Estrutura JSON por rickserrat a partir do texto padrão de Westminster",
+        "provenance_url": "https://github.com/rickserrat/confissao-de-fe-de-westminster",
         "human_reviewed": False,
-        "notes": "Texto histórico em Domínio Público, mas o repositório upstream não possui arquivo de licença formal para a estruturação. Mantido em quarentena local para validação jurídica."
+        "notes": "Retido em quarentena técnica por ausência de declaração de licença explícita no repositório upstream."
     },
-
-    # --- SCRIPTORIUM DIVINUM (TRADUÇÕES VIA IA SOB CC BY-SA 4.0 / CLONE INCOMPLETO) ---
     {
-        "work_id": "scriptorium:divinum-corpus",
-        "title": "Scriptorium Divinum (Corpus de Textos Clássicos Traduzidos)",
-        "title_original": "Scriptorium Divinum Repository",
-        "author": "Rilson Joás e colaboradores",
-        "author_dates": "Séc. XXI",
-        "tradition": "Interdenominacional / Histórica",
-        "category": "Traduções Assistidas por IA",
-        "language": "pt-BR",
+        "work_id": "scriptorium:scriptorium-divinum",
+        "title": "Scriptorium Divinum — Acervo e Catálogo Teológico",
+        "title_original": "Scriptorium Divinum",
+        "author": "Diversos Autores Reformados e Patrísticos",
+        "author_dates": "Séculos IV a XVIII",
+        "tradition": "Ecumênica Reformada e Protestante",
+        "category": "Acervos e Bibliotecas Digitais",
+        "language": "pt-BR / la / en",
         "source_repo": "data/sources/scriptorium-divinum",
-        "availability": "incomplete-clone",
-        "license": "CC-BY-SA-4.0",
+        "availability": "catalog-only-quarantine",
+        "license": "Em Auditoria",
         "distribution_allowed": False,
-        "source_edition": "Clone raso parcial; proveniência das edições-fonte não auditada individualmente",
-        "provenance_url": "https://github.com/rilsonjoas/scriptorium-divinum",
+        "source_edition": "Repositório scriptorium-divinum (clone parcial em auditoria)",
+        "provenance_url": "https://github.com/scriptorium-divinum",
         "human_reviewed": False,
-        "notes": "Clone incompleto em data/sources. Textos traduzidos sob CC BY-SA, com edições-fonte heterogêneas pendentes de auditoria individual. Proibida importação às cegas."
+        "notes": "Repositório em quarentena forense. Requer auditoria individual por obra antes de qualquer extração."
     }
 ]
 
-catalog_data = {
+catalog = {
     "version": "1.2.0",
     "collection": "Bibliotheca Protestante",
     "sub_collection": "Bibliotheca Reformata & Clássicos Históricos",
@@ -353,11 +363,11 @@ catalog_data = {
     "works": works
 }
 
-catalog_path = root_dir / "catalog" / "works.json"
-catalog_path.parent.mkdir(parents=True, exist_ok=True)
-with open(catalog_path, "w", encoding="utf-8") as f:
-    json.dump(catalog_data, f, indent=2, ensure_ascii=False)
+output_path = root_dir / "catalog" / "works.json"
+output_path.parent.mkdir(parents=True, exist_ok=True)
+with open(output_path, "w", encoding="utf-8") as f:
+    json.dump(catalog, f, indent=2, ensure_ascii=False)
     f.write("\n")
 
-print(f"Catálogo de obras teológicas salvo com sucesso em: {catalog_path}")
+print(f"Catálogo de obras teológicas salvo com sucesso em: {output_path}")
 print(f"Total de obras catalogadas: {len(works)}")

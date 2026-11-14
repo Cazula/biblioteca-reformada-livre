@@ -1,80 +1,86 @@
-# 📖 Bibliotheca Protestante — Coleção Bibliotheca Reformata
+# 📖 Bibliotheca Reformata — Biblioteca Reformada Livre
 
-[![CI](https://github.com/Cazula/biblioteca-reformada-livre/actions/workflows/ci.yml/badge.svg)](https://github.com/Cazula/biblioteca-reformada-livre/actions/workflows/ci.yml)
+**Uma biblioteca teológica protestante, reformada e puritana em software livre, local-first e auditável.**
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Corpus License](https://img.shields.io/badge/Corpus%20License-CC%20BY%20%7C%20Public%20Domain-green.svg)](docs/legal/LICENSES.md)
-[![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Status](https://img.shields.io/badge/Audit-74%20Files%20Verified-brightgreen.svg)](docs/STATUS.md)
-
-Motor de busca textual ultrarrápido em SQLite FTS5, acervo bíblico integral (66 livros canônicos) e literatura teológica histórica clássica (Patrística, Luterana, Anglicana, Puritana e Batista Reformada), governado por políticas estritas de auditoria de licenças e proveniência criptográfica (SHA-256).
+[![License: CC BY 3.0 BR](https://img.shields.io/badge/Corpus-CC%20BY%203.0%20BR-green.svg)](docs/legal/LICENSES.md)
+[![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](pyproject.toml)
+[![SQLite: FTS5](https://img.shields.io/badge/Engine-SQLite%20FTS5-orange.svg)](src/biblioteca_reformada/db.py)
 
 ---
 
-## 🌟 Visão e Identidade
+## 🎯 Visão do Projeto
 
-A **Bibliotheca Protestante** é uma iniciativa de preservação digital, indexação lexical e recuperação teológica interdenominacional histórica, tendo a **Bibliotheca Reformata** como sua primeira coleção canônica.
+A **Biblioteca Reformada Livre** é um ecossistema digital para preservação, estudo, busca textual avançada e catalogação da literatura bíblica e teológica da **Reforma Protestante** (Tradições Reformada/Presbiteriana, Puritana, Luterana Magistral e Batista Particular).
 
-1. **Legalidade e Direitos Inegociáveis:** Todo o código é livre sob licença **MIT**. Todos os textos distribuídos no repositório base possuem proveniência transparente:
-   - Bíblia Livre (BLIVRE) sob **Creative Commons Atribuição 3.0 Brasil (CC BY 3.0 BR)**.
-   - Clássicos históricos (Jonathan Edwards, Martinho Lutero, 39 Artigos Anglicanos, Confissão Batista de 1689) em **Domínio Público universal**.
-   - Clássicos patrísticos e medievais (Atanásio, Anselmo, Kempis, Lawrence) sob **CC BY 4.0** (edições editoriais NEUU / CCEL).
-   - Zero pirataria: traduções modernas sob copyright ou restrições não comerciais (ex.: Abel Santos CC BY-NC-SA) são catalogadas apenas com metadados e links em `catalog/works.json`, sem cópia de texto integral.
-2. **Alta Performance Local:** Motor SQLite FTS5 nativo com tokenização Unicode e BM25, executando consultas em frações de milissegundo.
-3. **Auditabilidade Criptográfica Bidirecional:** Cada arquivo possui hash SHA-256 verificado no manifesto. O comando `bref audit` valida integralmente a árvore de arquivos.
-4. **Isolamento de Fontes:** Repositórios upstream e clones rasos residem estritamente em `data/sources/` (ignorado no Git).
+### Pilares Fundamentais:
+1. **Local-First & Preservação Digital:** Funciona totalmente offline em banco SQLite com motor de busca de texto completo (FTS5). Não depende de servidores proprietários ou serviços de terceiros para operar.
+2. **Governança de Licenças e Domínio Público:** Distinção rigorosa entre obras em Domínio Público universal, traduções sob Creative Commons (CC BY, CC BY-SA) e materiais retidos em **quarentena local** (CC BY-NC, CC BY-NC-ND ou sem autorização explícita para redistribuição comercial/derivada).
+3. **Auditoria Criptográfica:** Todo arquivo aprovado possui hash SHA-256 verificado em manifesto imutável (`corpus/approved/manifest.json`). Qualquer corrupção ou adulteração de dados é bloqueada na ingestão.
+4. **Semântica e Precisão Reformada:** Vocabulário teológico canônico, estrutura canônica de 66 livros e catálogo de confissões históricas (Westminster, 1689, Trinta e Nove Artigos, Cânones de Dort, Catecismo Menor).
 
 ---
 
-## ⚙️ Instalação e Configuração
+## 🚀 Instalação Rápida
 
-### Pré-requisitos
-- Python 3.10 ou superior (testado no Python 3.10, 3.11, 3.12 e 3.13)
-- [uv](https://github.com/astral-sh/uv) (recomendado) ou pip padrão
+O projeto utiliza o gerenciador de pacotes ultrarrápido **`uv`** (Rust):
 
-### Instalação Rápida
 ```powershell
+# 1. Clone o repositório
 git clone https://github.com/Cazula/biblioteca-reformada-livre.git
 cd biblioteca-reformada-livre
 
-# Criar ambiente virtual
-uv venv
-.venv\Scripts\activate
+# 2. Crie o ambiente virtual e instale as dependências
+uv sync
 
-# Instalar em modo editável com dependências de desenvolvimento
-uv pip install -e ".[dev]"
+# 3. Execute a suíte de testes (47 testes unitários e de integração)
+uv run pytest tests -v
 ```
 
 ---
 
-## 🚀 Guia de Uso da CLI (`bref`)
+## 💻 Guia da CLI (`bref`)
 
-### 1. Auditoria Criptográfica e Jurídica
-Audita todos os 74 arquivos do corpus aprovado (66 bíblicos + 8 teológicos) contra os hashes do manifesto:
+A interface de linha de comando (`bref`) oferece ferramentas completas para auditoria, importação e consulta:
+
+### 1. Auditoria de Licenças e Integridade
+Verifica se todos os arquivos do corpus aprovado correspondem aos seus hashes SHA-256 e licenças permitidas:
 ```powershell
 bref audit
 ```
 
-### 2. Ingestão e Indexação Bíblica (66 Livros)
-Importa os 66 livros da Bíblia Livre (31.100 versículos) para o SQLite FTS5:
+### 2. Ingestão da Bíblia Livre (66 Livros)
+Importa os 31.100 versículos canônicos da Bíblia Livre (CC BY 3.0 BR) para o SQLite local e reconstrói o índice FTS5:
 ```powershell
 bref import-blivre
-bref index
 ```
 
-### 3. Ingestão de Obras Teológicas Aprovadas (8 Obras)
-Ingere todo o acervo teológico aprovado (1.656 parágrafos) em lote:
+### 3. Ingestão do Acervo Teológico Histórico
+Importa as obras teológicas clássicas aprovadas (Patrística, Escolástica, Reformada, Puritana e Luterana):
 ```powershell
 bref import-theology --all
 ```
 
-### 4. Busca Textual na Escritura (com Citações Canônicas)
+### 4. Busca Textual Bíblica (FTS5)
+Permite buscar termos, expressões compostas e prefixos com citações canônicas de livro, capítulo e versículo:
 ```powershell
-bref search "verdade"
 bref search "no princípio criou Deus"
-bref search "justificados pela fé"
+bref search "justificado pela fé" --limit 5
+bref search "amor" --testament NT
+```
+*Exemplo de saída:*
+```text
+================================================================================
+BIBLIOTECA REFORMADA LIVRE — RESULTADOS DA BUSCA FTS5
+Consulta: "no princípio criou Deus" | Resultados encontrados: 1
+================================================================================
+[1] Gênesis 1:1 (BLIVRE - AT)
+    "No princípio criou Deus os céus e a terra."
+================================================================================
 ```
 
-### 5. Busca Textual em Obras Teológicas Clássicas
+### 5. Busca Textual Teológica Clássica
+Realiza busca de texto completo nas obras teológicas com citações estruturadas de autor, obra, capítulo e parágrafo:
 ```powershell
 bref search-theology "inferno"
 bref search-theology "mandamento"
@@ -104,21 +110,21 @@ bref stats
 
 ## 📚 Acervo Teológico Atual (`corpus/approved/theology/`)
 
-| Obra | Autor | Tradição | Licença |
+| Obra | Autor | Tradição | Licença / Status |
 |---|---|---|---|
-| *Pecadores nas Mãos de um Deus Irado* | Jonathan Edwards | Puritana Reformada | Public Domain |
-| *O Catecismo Menor* | Martinho Lutero | Luterana Magistral | Public Domain |
-| *Os Trinta e Nove Artigos de Religião* | Igreja da Inglaterra (1571) | Anglicana Reformada | Public Domain |
-| *A Confissão de Fé Batista de 1689 (2LCF)* | Batistas Particulares (1689) | Batista Particular | Public Domain |
-| *Da Encarnação do Verbo de Deus* | Santo Atanásio de Alexandria | Patrística Oriental | CC-BY-4.0 |
-| *Orações e Meditações* | Santo Anselmo de Cantuária | Escolástica Primitiva | CC-BY-4.0 |
-| *A Imitação de Cristo (Livro 1)* | Tomás de Kempis | Devotio Moderna | CC-BY-4.0 |
-| *A Prática da Presença de Deus* | Irmão Lawrence | Clássica Devocional | CC-BY-4.0 |
+| *Pecadores nas Mãos de um Deus Irado* | Jonathan Edwards | Puritana Reformada | CC-BY-4.0 (Extrato Selecionado) |
+| *O Catecismo Menor* | Martinho Lutero | Luterana Magistral | CC-BY-4.0 (Seleção Doutrinária) |
+| *Os Trinta e Nove Artigos de Religião* | Igreja da Inglaterra (1571) | Anglicana Reformada | CC-BY-4.0 (Seleção Doutrinária) |
+| *A Confissão de Fé Batista de 1689 (2LCF)* | Batistas Particulares (1689) | Batista Particular | CC-BY-4.0 (Extrato de 4 Capítulos) |
+| *Da Encarnação do Verbo de Deus* | Santo Atanásio de Alexandria | Patrística Oriental | CC-BY-4.0 (Tradução Integral) |
+| *Orações e Meditações* | Santo Anselmo de Cantuária | Escolástica Primitiva | CC-BY-4.0 (Tradução Integral) |
+| *A Imitação de Cristo (Livro 1)* | Tomás de Kempis | Devotio Moderna | CC-BY-4.0 (Tradução Livro 1) |
+| *A Prática da Presença de Deus* | Irmão Lawrence | Clássica Devocional | CC-BY-4.0 (Tradução Integral) |
 
 ---
 
 ## 🛡️ Governança e Transparência
 
-- **CI / GitHub Actions:** A suíte de 47 testes passa 100% no ambiente local. O histórico de provisionamento remoto de runners e caminhos de resolução de billing na UI do GitHub estão detalhados em [docs/CI-BLOCKER.md](docs/CI-BLOCKER.md).
+- **CI / GitHub Actions:** A suíte de 47 testes passa 100% no ambiente local. O diagnóstico factual de provisionamento pré-runner no GitHub está documentado em [docs/CI-BLOCKER.md](docs/CI-BLOCKER.md).
 - **Inventário Completo de Obras:** Metadados e catálogo geral com status de quarentena em [catalog/works.json](catalog/works.json).
 - **Status Executivo do Projeto:** Relatório detalhado em [docs/STATUS.md](docs/STATUS.md).

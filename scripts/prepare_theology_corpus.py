@@ -12,38 +12,92 @@ def create_theology_corpus():
 
     neuu_dir = root / "data" / "sources" / "neuu-classics" / "data" / "02_translated" / "pt"
 
-    # 1. Copiar as 4 obras aprovadas do NEUU Classics
-    neuu_mappings = {
-        neuu_dir / "athanasius" / "incarnation.json": target_theology_dir / "athanasius-incarnation.json",
-        neuu_dir / "anselm" / "meditations.json": target_theology_dir / "anselm-meditations.json",
-        neuu_dir / "kempis" / "imitation_book1.json": target_theology_dir / "kempis-imitation.json",
-        neuu_dir / "lawrence" / "practice.json": target_theology_dir / "lawrence-practice.json",
+    # 1. Copiar e enriquecer as 4 obras aprovadas do NEUU Classics
+    neuu_configs = {
+        "athanasius-incarnation.json": {
+            "src": neuu_dir / "athanasius" / "incarnation.json",
+            "completeness": "full",
+            "text_type": "translation",
+            "translation_method": "claude-opus-4-6 (NEUU classics dataset)",
+            "license": "CC-BY-4.0",
+            "provenance_url": "https://github.com/neuu-org/bible-classics-dataset",
+            "human_reviewed": False,
+            "notes": "Tradução integral a partir da edição clássica em Domínio Público (CCEL). Dataset editorial NEUU licenciado sob CC BY 4.0."
+        },
+        "anselm-meditations.json": {
+            "src": neuu_dir / "anselm" / "meditations.json",
+            "completeness": "full",
+            "text_type": "translation",
+            "translation_method": "claude-opus-4-6 (NEUU classics dataset)",
+            "license": "CC-BY-4.0",
+            "provenance_url": "https://github.com/neuu-org/bible-classics-dataset",
+            "human_reviewed": False,
+            "notes": "Meditações de Santo Anselmo de Cantuária. Tradução a partir de edição em Domínio Público (CCEL). Dataset editorial NEUU sob CC BY 4.0."
+        },
+        "kempis-imitation.json": {
+            "src": neuu_dir / "kempis" / "imitation_book1.json",
+            "completeness": "full",
+            "text_type": "translation",
+            "translation_method": "claude-opus-4-6 (NEUU classics dataset)",
+            "license": "CC-BY-4.0",
+            "provenance_url": "https://github.com/neuu-org/bible-classics-dataset",
+            "human_reviewed": False,
+            "notes": "Livro 1 integral ('Admoestações Úteis à Vida Espiritual') da Imitação de Cristo. Edição original em Domínio Público. Dataset editorial NEUU sob CC BY 4.0."
+        },
+        "lawrence-practice.json": {
+            "src": neuu_dir / "lawrence" / "practice.json",
+            "completeness": "full",
+            "text_type": "translation",
+            "translation_method": "claude-opus-4-6 (NEUU classics dataset)",
+            "license": "CC-BY-4.0",
+            "provenance_url": "https://github.com/neuu-org/bible-classics-dataset",
+            "human_reviewed": False,
+            "notes": "Conversações e cartas do Irmão Lawrence. Edição original de 1692 em Domínio Público. Dataset editorial NEUU sob CC BY 4.0."
+        },
     }
 
-    for src, dst in neuu_mappings.items():
+    for dst_name, cfg in neuu_configs.items():
+        src = cfg["src"]
+        dst = target_theology_dir / dst_name
         if src.exists():
-            shutil.copy2(src, dst)
-            print(f"[COPIADO] {src.name} -> {dst.relative_to(root)}")
+            with open(src, "r", encoding="utf-8") as f:
+                content = json.load(f)
+            meta = content.setdefault("metadata", {})
+            meta["license"] = cfg["license"]
+            meta["completeness"] = cfg["completeness"]
+            meta["text_type"] = cfg["text_type"]
+            meta["translation_method"] = cfg["translation_method"]
+            meta["provenance_url"] = cfg["provenance_url"]
+            meta["human_reviewed"] = cfg["human_reviewed"]
+            meta["editorial_notes"] = cfg["notes"]
+            with open(dst, "w", encoding="utf-8") as f:
+                json.dump(content, f, indent=2, ensure_ascii=False)
+            print(f"[PROCESSADO] {src.name} -> {dst.relative_to(root)}")
         else:
             print(f"[ALERTA] Fonte não encontrada: {src}")
 
-    # 2. Criar Jonathan Edwards (1741) — Pecadores nas Mãos de um Deus Irado
+    # 2. Criar Jonathan Edwards (1741) — Pecadores nas Mãos de um Deus Irado (Extrato / Paráfrase Doutrinária)
     edwards_data = {
         "metadata": {
             "canonical_id": "edwards:sinners-in-the-hands-of-an-angry-god",
-            "title": "Pecadores nas Mãos de um Deus Irado",
-            "title_en": "Sinners in the Hands of an Angry God",
+            "title": "Pecadores nas Mãos de um Deus Irado (Extrato Selecionado)",
+            "title_en": "Sinners in the Hands of an Angry God (Selected Excerpt)",
             "author_full": "Jonathan Edwards",
             "author_short": "Jonathan Edwards",
             "author_pt": "Jonathan Edwards",
             "year": 1741,
             "language": "pt",
-            "rights": "Public Domain",
-            "license": "Public Domain",
+            "rights": "CC-BY-4.0 (Paráfrase/Seleção); Edição original de 1741 em Domínio Público universal",
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "translation_method": "experimental-synthesis",
             "tradition": "Puritana Reformada",
             "subjects": ["Teologia Reformada", "Soteriologia", "Homilética Puritana", "Primeiro Grande Despertar"],
-            "source_edition": "Publicado originalmente em Boston por S. Kneeland e T. Green, 1741 (Domínio Público)",
-            "human_reviewed": False
+            "source_edition": "Edição original histórica publicada em Boston por S. Kneeland e T. Green (1741, Domínio Público universal); Gutenberg eBook #34632",
+            "provenance_url": "https://www.gutenberg.org/ebooks/34632",
+            "human_reviewed": False,
+            "editorial_notes": "Extrato e seleção condensada em português (20 parágrafos doutrinários representativos) do sermão histórico proferido em 1741 sobre Dt 32:35. Não constitui tradução integral nem substitui a edição de referência em Domínio Público universal (Gutenberg #34632). Licenciado sob CC BY 4.0 para pesquisa."
         },
         "chapters": [
             {
@@ -78,65 +132,65 @@ def create_theology_corpus():
                 "paragraphs": [
                     {
                         "id": "p1",
-                        "text": "1. Não falta poder a Deus para lançar os homens ímpios no inferno a qualquer momento. As mãos dos homens não podem prevalecer quando Deus Se levanta. Os mais fortes não têm força contra Ele; não podem livrar a si mesmos de Suas mãos. Ele não apenas é capaz de lançar os ímpios no inferno, mas pode fazê-lo com a maior facilidade do mundo."
+                        "text": "1. Não falta poder a Deus para lançar os homens ímpios no inferno a qualquer momento. As mãos dos homens não podem ser fortes quando Deus se levanta. O mais forte deles não tem poder para resistir a Ele, nem pode se livrar de Suas mãos. Ele não apenas é capaz de lançar homens ímpios no inferno, mas pode fazê-lo com a maior facilidade."
                     },
                     {
                         "id": "p2",
-                        "text": "2. Os ímpios merecem ser lançados no inferno. A justiça divina não se opõe a que Deus empregue Seu poder a qualquer instante para destruí-los; pelo contrário, a justiça clama em alta voz por uma punição infinita para os seus pecados. A espada da justiça divina está brandida sobre suas cabeças, e nada além da soberana misericórdia a detém."
+                        "text": "2. Eles merecem ser lançados no inferno; de modo que a justiça divina nunca se interpõe no caminho, nem faz qualquer objeção contra o uso do poder de Deus para destruí-los a qualquer momento. Pelo contrário, a justiça clama em alta voz por uma punição infinita para os seus pecados."
                     },
                     {
                         "id": "p3",
-                        "text": "3. Eles já estão sob uma sentença real de condenação ao inferno. Não apenas merecem legitimamente ser lançados lá, mas a lei de Deus — regra eterna e imutável de justiça estabelecida entre Deus e a humanidade — já se pronunciou contra eles. Aquele que não crê já está julgado."
+                        "text": "3. Eles já estão sob a sentença de condenação ao inferno. Não apenas merecem com justiça ser lançados ali, mas a sentença da lei de Deus, aquela regra imutável de justiça que Ele estabeleceu entre Si e a humanidade, já foi proferida contra eles: 'Aquele que não crê já está condenado' (João 3:18)."
                     },
                     {
                         "id": "p4",
-                        "text": "4. Eles são agora mesmo os objetos daquela mesmíssima ira e cólera de Deus que é executada nos tormentos do inferno. A ira de Deus arde contra eles neste exato instante; a fornalha está aquecida e pronta para recebê-los; as chamas ardem vivamente; o abismo escancarou sua boca para tragá-los."
+                        "text": "4. Eles são agora os objetos daquela mesma ira e furor de Deus que é expressa nos tormentos do inferno. E a razão pela qual não descem ao inferno a cada minuto não é porque o Deus sob cujo poder estão não esteja sumamente irado com eles, assim como está com as muitas criaturas miseráveis agora atormentadas no inferno."
                     },
                     {
                         "id": "p5",
-                        "text": "5. O diabo está pronto para cair sobre eles e tomá-los como seus no momento em que Deus permitir. Eles pertencem a ele; suas almas são de sua posse e estão sob o seu domínio. Os demônios os vigiam continuamente, como leões famintos que observam a presa esperando o momento da captura."
+                        "text": "5. O diabo está pronto para cair sobre eles e tomá-los como seus, no instante exato em que Deus permitir. Eles pertencem a ele; suas almas estão sob a posse dele e debaixo de seu domínio. Os demônios os vigiam como leões famintos e vorazes que veem sua presa, mas são contidos pela mão de Deus."
                     },
                     {
                         "id": "p6",
-                        "text": "6. Na alma dos ímpios reinam princípios infernais que já acenderiam e arderiam em fogo eterno se não fossem contidos pela mão soberana de Deus. Há na natureza do homem carnal um fundamento real para os tormentos do inferno; a corrupção é soberana e age como fogo represado."
+                        "text": "6. Na alma dos homens ímpios reinam princípios infernais que já estariam acesos e arderiam no inferno, se não fossem as restrições impostas por Deus. Há na própria natureza dos homens carnais um fundamento estabelecido para os tormentos do inferno."
                     },
                     {
                         "id": "p7",
-                        "text": "7. Não é segurança alguma para os ímpios o fato de que não veem sinais visíveis da proximidade da morte. O homem natural que goza de saúde corporal e não antecipa acidentes não tem garantia real. As providências invisíveis de Deus têm incontáveis maneiras ocultas de ceifar a vida em um segundo."
+                        "text": "7. Não é segurança alguma para os homens ímpios, nem por um momento, o fato de não haverem sinais visíveis de morte iminente ao seu redor. O homem não-regenerado caminha sobre o abismo do inferno sobre uma ponte apodrecida, na qual há incontáveis lugares frágeis demais para suportar o seu peso."
                     },
                     {
                         "id": "p8",
-                        "text": "8. O cuidado, prudência e inteligência dos próprios homens para preservar a vida não lhes proporcionam segurança alguma contra a morte por um momento sequer. A sabedoria dos homens mais prudentes não os livra da sepultura nem da ira vindoura quando a hora chega."
+                        "text": "8. O cuidado e prudência natural dos homens para preservar sua própria vida não lhes oferece segurança por um instante sequer. A sabedoria humana não é salvaguarda contra a espada da justiça divina."
                     },
                     {
                         "id": "p9",
-                        "text": "9. Todas as maquinações e esquemas dos homens para escapar do inferno, enquanto continuam a rejeitar a Cristo e permanecem ímpios, não passam de ilusão vã. Quase todo homem natural se gaba de que escapará; planeja para si a salvação em seus próprios termos, mas engana a si mesmo."
+                        "text": "9. Todo o trabalho e esforço que os ímpios empregam para escapar do inferno, enquanto continuam a rejeitar a Cristo, de nada lhes aproveitam. Quase todo homem natural se lisonjeia pensando que escapará do inferno por sua própria religiosidade e boas intenções."
                     },
                     {
                         "id": "p10",
-                        "text": "10. Deus não Se colocou sob nenhuma obrigação por qualquer promessa de manter qualquer homem natural fora do inferno por um só instante. Ele não fez promessas de vida eterna nem de preservação temporal a nenhum homem fora da aliança da graça, que é selada exclusivamente no sangue de Jesus Cristo."
+                        "text": "10. Deus não se colocou sob nenhuma obrigação, por nenhuma promessa, de manter qualquer homem natural fora do inferno por um momento sequer. Deus não fez nenhuma promessa de vida eterna, nem de qualquer libertação da morte eterna, a não ser aquelas contidas na aliança da graça, as promessas dadas em Cristo, nas quais todas as promessas são sim e amém."
                     }
                 ]
             },
             {
                 "number": 3,
-                "title": "Aplicação Prática e Despertamento aos Não Regenerados",
+                "title": "Aplicação Prática e Apelo ao Despertar Espiritual",
                 "paragraphs": [
                     {
                         "id": "p1",
-                        "text": "O uso desta terrível matéria serve para despertar os pecadores inconversos nesta congregação. Isto que vocês ouviram é o caso de cada um de vocês que está fora de Cristo. Aquele mundo de miséria, aquele lago de enxofre ardente, está estendido debaixo de vocês. Lá está o terrível abismo das chamas brilhantes da ira de Deus; lá está a boca aberta do inferno; e vocês não têm nada sobre o que se apoiar, nem nada entre vocês e o inferno senão o ar; é apenas o poder e o mero beneplácito de Deus que os sustenta."
+                        "text": "O Deus que segura você sobre o abismo do inferno, muito semelhante a alguém que segura uma aranha ou algum inseto repugnante sobre o fogo, abomina você e está terrivelmente provocado; Sua ira contra você queima como fogo; Ele o vê como digno de nada além de ser lançado no fogo."
                     },
                     {
                         "id": "p2",
-                        "text": "O Deus que segura vocês sobre o abismo do inferno, quase da mesma forma como alguém segura uma aranha ou algum verme repugnante sobre o fogo, abomina vocês e está terrivelmente provocado; Sua ira contra vocês queima como fogo; Ele os vê como sendo dignos de nada além de serem lançados nas chamas. Vocês O ofenderam infinitamente mais do que jamais um rebelde teimoso ofendeu ao seu príncipe terreno."
+                        "text": "Ó pecador! Considere o perigo pavoroso em que você se encontra. É sobre uma fornalha de ira, sobre um abismo escancarado e sem fundo, cheio do fogo da ira, que você está suspenso, sustentado apenas pela mão de Deus, cuja ira está tão provocada contra você como contra muitos dos condenados no inferno."
                     },
                     {
                         "id": "p3",
-                        "text": "E no entanto nada, senão a Sua mão a cada segundo, impede que vocês caiam no fogo. É atribuível somente à Sua graça preservadora que vocês não tenham ido para o inferno na noite passada, que tenham acordado mais uma vez neste mundo, e que não tenham descido ao abismo desde que se levantaram esta manhã."
+                        "text": "Você se apega a um fio frágil, com as chamas da ira divina faiscando ao redor dele, prontas a cada momento para queimá-lo e consumi-lo; e você não tem interesse em nenhum Mediador, nada em que se segurar, nada de seu para respirar ou clamar, nada que você tenha feito, nada que possa fazer para induzir Deus a poupá-lo por um único instante."
                     },
                     {
                         "id": "p4",
-                        "text": "E agora vocês têm uma oportunidade extraordinária: um dia em que Cristo tem a porta da misericórdia aberta de par em par, chamando e clamando com alta voz aos pobres pecadores. Muitos estão correndo para Ele e entrando no reino de Deus; muitos que estavam na mesma condição miserável que vocês estão agora rejubilando na esperança da glória de Deus."
+                        "text": "E agora você tem uma oportunidade extraordinária, um dia em que Cristo abriu amplamente a porta da misericórdia e está de pé clamando e chamando em alta voz aos pobres pecadores; um dia em que muitos estão correndo para o reino de Deus. Muitos estão diariamente vindo do leste, oeste, norte e sul; muitos que estavam ultimamente na mesma miserável condição em que você está agora, encontram-se felizes, com seus corações cheios de amor por Aquele que os amou e lavou de seus pecados em Seu próprio sangue."
                     },
                     {
                         "id": "p5",
@@ -151,24 +205,29 @@ def create_theology_corpus():
         json.dump(edwards_data, f, indent=2, ensure_ascii=False)
     print(f"[CRIADO] edwards-sinners-angry-god.json em {target_theology_dir.relative_to(root)}")
 
-    # 3. Criar Martinho Lutero (1529) — O Catecismo Menor
+    # 3. Criar Martinho Lutero (1529) — O Catecismo Menor (Seleção e Paráfrase Doutrinária)
     luther_data = {
         "metadata": {
             "canonical_id": "luther:small-catechism",
-            "title": "O Catecismo Menor",
-            "title_en": "The Small Catechism",
+            "title": "O Catecismo Menor (Seleção Doutrinária)",
+            "title_en": "The Small Catechism (Selected Doctrinal Summary)",
             "title_de": "Der Kleine Katechismus",
             "author_full": "Martinho Lutero",
             "author_short": "Martinho Lutero",
             "author_pt": "Martinho Lutero",
             "year": 1529,
             "language": "pt",
-            "rights": "Public Domain",
-            "license": "Public Domain",
+            "rights": "CC-BY-4.0 (Paráfrase/Seleção); Edição original histórica de 1529 em Domínio Público universal",
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "translation_method": "experimental-synthesis",
             "tradition": "Luterana Magistral",
             "subjects": ["Teologia Luterana", "Catequese Clássica", "Doutrina Cristã", "Reforma Protestante"],
-            "source_edition": "Wittenberg, 1529 (Domínio Público)",
-            "human_reviewed": False
+            "source_edition": "Wittenberg (1529); Livro de Concórdia (1580, Domínio Público universal); Gutenberg eBook #16012",
+            "provenance_url": "https://www.gutenberg.org/ebooks/16012",
+            "human_reviewed": False,
+            "editorial_notes": "Seleção e paráfrase doutrinária condensada em português (31 seções essenciais: Decálogo, Credo, Pai Nosso, Sacramentos) do Catecismo Menor de 1529. Não substitui o texto integral do Livro de Concórdia de 1580 em Domínio Público. Licenciado sob CC BY 4.0 para pesquisa."
         },
         "chapters": [
             {
@@ -249,31 +308,31 @@ def create_theology_corpus():
                     },
                     {
                         "id": "p3",
-                        "text": "Segunda Petição: 'Venha o Teu reino.' O que significa isto? Resposta: O reino de Deus vem por si mesmo, sem nossa oração; mas pedimos nesta petição que ele venha também a nós. Isto acontece quando o Pai celeste nos concede Seu Espírito Santo, para que pela Sua graça creiamos em Sua santa Palavra e levemos uma vida santa aqui no tempo e lá na eternidade."
+                        "text": "Segunda Petição: 'Venha o Teu reino.' O que significa isto? Resposta: O reino de Deus vem por si mesmo, sem a nossa oração; mas pedimos nesta oração que ele venha também a nós. Isto acontece quando nosso Pai celestial nos dá o Seu Espírito Santo, de modo que por Sua graça cremos em Sua santa Palavra e levamos uma vida piedosa aqui no tempo e acolá na eternidade."
                     },
                     {
                         "id": "p4",
-                        "text": "Terceira Petição: 'Seja feita a Tua vontade, assim na terra como no céu.' O que significa isto? Resposta: A boa e graciosa vontade de Deus é feita certamente sem a nossa oração; mas pedimos nesta oração que ela se cumpra também entre nós. Isto acontece quando Deus quebra e anula todo mau propósito e vontade que nos impedem de santificar o nome de Deus e de permitir que Seu reino venha."
+                        "text": "Terceira Petição: 'Seja feita a Tua vontade, assim na terra como no céu.' O que significa isto? Resposta: A boa e graciosa vontade de Deus é feita sem a nossa oração; mas pedimos nesta oração que ela se faça também entre nós. Isto acontece quando Deus quebra e impede todo mau desígnio e vontade que não nos deixam santificar o nome de Deus nem deixam vir o Seu reino, tais como a vontade do diabo, do mundo e de nossa própria carne; e quando nos fortalece e conserva firmes em Sua Palavra e na fé até o fim."
                     },
                     {
                         "id": "p5",
-                        "text": "Quarta Petição: 'O pão nosso de cada dia nos dá hoje.' O que significa isto? Resposta: Deus dá o pão de cada dia mesmo sem nosso pedido, a todos os homens maus; mas pedimos nesta oração que Ele no-lo faça reconhecer e o recebamos com ações de graças."
+                        "text": "Quarta Petição: 'O pão nosso de cada dia nos dá hoje.' O que significa isto? Resposta: Deus dá o pão de cada dia sem o nosso pedido, mesmo a todos os homens maus; mas pedimos nesta oração que nos faça reconhecer isso e receber o nosso pão de cada dia com ações de graças."
                     },
                     {
                         "id": "p6",
-                        "text": "Quinta Petição: 'E perdoa-nos as nossas dívidas, assim como nós perdoamos aos nossos devedores.' O que significa isto? Resposta: Pedimos nesta oração que o Pai celeste não olhe para os nossos pecados, nem nos negue nossos pedidos por causa deles, pois não somos dignos de nada do que pedimos; mas que nos conceda tudo pela graça, pois pecamos diariamente e merecemos apenas castigo. Da mesma forma queremos de coração perdoar e prontamente fazer o bem àqueles que pecam contra nós."
+                        "text": "Quinta Petição: 'E perdoa-nos as nossas dívidas, assim como nós perdoamos aos nossos devedores.' O que significa isto? Resposta: Pedimos nesta oração que nosso Pai celeste não olhe para os nossos pecados, nem por causa deles nos negue o pedido, pois não somos dignos de nenhuma das coisas que pedimos, nem as merecemos; mas que no-las queira dar todas por graça, pois pecamos diariamente muito e merecemos apenas castigo. Assim também nós, por nossa vez, queremos cordialmente perdoar e de bom grado fazer o bem aos que pecam contra nós."
                     },
                     {
                         "id": "p7",
-                        "text": "Sexta Petição: 'E não nos deixes cair em tentação.' O que significa isto? Resposta: Deus não tenta a ninguém; mas pedimos nesta oração que Deus nos guarde e preserve, para que o diabo, o mundo e nossa própria carne não nos enganem nem nos seduzam à incredulidade, ao desespero e a outros grandes pecados e vícios."
+                        "text": "Sexta Petição: 'E não nos deixes cair em tentação.' O que significa isto? Resposta: Deus não tenta a ninguém; mas pedimos nesta oração que Deus queira nos proteger e guardar, para que o diabo, o mundo e a nossa própria carne não nos enganem nem nos seduzam para a falsa fé, desespero e outras grandes vergonhas e vícios; e que, mesmo sendo tentados, finalmente vençamos e obtenhamos a vitória."
                     },
                     {
                         "id": "p8",
-                        "text": "Sétima Petição: 'Mas livra-nos do mal.' O que significa isto? Resposta: Pedimos nesta oração, como num resumo, que o Pai celeste nos livre de todo o mal do corpo e da alma, dos bens e da honra, e finalmente, quando chegar a nossa última hora, nos conceda um fim bem-aventurado e nos leve graciosamente deste vale de lágrimas para Si no céu."
+                        "text": "Sétima Petição: 'Mas livra-nos do mal.' O que significa isto? Resposta: Pedimos nesta oração, como resumo de tudo, que nosso Pai celeste nos livre de todo mal do corpo e da alma, dos bens e da honra, e finalmente, quando chegar a nossa hora derradeira, nos conceda um fim bem-aventurado e nos recolha graciosamente deste vale de lágrimas para Si no céu."
                     },
                     {
                         "id": "p9",
-                        "text": "Conclusão: 'Pois Teu é o reino, o poder e a glória para sempre. Amém.' O que significa isto? Resposta: Devo ter certeza de que tais petições são agradáveis ao Pai celeste e são ouvidas por Ele; pois Ele mesmo nos ordenou orar assim e prometeu que nos ouvirá. Amém, amém, isto significa: sim, sim, assim há de ser."
+                        "text": "Conclusão: 'Pois Teu é o reino, o poder e a glória para sempre. Amém.' O que significa Amém? Resposta: Significa que devo ter a certeza de que estes pedidos são aceitáveis ao Pai celeste e por Ele ouvidos; pois Ele próprio nos mandou orar assim e prometeu que nos ouvirá. Amém, amém, isto quer dizer: sim, sim, assim deve ser."
                     }
                 ]
             },
@@ -283,45 +342,45 @@ def create_theology_corpus():
                 "paragraphs": [
                     {
                         "id": "p1",
-                        "text": "Primeiro: O que é o Batismo? Resposta: O Batismo não é apenas água simples, mas é a água contida no mandamento de Deus e unida à Palavra de Deus. Qual é esta palavra de Deus? Resposta: É aquela que nosso Senhor Jesus Cristo diz em Mateus, capítulo 28: 'Ide por todo o mundo, ensinai a todas as nações, batizando-as em nome do Pai e do Filho e do Espírito Santo'."
+                        "text": "Primeiro: O que é o Batismo? Resposta: O Batismo não é apenas água simples, mas é a água contida no mandamento de Deus e ligada à Palavra de Deus. Qual é essa Palavra de Deus? É a que nosso Senhor Jesus Cristo diz no último capítulo de Mateus: 'Ide e fazei discípulos de todas as nações, batizando-os em nome do Pai e do Filho e do Espírito Santo'."
                     },
                     {
                         "id": "p2",
-                        "text": "Segundo: Que dons ou benefícios o Batismo concede? Resposta: Ele opera o perdão dos pecados, livra da morte e do diabo, e dá a bem-aventurança eterna a todos os que creem no que dizem as palavras e promessas de Deus."
+                        "text": "Segundo: Que dons ou benefícios o Batismo confere? Resposta: Opera o perdão dos pecados, livra da morte e do diabo e dá a salvação eterna a todos os que creem no que dizem as palavras e promessas de Deus. Quais são essas palavras e promessas de Deus? São as que nosso Senhor Jesus Cristo diz no último capítulo de Marcos: 'Quem crer e for batizado será salvo; mas quem não crer será condenado'."
                     },
                     {
                         "id": "p3",
-                        "text": "Terceiro: Como pode a água operar coisas tão grandes? Resposta: A água certamente não as opera, mas a Palavra de Deus que está com e junto à água, e a fé que confia nessa Palavra unida à água. Pois sem a Palavra de Deus a água é água simples e nenhum batismo; mas com a Palavra de Deus ela é um batismo, isto é, uma água graciosa de vida e um banho de novo nascimento no Espírito Santo, como São Paulo diz a Tito, no capítulo 3."
+                        "text": "Terceiro: Como pode a água fazer tão grandes coisas? Resposta: Não é a água certamente que as faz, mas a Palavra de Deus que está com e junto à água, e a fé que confia nessa Palavra de Deus ligada à água. Pois sem a Palavra de Deus a água é simples água e nenhum Batismo; mas com a Palavra de Deus é um Batismo, isto é, uma água graciosa da vida e um banho de novo nascimento no Espírito Santo."
                     },
                     {
                         "id": "p4",
-                        "text": "Quarto: O que significa este batismo com água? Resposta: Significa que o velho Adão em nós deve ser afogado pelo arrependimento diário e morrer com todos os pecados e maus desejos; e, por sua vez, deve surgir e ressuscitar diariamente um novo homem, que viva eternamente diante de Deus em justiça e pureza."
+                        "text": "Quarto: O que significa esse batizar com água? Resposta: Significa que o velho Adão em nós deve ser afogado por diária contrição e arrependimento, e morrer com todos os pecados e maus desejos; e, por outro lado, deve surgir e ressuscitar diariamente um novo homem, que viva eternamente em justiça e pureza diante de Deus."
                     }
                 ]
             },
             {
                 "number": 5,
-                "title": "O Sacramento do Altar (A Santa Ceia)",
+                "title": "O Sacramento do Altar (A Ceia do Senhor)",
                 "paragraphs": [
                     {
                         "id": "p1",
-                        "text": "Primeiro: O que é o Sacramento do Altar? Resposta: É o verdadeiro corpo e sangue de nosso Senhor Jesus Cristo, sob o pão e o vinho, instituído pelo próprio Cristo para que nós, cristãos, o comamos e bebamos."
+                        "text": "O que é o Sacramento do Altar? Resposta: É o verdadeiro corpo e sangue de nosso Senhor Jesus Cristo, sob o pão e o vinho, instituído por Cristo mesmo para nós, cristãos, comermos e bebermos."
                     },
                     {
                         "id": "p2",
-                        "text": "Onde está escrito isto? Resposta: Assim escrevem os santos evangelistas Mateus, Marcos, Lucas e São Paulo: 'Nosso Senhor Jesus Cristo, na noite em que foi traído, tomou o pão; e, tendo dado graças, o partiu e deu aos Seus discípulos, dizendo: Tomai, comei; isto é o Meu corpo que é dado por vós; fazei isto em memória de Mim. Semelhantemente, depois de cear, tomou o cálice; e, tendo dado graças, o deu a eles, dizendo: Bebei dele todos; este cálice é o novo testamento no Meu sangue, que é derramado por vós para remissão dos pecados; fazei isto, todas as vezes que o beberdes, em memória de Mim'."
+                        "text": "Onde está escrito isto? Resposta: Assim escrevem os santos evangelistas Mateus, Marcos, Lucas e o apóstolo Paulo: 'Nosso Senhor Jesus Cristo, na noite em que foi traído, tomou o pão e, havendo dado graças, o partiu e deu a Seus discípulos, dizendo: Tomai, comei; isto é o Meu corpo que é dado por vós; fazei isto em memória de Mim. Do mesmo modo tomou também o cálice, depois da ceia, e, havendo dado graças, o deu a eles, dizendo: Bebei dele todos; este cálice é o Novo Testamento no Meu sangue, que é derramado por vós para remissão dos pecados; fazei isto, todas as vezes que o beberdes, em memória de Mim'."
                     },
                     {
                         "id": "p3",
-                        "text": "Qual é o benefício de comer e beber assim? Resposta: Isto nos mostram estas palavras: 'Dado e derramado por vós para remissão dos pecados'. A saber, que no sacramento o perdão dos pecados, a vida e a bem-aventurança nos são concedidos por meio destas palavras; pois onde há remissão dos pecados, há também vida e bem-aventurança."
+                        "text": "Que proveito há em comer e beber assim? Resposta: Isto nos mostram estas palavras: 'Dado e derramado por vós para remissão dos pecados'; a saber: que na Ceia nos é concedido o perdão dos pecados, vida e salvação por meio destas palavras. Pois onde há remissão dos pecados, aí há também vida e salvação."
                     },
                     {
                         "id": "p4",
-                        "text": "Como pode o comer e beber corporal operar coisas tão grandes? Resposta: O comer e beber certamente não as operam, mas sim aquelas palavras que estão ali: 'Dado e derramado por vós para remissão dos pecados'. Estas palavras são, juntamente com o comer e beber corporal, a coisa principal no sacramento; e quem crê nestas palavras tem precisamente o que elas declaram: a saber, o perdão dos pecados."
+                        "text": "Como pode o comer e beber corporal fazer tão grandes coisas? Resposta: Não é o comer e beber certamente que as faz, mas aquelas palavras que ali estão: 'Dado e derramado por vós para remissão dos pecados'. Estas palavras, juntamente com o comer e beber corporal, são o elemento principal no sacramento; e quem crê nestas palavras tem o que elas dizem e expressam, a saber: o perdão dos pecados."
                     },
                     {
                         "id": "p5",
-                        "text": "Quem recebe dignamente este sacramento? Resposta: Jejuar e preparar-se corporalmente é uma boa disciplina externa; mas verdadeiramente digno e bem preparado é aquele que tem fé nestas palavras: 'Dado e derramado por vós para remissão dos pecados'. Mas aquele que não crê nestas palavras ou duvida delas é indigno e inapto, pois a expressão 'por vós' exige corações verdadeiramente crentes."
+                        "text": "Quem, pois, recebe este sacramento dignamente? Resposta: O jejuar e preparar-se corporalmente é certamente uma boa disciplina exterior; mas verdadeiramente digno e bem preparado está aquele que tem fé nestas palavras: 'Dado e derramado por vós para remissão dos pecados'. Mas quem não crê nestas palavras ou delas duvida é indigno e desqualificado; pois a palavra 'por vós' exige corações verdadeiramente crentes."
                     }
                 ]
             }
@@ -332,23 +391,28 @@ def create_theology_corpus():
         json.dump(luther_data, f, indent=2, ensure_ascii=False)
     print(f"[CRIADO] luther-small-catechism.json em {target_theology_dir.relative_to(root)}")
 
-    # 4. Criar Os Trinta e Nove Artigos de Religião (1571)
+    # 4. Criar Os Trinta e Nove Artigos de Religião (1571) — Extrato Selecionado Doutrinário
     articles_data = {
         "metadata": {
             "canonical_id": "anglican:thirty-nine-articles",
-            "title": "Os Trinta e Nove Artigos de Religião",
-            "title_en": "The Thirty-Nine Articles of Religion",
+            "title": "Os Trinta e Nove Artigos de Religião (Seleção Doutrinária)",
+            "title_en": "The Thirty-Nine Articles of Religion (Selected Articles)",
             "author_full": "Convocação de Cantuária e Bispos da Igreja da Inglaterra",
             "author_short": "Convocação Anglicana",
             "author_pt": "Igreja da Inglaterra (1571)",
             "year": 1571,
             "language": "pt",
-            "rights": "Public Domain",
-            "license": "Public Domain",
+            "rights": "CC-BY-4.0 (Paráfrase/Seleção); Edição histórica original de 1571 em Domínio Público universal",
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "translation_method": "experimental-synthesis",
             "tradition": "Anglicana Reformada",
             "subjects": ["Confissões de Fé", "Teologia Reformada", "Anglicanismo Histórico", "Doutrina Protestante"],
-            "source_edition": "Book of Common Prayer, 1571/1662 (Domínio Público)",
-            "human_reviewed": False
+            "source_edition": "Book of Common Prayer (1571/1662, Domínio Público universal)",
+            "provenance_url": "https://www.churchofengland.org/prayer-and-worship/worship-texts-and-resources/book-common-prayer/articles-religion",
+            "human_reviewed": False,
+            "editorial_notes": "Seleção e extrato em português de 19 artigos representativos dos 39 Artigos da Igreja da Inglaterra (1571). Não contém a totalidade dos 39 artigos originais. Licenciado sob CC BY 4.0 para pesquisa."
         },
         "chapters": [
             {
@@ -458,23 +522,28 @@ def create_theology_corpus():
         json.dump(articles_data, f, indent=2, ensure_ascii=False)
     print(f"[CRIADO] thirty-nine-articles.json em {target_theology_dir.relative_to(root)}")
 
-    # 5. Criar A Confissão de Fé Batista de 1689 (2LCF)
+    # 5. Criar A Confissão de Fé Batista de 1689 (2LCF) — Extrato Selecionado Doutrinário
     baptist_data = {
         "metadata": {
             "canonical_id": "baptist:confession-1689",
-            "title": "A Confissão de Fé Batista de 1689",
-            "title_en": "The 1689 London Baptist Confession of Faith",
+            "title": "A Confissão de Fé Batista de 1689 (Extrato de 4 Capítulos)",
+            "title_en": "The 1689 London Baptist Confession of Faith (Selected Chapters)",
             "author_full": "Ministros e Mensageiros de Igrejas Batistas Particulares",
             "author_short": "Assembleia Batista de Londres (1689)",
             "author_pt": "Batistas Particulares (1689)",
             "year": 1689,
             "language": "pt",
-            "rights": "Public Domain",
-            "license": "Public Domain",
+            "rights": "CC-BY-4.0 (Paráfrase/Seleção); Edição original histórica de 1689 em Domínio Público universal",
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "translation_method": "experimental-synthesis",
             "tradition": "Batista Particular Reformada",
             "subjects": ["Confissões de Fé", "Teologia Reformada Federal", "Batismo de Crentes", "Puritanismo Batista"],
-            "source_edition": "Londres, 1689 (Domínio Público)",
-            "human_reviewed": False
+            "source_edition": "Londres (1689, Domínio Público universal)",
+            "provenance_url": "https://www.reformedreader.org/ccc/1689lbc/1689bcf.htm",
+            "human_reviewed": False,
+            "editorial_notes": "Extrato representativo condensado em português de 4 capítulos essenciais (Escritura, Trindade, Decreto/Salvação, Igreja/Sacramentos) dos 32 capítulos da Segunda Confissão Londrina de 1689. Não contém os 32 capítulos completos nem as referências bíblicas integrais. Licenciado sob CC BY 4.0 para pesquisa."
         },
         "chapters": [
             {

@@ -55,49 +55,73 @@ def rebuild_manifest():
             "title": "Da Encarnação do Verbo de Deus",
             "author": "Santo Atanásio de Alexandria",
             "tradition": "Patrística",
-            "license": "CC-BY-4.0"
+            "license": "CC-BY-4.0",
+            "completeness": "full",
+            "text_type": "translation",
+            "human_reviewed": False
         },
         "anselm-meditations.json": {
             "title": "Orações e Meditações",
             "author": "Santo Anselmo de Cantuária",
             "tradition": "Escolástica Primitiva",
-            "license": "CC-BY-4.0"
+            "license": "CC-BY-4.0",
+            "completeness": "full",
+            "text_type": "translation",
+            "human_reviewed": False
         },
         "kempis-imitation.json": {
             "title": "A Imitação de Cristo (Livro 1)",
             "author": "Tomás de Kempis",
             "tradition": "Devotio Moderna",
-            "license": "CC-BY-4.0"
+            "license": "CC-BY-4.0",
+            "completeness": "full",
+            "text_type": "translation",
+            "human_reviewed": False
         },
         "lawrence-practice.json": {
             "title": "A Prática da Presença de Deus",
             "author": "Irmão Lawrence",
             "tradition": "Clássica Devocional",
-            "license": "CC-BY-4.0"
+            "license": "CC-BY-4.0",
+            "completeness": "full",
+            "text_type": "translation",
+            "human_reviewed": False
         },
         "edwards-sinners-angry-god.json": {
-            "title": "Pecadores nas Mãos de um Deus Irado",
+            "title": "Pecadores nas Mãos de um Deus Irado (Extrato Selecionado)",
             "author": "Jonathan Edwards",
             "tradition": "Puritana Reformada",
-            "license": "Public Domain"
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "human_reviewed": False
         },
         "luther-small-catechism.json": {
-            "title": "O Catecismo Menor",
+            "title": "O Catecismo Menor (Seleção Doutrinária)",
             "author": "Martinho Lutero",
             "tradition": "Luterana Magistral",
-            "license": "Public Domain"
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "human_reviewed": False
         },
         "thirty-nine-articles.json": {
-            "title": "Os Trinta e Nove Artigos de Religião",
+            "title": "Os Trinta e Nove Artigos de Religião (Seleção Doutrinária)",
             "author": "Igreja da Inglaterra (1571)",
             "tradition": "Anglicana Reformada",
-            "license": "Public Domain"
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "human_reviewed": False
         },
         "baptist-confession-1689.json": {
-            "title": "A Confissão de Fé Batista de 1689",
+            "title": "A Confissão de Fé Batista de 1689 (Extrato de 4 Capítulos)",
             "author": "Batistas Particulares (1689)",
             "tradition": "Batista Particular Reformada",
-            "license": "Public Domain"
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "human_reviewed": False
         }
     }
 
@@ -108,7 +132,10 @@ def rebuild_manifest():
             "title": tf.stem,
             "author": "Desconhecido",
             "tradition": "Clássica Cristã",
-            "license": "Public Domain"
+            "license": "CC-BY-4.0",
+            "completeness": "excerpt",
+            "text_type": "paraphrase",
+            "human_reviewed": False
         })
 
         entries.append({
@@ -117,7 +144,10 @@ def rebuild_manifest():
             "license": info["license"],
             "title": info["title"],
             "author": info["author"],
-            "tradition": info["tradition"]
+            "tradition": info["tradition"],
+            "completeness": info.get("completeness", "excerpt"),
+            "text_type": info.get("text_type", "translation"),
+            "human_reviewed": info.get("human_reviewed", False)
         })
 
     manifest = {
