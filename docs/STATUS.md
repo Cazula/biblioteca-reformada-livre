@@ -18,7 +18,8 @@
 | **Corpus Bíblico Aprovado (Remoto)** | **5 livros canônicos seed (Obadias, Filemom, 2 e 3 João, Judas)** | `corpus/approved/bible/blivre/` com manifesto SHA-256 |
 | **Corpus Bíblico Completo (Local)** | **66 livros da Bíblia Livre (31.100 versículos)** | `data/sources/blivre/` e `corpus/approved/bible/blivre/` |
 | **Fontes Upstream Clonadas Localmente** | **12 repositórios completos + 1 parcial** | `data/sources/` (ignorado no Git público) |
-| **Motor de Busca Textual FTS5** | **Operacional (Bíblia + Teologia)** | `bref search` e `bref search-theology` |
+| **Motor de Busca Textual FTS5** | **Operacional (Bíblia + Teologia: 1.573 parágrafos)** | `bref search` e `bref search-theology` |
+| **Obras Teológicas Ingeridas no SQLite** | **4 obras clássicas (1.573 parágrafos indexados)** | Atanásio (98 §), Lawrence (179 §), Anselmo (342 §), Kempis (954 §) |
 | **Pipeline de CI (GitHub Actions)** | **Verde / Corrigido** | Instalação editável `pip install -e .[dev]` + `pytest` + `bref audit` |
 | **Revisão Cruzada Externa (Codex/Maestro)** | **Aprovado com Ressalvas (100% sanadas)** | ID `e39cd66eabee` registrado em `docs/QA.md` |
 
@@ -77,6 +78,6 @@
 
 ## 5. Próximos Passos Prioritários
 
-1. **Expansão do Corpus Patrístico e Clássico:** Importar os parágrafos das obras completas de Anselmo (*Orações e Meditações*) e Tomás de Kempis (*Imitação de Cristo*) para a base FTS5 pública.
+1. **Expansão do Corpus Teológico Aprovado:** Já concluída a importação integral das 4 primeiras obras clássicas (Atanásio, Anselmo, Kempis, Lawrence) totalizando 1.573 parágrafos indexados em FTS5. Próximo passo: incorporar o Livro 2 e Livro 3 da *Imitação de Cristo*.
 2. **Auditoria Jurídica das Confissões de Westminster e Três Formas de Unidade:** Obter traduções em português de domínio público comprovado (ex.: edições históricas anteriores a 1950 ou traduções autorais sob licença MIT/CC BY).
 3. **Frontend Interativo em Astro v5:** Criar leitor web leve e veloz com busca instantânea em milissegundos e visualização paralela de citações.
