@@ -129,3 +129,20 @@ CANONICAL_BOOKS: List[Dict[str, Any]] = [
 BOOK_BY_NAME = {b["name"].lower(): b for b in CANONICAL_BOOKS}
 BOOK_BY_ABBR = {b["abbr"].lower(): b for b in CANONICAL_BOOKS}
 BOOK_BY_ID = {b["id"]: b for b in CANONICAL_BOOKS}
+
+
+def resolve_canonical_book(name_or_abbr: str) -> Optional[Dict[str, Any]]:
+    """Resolve e valida um livro contra o cânon protestante de 66 livros."""
+    if not isinstance(name_or_abbr, str):
+        return None
+    clean = name_or_abbr.strip()
+    if not clean:
+        return None
+    if clean.upper() in BOOK_BY_ID:
+        return BOOK_BY_ID[clean.upper()]
+    lower = clean.lower()
+    if lower in BOOK_BY_NAME:
+        return BOOK_BY_NAME[lower]
+    if lower in BOOK_BY_ABBR:
+        return BOOK_BY_ABBR[lower]
+    return None
