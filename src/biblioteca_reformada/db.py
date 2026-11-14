@@ -183,21 +183,25 @@ def search_fts(conn: sqlite3.Connection, query: str, limit: int = 20, offset: in
             LIMIT ? OFFSET ?
         """, (fts_query, safe_limit, safe_offset))
         rows = cursor.fetchall()
-    except sqlite3.OperationalError:
-        # Fallback defensivo com escape completo de aspas duplas
-        escaped_literal = clean_query.replace('"', '""')
-        try:
-            cursor = conn.execute("""
-                SELECT book, chapter, verse, text, version_id, bm25(verses_fts) as rank
-                FROM verses_fts
-                WHERE verses_fts MATCH ?
-                ORDER BY rank
-                LIMIT ? OFFSET ?
-            """, (f'"{escaped_literal}"', safe_limit, safe_offset))
-            rows = cursor.fetchall()
-        except sqlite3.OperationalError:
-            # Em caso de qualquer falha terminal de parser FTS5, retorna vazio controlado
-            return []
+    except sqlite3.OperationalError as op_err:
+        err_msg = str(op_err).lower()
+        # Restringe o fallback defensivo estritamente a falhas de sintaxe e parser da query FTS5
+        if any(kw in err_msg for kw in ("syntax error", "fts5:", "malformed", "parse error", "match", "unterminated")):
+            escaped_literal = clean_query.replace('"', '""')
+            try:
+                cursor = conn.execute("""
+                    SELECT book, chapter, verse, text, version_id, bm25(verses_fts) as rank
+                    FROM verses_fts
+                    WHERE verses_fts MATCH ?
+                    ORDER BY rank
+                    LIMIT ? OFFSET ?
+                """, (f'"{escaped_literal}"', safe_limit, safe_offset))
+                rows = cursor.fetchall()
+            except sqlite3.OperationalError:
+                return []
+        else:
+            # Propaga erros reais como tabela inexistente ('no such table'), corrupção ou indisponibilidade
+            raise
 
     results = []
     for row in rows:
