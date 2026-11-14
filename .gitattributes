@@ -1,0 +1,5 @@
+# Corpus: bytes imutaveis; os hashes SHA-256 do manifesto dependem de LF.
+corpus/** text eol=lf
+catalog/** text eol=lf
+*.json text eol=lf
+*.md text eol=lf

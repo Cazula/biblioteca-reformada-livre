@@ -8,469 +8,469 @@
   "files": [
     {
       "path": "bible/blivre/01-genesis.json",
-      "sha256": "f8d5df028b7d48247f96e08c4c57435cb3ab3b7a9b09ab20e24bea386fcbb171",
+      "sha256": "68ba620239a247a38f95e3536b8ded08e24181e3316b369c2e3e4d76a7b6ba3c",
       "license": "CC-BY-3.0-BR",
       "book": "Genesis",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/02-exodo.json",
-      "sha256": "1b2cc2014264d8d6fe8626295e5b815a73947e996e1c0ed05b6ac6db0b825452",
+      "sha256": "2bb0c203c5aa3f6cb3451ef99de4c32613ebb1b4439c8b39f2f6c197c9c7b807",
       "license": "CC-BY-3.0-BR",
       "book": "Exodo",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/03-levitico.json",
-      "sha256": "890d72d655645e5264747be4596f46c8af86bb5d47da82c305c6e91d518fef94",
+      "sha256": "1b1ddfccdabc092b91e0e7e880a5a99c7cee41cafe88ecefb1bb9241e0c3c8b7",
       "license": "CC-BY-3.0-BR",
       "book": "Levitico",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/04-numeros.json",
-      "sha256": "d96e6aeb6812652ead4229f5bb72520b530ab27429980002174c5a5df7093a75",
+      "sha256": "28fb1147d536da2f1cbb6706df44675b64e2a539e066b9b40051b544ace8e690",
       "license": "CC-BY-3.0-BR",
       "book": "Numeros",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/05-deuteronomio.json",
-      "sha256": "a86e338bd5716de7e25651998e3dc760e2ecae770ae634dd8815d6d7711502b8",
+      "sha256": "d7f6450c75ddce465960cfb99d5cc382ffa61397fd39f1c57ab92533333d0822",
       "license": "CC-BY-3.0-BR",
       "book": "Deuteronomio",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/06-josue.json",
-      "sha256": "59897613f5b0db8caf7006150976af5bae45c029efc00ae9703169c2bd8acad3",
+      "sha256": "07da7651260df868c7ede6b16b99014dc10dfd089b79b5fe35ab381e124ecb40",
       "license": "CC-BY-3.0-BR",
       "book": "Josue",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/07-juizes.json",
-      "sha256": "d983a469f89de86c1c471ee18534620c327962884a275c1990adc2209385c261",
+      "sha256": "3a627429d02f3a5f9e61d13719754f559b07b97706b760a9d52fc5c5f98a83fe",
       "license": "CC-BY-3.0-BR",
       "book": "Juizes",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/08-rute.json",
-      "sha256": "7446ff088dbae198abfb7eb7385757edd16a5e906682004541e9984766d46b2d",
+      "sha256": "75080ee64737e6f3b840503c913e704ee3efa8dd7129219df601e97e4942f5d4",
       "license": "CC-BY-3.0-BR",
       "book": "Rute",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/09-1-samuel.json",
-      "sha256": "c43b23db0e790e59e9c82baeaa810f62b58c22d859ce38291f011a371f37b75b",
+      "sha256": "1361e1678daf53582ba711df8b2ff90f76b42cc1015b119d89bdef0265dc9adc",
       "license": "CC-BY-3.0-BR",
       "book": "1-samuel",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/10-2-samuel.json",
-      "sha256": "a62996fd60d751a1ba045f88208920fcd1f1fc1fcc0e56d0a2b41c3285f1537d",
+      "sha256": "461292bef7c7ba3a960f15d4681eeba03ba6a125a95faafec266b0ebdd2023d6",
       "license": "CC-BY-3.0-BR",
       "book": "2-samuel",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/11-1-reis.json",
-      "sha256": "28cf7b32c2ba8d421a0e17f31445534cbde895d358e34afb9cf18be04213b4ef",
+      "sha256": "9481321b456b4eac8c9c5cc2e7a110d4cc3b1cc41011478b5a2bb8656622f5ea",
       "license": "CC-BY-3.0-BR",
       "book": "1-reis",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/12-2-reis.json",
-      "sha256": "f30e390d469d4f0c7439c25bb3acc86761ac9c6b6a3eac88f39b35b99b70ebbb",
+      "sha256": "9364ffb11139f4ebf5e0c1dd5691122d29bb5ceaddb1b6495438d7cf72936b6f",
       "license": "CC-BY-3.0-BR",
       "book": "2-reis",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/13-1-cronicas.json",
-      "sha256": "3c0ce6604c17c242c085fe0ca66354af8e9c430677a3a3e78031a15fd5c46ac6",
+      "sha256": "525763643e5dd9d9e3f821ecb1ce4c92576ae2f81b331074399e89d359b33b1d",
       "license": "CC-BY-3.0-BR",
       "book": "1-cronicas",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/14-2-cronicas.json",
-      "sha256": "383acd71b51119f74fbf4344a59baaeae74c4309b68b7a777e1e149c280a6b46",
+      "sha256": "af19fc13dc7f51d9ecd28e5f502b1f0d736c2b121f6c8faccc23f216d0b6ceef",
       "license": "CC-BY-3.0-BR",
       "book": "2-cronicas",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/15-esdras.json",
-      "sha256": "d81ec30c244e578745952f46c75f7a5e0c3c06f05500d03e843baaa6d102c159",
+      "sha256": "90a50cf947840d5043e64086329b2dab2daf974e118971a77525bb2ce4ebc4b2",
       "license": "CC-BY-3.0-BR",
       "book": "Esdras",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/16-neemias.json",
-      "sha256": "3004dbd2a6ccbcdd349cc6f48b093131af31b4e832b1d81596a22c10f1a9fb73",
+      "sha256": "30a93e90458fd02e496e6ea0a332d35b673fbed69ee9e80403fa74afefe78b9a",
       "license": "CC-BY-3.0-BR",
       "book": "Neemias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/17-ester.json",
-      "sha256": "e506ee921bc02ffa7611120c3afa0cef9d6d56673088c6047f08a41b81e775cd",
+      "sha256": "f28957382547cec97a368ca5b36062ea5f3515e79cae5256421d2106a8aebc08",
       "license": "CC-BY-3.0-BR",
       "book": "Ester",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/18-jo.json",
-      "sha256": "60e005a0a757fd9045d5cdf41570abbadc6d83e706bc178d9ee3f47589793150",
+      "sha256": "bff8816e7759c3017183d424f5e5f08652a805590be5114c022e17ec8a013365",
       "license": "CC-BY-3.0-BR",
       "book": "Jo",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/19-salmos.json",
-      "sha256": "79b53f1682b2f12d99617ece78a613d35b061ec886be4a02dba4466c21d61a10",
+      "sha256": "506e5946093a26c5c1d3fd898b592afac0e6673db57134ecbff8eabc9ab57d8b",
       "license": "CC-BY-3.0-BR",
       "book": "Salmos",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/20-proverbios.json",
-      "sha256": "d143cab42c44c54f08b60668775c5febb0bd035bfcc7b9bef37990a107d1689b",
+      "sha256": "a24ab724daf1178b6cc1de040b491923d31a13356c907a2bb792bcdbd34dead0",
       "license": "CC-BY-3.0-BR",
       "book": "Proverbios",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/21-eclesiastes.json",
-      "sha256": "daa94ada343703330c3d35902a4a60c1ad8af8c930288226a1d30d540686a7cd",
+      "sha256": "3d6e5013ecc8a66876586e7ca29f1800ed02fb7ff9c5a6f3baa33a80f9b52976",
       "license": "CC-BY-3.0-BR",
       "book": "Eclesiastes",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/22-cantico-dos-canticos.json",
-      "sha256": "5653a3a4019a84bb4af98de50cf3fd4e4bb556d75b4befa811373325e87efd06",
+      "sha256": "ddb6e6c94f90450124f7ebfd4e6804572aaa9c1f47093366f4c604b053d43292",
       "license": "CC-BY-3.0-BR",
       "book": "Cantico-dos-canticos",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/23-isaias.json",
-      "sha256": "7a4fe24411abcedb04b2bb49c3547a7391247fb89d48e37b6209ced6cce48fa4",
+      "sha256": "d923ba822558ca7fa83dba27e1fdd7b42557753a8db341dcaf95d6e047a6b88c",
       "license": "CC-BY-3.0-BR",
       "book": "Isaias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/24-jeremias.json",
-      "sha256": "ba03e6d1cb35c6f01fc8a0c1c73b59090c7d3f234f52a248ceac2cb4816e3e5f",
+      "sha256": "a0b7d30bbc1a55bf3ae5254d29ff62dcc3c5045d6df75d72d5fbdc0cffec2c07",
       "license": "CC-BY-3.0-BR",
       "book": "Jeremias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/25-lamentacoes.json",
-      "sha256": "ac30c1eb66f18c2a08deb01e651d66a4b1f65c13186d6fbccc13e1506e7960e0",
+      "sha256": "45114f15c99a30cb0bfd6b42918eb3cf7773e47ccfa42d5de71df8cd6d17f53c",
       "license": "CC-BY-3.0-BR",
       "book": "Lamentacoes",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/26-ezequiel.json",
-      "sha256": "b15441a3017948a7fc8c4bb0b4ca06077b2ebacc61ea68e2945d803f69c81467",
+      "sha256": "f13a0100d9b6b9603bf7ce88ca2988f2b90ad518e8d085be54478ed55c2561f4",
       "license": "CC-BY-3.0-BR",
       "book": "Ezequiel",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/27-daniel.json",
-      "sha256": "8692bd0de94d3ca4e31f596f4d0a86cd2c2fed534095511fe286c7537411bc5c",
+      "sha256": "76ac367eea46db9c41807c9d4efd1bb3d6d03440073ecba06e4d5fbd379b918b",
       "license": "CC-BY-3.0-BR",
       "book": "Daniel",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/28-oseias.json",
-      "sha256": "eb2fcaad39092ef0f7fb6fdc0e94efe8657b6dccfabc10c9abef691f734e3b7b",
+      "sha256": "ef2a192d9c54833a31cc868b9dd292641d55199f088ad5ab045630558d4f8077",
       "license": "CC-BY-3.0-BR",
       "book": "Oseias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/29-joel.json",
-      "sha256": "21ea43837584383787a0ce42f87256b35d1831d553e59bd579daca412205213a",
+      "sha256": "ec51421dbd9859141517954b9c6e309a7c9f06f53a6e090c52ea5729af33abc0",
       "license": "CC-BY-3.0-BR",
       "book": "Joel",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/30-amos.json",
-      "sha256": "e7372d780de4211a20c5e4ea01fbfad7c0060e8bf859b429f893de93bfa94760",
+      "sha256": "338432cc573ce3275beda189fe250b549b894f53bdebef5ef1feb12cf67b3b67",
       "license": "CC-BY-3.0-BR",
       "book": "Amos",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/31-obadias.json",
-      "sha256": "ee272946b4df5b0095e446ee4136fe8bfe8f62be28ae8b45a845e64d95841b11",
+      "sha256": "eed3f5a658352e597d968b8a617e20a4f7f5af9a63a0fe84b7593a74a6bed4d5",
       "license": "CC-BY-3.0-BR",
       "book": "Obadias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/32-jonas.json",
-      "sha256": "0f17e113fe499bbb9a7a906e9ec1787f8e9d3b62aae018f92d67808d5702104c",
+      "sha256": "02959f3cd23c7b4c153116e5f51438c61797aa9bc7d2ea48d51b4b0c09ac631d",
       "license": "CC-BY-3.0-BR",
       "book": "Jonas",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/33-miqueias.json",
-      "sha256": "8691bc6444c1bdcadea32e03e5e06d478cbaafaaf04a1ec8655414a4f9a65d37",
+      "sha256": "66406929b64ae036703bdc4318dc57491256bd9bb8937f70b1161d69ce4f906f",
       "license": "CC-BY-3.0-BR",
       "book": "Miqueias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/34-naum.json",
-      "sha256": "dcc822ac7b2f0482e9f05540edb79a9e1d8a9e3a339d70c3dbf5cb03c65d3448",
+      "sha256": "76c8dc37a0af8ac0560ab43edde49d028fc67360e0b46f841de7043523d3e59a",
       "license": "CC-BY-3.0-BR",
       "book": "Naum",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/35-habacuque.json",
-      "sha256": "562945576bf3f95dfd6f90b4bb0875f56c962db20cf7328b0c62f9ab98616d94",
+      "sha256": "ebf746e92f0454d50e2874957e58916802b52cc8ba30a4603d91580bc4f5ad49",
       "license": "CC-BY-3.0-BR",
       "book": "Habacuque",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/36-sofonias.json",
-      "sha256": "33632b70551e18a6b7cbb5d54e25082973a1be864d50d09f045e67081c25bc84",
+      "sha256": "3380d099a8315ee57bc096e83016dc7ab64b4d0f6bd17e02687ef027c583f417",
       "license": "CC-BY-3.0-BR",
       "book": "Sofonias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/37-ageu.json",
-      "sha256": "953c91286f29fc54a81a974044de218967c74e35cfe5d77931fe691500a2d60c",
+      "sha256": "5ced74f881f725b81bdee6f7f44e84e77da006473691a89c1be955fdeb32a7fc",
       "license": "CC-BY-3.0-BR",
       "book": "Ageu",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/38-zacarias.json",
-      "sha256": "0b23a84e923058c44fefff466bf616435bf988aaec71fdccaee4e0894ee36ea5",
+      "sha256": "869ecfa8769d7a121c49abd33c8d3afca68a6b955a1d6e56622d89c6bce091da",
       "license": "CC-BY-3.0-BR",
       "book": "Zacarias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/39-malaquias.json",
-      "sha256": "f13fbfe309c56d7c0822136a4ed314bff641db179dc8e5e52a3e65711679c932",
+      "sha256": "fce0104ace07e4d9bbbb0760d1a10d0f8a489db06d12d1eeeb424e6fc46dabec",
       "license": "CC-BY-3.0-BR",
       "book": "Malaquias",
       "testament": "AT"
     },
     {
       "path": "bible/blivre/40-mateus.json",
-      "sha256": "7978efb1f3c99a277ef991554da1569cc90a968a10fff39da3b2e000aabff146",
+      "sha256": "2088623c3461853df3894a9d39c341fb881c5061be18b24f085058ec8a6c194e",
       "license": "CC-BY-3.0-BR",
       "book": "Mateus",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/41-marcos.json",
-      "sha256": "7b87938bcc2d4a280871a4c382d03c69698fca6094a8f84410de068c70945b83",
+      "sha256": "4a2785b38a233f9e537a0142bd2698ceeec7b5d3e2e84b0a26c485d03f082a30",
       "license": "CC-BY-3.0-BR",
       "book": "Marcos",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/42-lucas.json",
-      "sha256": "c7b4bd7934f4cbf5b2cd282d4a0e3643ac824a5988880537645054ec224ffae1",
+      "sha256": "1161122a832a549299d44b87b15d4d0e19d759d4ca0109922767fe1e211d2c63",
       "license": "CC-BY-3.0-BR",
       "book": "Lucas",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/43-joao.json",
-      "sha256": "1a958d09880d477313366f8f7480cacaba860a61943f771e34337aac9fa4ac98",
+      "sha256": "6b618e38f8e6a2ad9cbc6242205e7b230b4ef0412e758d6111011bdf2c21429b",
       "license": "CC-BY-3.0-BR",
       "book": "Joao",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/44-atos.json",
-      "sha256": "4e475b6651acd941da94f8a75590e604e17b229a8aa77f6878ae2834ccb10e31",
+      "sha256": "1c7aa705e2b173377d7e4edd5df441aa15a92beb3bc5a44b20c76eda5a1aca7a",
       "license": "CC-BY-3.0-BR",
       "book": "Atos",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/45-romanos.json",
-      "sha256": "7bfb66ea3827b089c2234bb384b74252ee3eb5de4d5aa6c4aa265587c0a746d1",
+      "sha256": "f18f2d7139805e3894a0f03eaae22e1dc8a0b585c359f4e99b67c590e3e77434",
       "license": "CC-BY-3.0-BR",
       "book": "Romanos",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/46-1-corintios.json",
-      "sha256": "a420c7a56049f54678bdcfd5357076f565a3f094d10c57c33767c03ca52ebf6f",
+      "sha256": "63622993acfc01d2522f0359d1767230eb6bdb9cedb91335f98f9e3f7b354125",
       "license": "CC-BY-3.0-BR",
       "book": "1-corintios",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/47-2-corintios.json",
-      "sha256": "045353bf656e3960da27b7bf365ff19ab436bf4444ca8368f4fd835cf4fbbd26",
+      "sha256": "187c8da393f97859567fd3c1b37724dee91c4214439c2c7351b51e5ec6eb25f6",
       "license": "CC-BY-3.0-BR",
       "book": "2-corintios",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/48-galatas.json",
-      "sha256": "432c87f447a563fa31970d3996d952883cf2b9b960208c8659056a0eba260759",
+      "sha256": "93ddd7f8b88898dc19e76835b35ab754734ce7dd464976ebc79b790023b9bf03",
       "license": "CC-BY-3.0-BR",
       "book": "Galatas",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/49-efesios.json",
-      "sha256": "121dc4afd0facf0171b06d3b59e537dd54cf970d19c6a7ba2881646b4d0b333a",
+      "sha256": "3c4ca31a9b680be96409ab8e8690606a83dcdee7d4ac8084360e84d27cd3bbd8",
       "license": "CC-BY-3.0-BR",
       "book": "Efesios",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/50-filipenses.json",
-      "sha256": "00809bd78f252f103e4a35b57d98232111e62973d784436e6d32ab23dfd7bd0d",
+      "sha256": "03bdc3ecde16d23471b19984a76104081398be46ca4b9355ffda1c57a8164404",
       "license": "CC-BY-3.0-BR",
       "book": "Filipenses",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/51-colossenses.json",
-      "sha256": "356a6978d8b04c612cd2f02feac43285b5dfb4ef716000699cd76c12ad93dc0e",
+      "sha256": "9a61359f10a7e0ade4c84080f0a2dc6c44b715d59520540ae533471de3c9f798",
       "license": "CC-BY-3.0-BR",
       "book": "Colossenses",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/52-1-tessalonicenses.json",
-      "sha256": "ae0bfec5f631bfde062deb68ac7701e13acf65f3754528c01159db7dc5042ab1",
+      "sha256": "55c2fdc3131f2787202ae3704a45662b3017a29008560f299cf18e3119ef2971",
       "license": "CC-BY-3.0-BR",
       "book": "1-tessalonicenses",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/53-2-tessalonicenses.json",
-      "sha256": "591be6c75a7687c0f3b9b5c3f1919c9861bfb8032b38c0497fd4b0bdc4eb6e9e",
+      "sha256": "a6b3b66ac11cb0d9d1b0240d8eca0bb70b52993336dd8ac2d3a35ff0802faecb",
       "license": "CC-BY-3.0-BR",
       "book": "2-tessalonicenses",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/54-1-timoteo.json",
-      "sha256": "01678d8844858116770929e10a6b15b0a8adc0788a1342e234d34dd37857ecb0",
+      "sha256": "0eb0c8191541ccf2b995ea6205d8665a4a879f519e77b3efd068056f26b40d11",
       "license": "CC-BY-3.0-BR",
       "book": "1-timoteo",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/55-2-timoteo.json",
-      "sha256": "f1f6b36ebc565658f5feefbce0743abce7c6770aa069d436ba096100bff5a9f7",
+      "sha256": "80a6fe45a07114df2a75a55fa6eac400dfca736eaca6457fc00dc5c4ebfb4449",
       "license": "CC-BY-3.0-BR",
       "book": "2-timoteo",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/56-tito.json",
-      "sha256": "79edd08fd15a4396476dc0936c7b5528058ed48f7243719e5b52ad886a76f641",
+      "sha256": "08ae727b270c378853c3b9d5623d329ee45357f243ffa8763ef3c3eda85270ee",
       "license": "CC-BY-3.0-BR",
       "book": "Tito",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/57-filemom.json",
-      "sha256": "99fbc366dd27d184c8887960b53d77e4998d60eb77e53073273c84cf8b9606f3",
+      "sha256": "58152d9f4fd3a8d7981d79c2ea14ad56013ca01c1c84efb0a18beceef22e09f4",
       "license": "CC-BY-3.0-BR",
       "book": "Filemom",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/58-hebreus.json",
-      "sha256": "cabc3da0fbb144ad299b79b5f9e6cc11d5cc5be50713ecd5bb28333fead0802d",
+      "sha256": "3013d055e2a67549ad9a78dfceae4d3a2db8fa9b3750ac0876136fc76335f8df",
       "license": "CC-BY-3.0-BR",
       "book": "Hebreus",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/59-tiago.json",
-      "sha256": "c74fb067495caa4fb5e787a710e207750191922b398f1b463ba769db35bf0a6a",
+      "sha256": "e8fdd5dd5dac3c134147fd5ff0fb34c5f1fbab22309846c76bffc2a2e1631ff0",
       "license": "CC-BY-3.0-BR",
       "book": "Tiago",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/60-1-pedro.json",
-      "sha256": "d9d882d7c65387af43bf534c5cf2ea49f11af0d150727baa90a5c0ba28acfe69",
+      "sha256": "be15f4d22c779c2f423dca202ec57f18b23087b22cf5cef160cbaa4158947334",
       "license": "CC-BY-3.0-BR",
       "book": "1-pedro",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/61-2-pedro.json",
-      "sha256": "eaa4a3c0ab9d279102de8a8702195b8454c9aea0c55e547e547c91ed8ebbee7b",
+      "sha256": "047077b261c4dd3ed558b13372e50d6e89ace046c6b9967d94de67a953d0e063",
       "license": "CC-BY-3.0-BR",
       "book": "2-pedro",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/62-1-joao.json",
-      "sha256": "ea22258b55e48f08ac61821046f20322b6fcdd237ed17d53aedd8e2e9f88984b",
+      "sha256": "06b7aaa759eca0e6350152c9c23fa022a710e5468becd5eb533d389b056bbe6f",
       "license": "CC-BY-3.0-BR",
       "book": "1-joao",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/63-2-joao.json",
-      "sha256": "ad564b28df5530a97f6268cc1378fc7034fa236b402ef39ecb642a85dcdd5cbe",
+      "sha256": "ed97ac274fec2b44db07c781e609d974af3ad75c181c78fe5241f242c0d4c6dd",
       "license": "CC-BY-3.0-BR",
       "book": "2 João",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/64-3-joao.json",
-      "sha256": "39520f554a3da9b0514ffd26db5d538af13955f684eeba72d1eb76adb698b5f8",
+      "sha256": "6530719324eb1141f9b59cae0e25cce8c012b711a6994dfd71447a843aea95ce",
       "license": "CC-BY-3.0-BR",
       "book": "3 João",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/65-judas.json",
-      "sha256": "fd137ff765c8cfef133904ca4c0cbd47b3224ad20e84ab33088e2ab2c35e8ae6",
+      "sha256": "152f47d0c7c0d4a7d15a18596ab16222731122c911e7c472bd9dad0ba9ea4a77",
       "license": "CC-BY-3.0-BR",
       "book": "Judas",
       "testament": "NT"
     },
     {
       "path": "bible/blivre/66-apocalipse.json",
-      "sha256": "82e688a31c8efad2bea2e3dc8331dca69aaf05f33567d366a7f960907c5cedb1",
+      "sha256": "d6b3e2d3a1cbb6d75dcb9710b8ba0b3d80c7aa80a0d7613e2052b94b485c84a2",
       "license": "CC-BY-3.0-BR",
       "book": "Apocalipse",
       "testament": "NT"
     },
     {
       "path": "theology/anselm-meditations.json",
-      "sha256": "5985daa4c87b521914e72e397de3efebaa9cb43964e0d8afa5eff9c0f8c84a01",
+      "sha256": "8388f4e4b7970d2c403dd60522e1f64d1b963f66606047a45eb6548845bda776",
       "license": "CC-BY-4.0",
       "title": "Orações e Meditações",
       "author": "Santo Anselmo de Cantuária",
@@ -481,7 +481,7 @@
     },
     {
       "path": "theology/athanasius-incarnation.json",
-      "sha256": "efb5e1a5dde20004fe97ca5a653cdaffc70b55297165297b3cde94a081cdce25",
+      "sha256": "6c25f1a83ff35a9941a9cb527350d723260a3efa2905254c9931871bb4638966",
       "license": "CC-BY-4.0",
       "title": "Da Encarnação do Verbo de Deus",
       "author": "Santo Atanásio de Alexandria",
@@ -492,7 +492,7 @@
     },
     {
       "path": "theology/baptist-confession-1689.json",
-      "sha256": "d8e5fad5be04e2f87144ccec64df078d1e021c10652ac0bfaf76ed5b8fcb9568",
+      "sha256": "b46cc0c2a42278c06180eb184f1346d58bead7d87b38e0ef8078509fdd720a47",
       "license": "CC-BY-4.0",
       "title": "A Confissão de Fé Batista de 1689 (Extrato de 4 Capítulos)",
       "author": "Batistas Particulares (1689)",
@@ -503,7 +503,7 @@
     },
     {
       "path": "theology/edwards-sinners-angry-god.json",
-      "sha256": "d9d730980ff5c50080bca589761534170435198848e347879b4b1ff5abe69a0c",
+      "sha256": "03763f237120648569a3428fb98097fc83935ea6c109fd009b3d765dc2e75542",
       "license": "CC-BY-4.0",
       "title": "Pecadores nas Mãos de um Deus Irado (Extrato Selecionado)",
       "author": "Jonathan Edwards",
@@ -514,7 +514,7 @@
     },
     {
       "path": "theology/kempis-imitation.json",
-      "sha256": "48526c110ef844224dc51476d4817fc3dac04e81f9b059f011afd34b3c0624b2",
+      "sha256": "cbbbb525c740611f9994d2e2bf2310dd2d34ed3e29933c9c9e091dedf407f351",
       "license": "CC-BY-4.0",
       "title": "A Imitação de Cristo (Livro 1)",
       "author": "Tomás de Kempis",
@@ -525,7 +525,7 @@
     },
     {
       "path": "theology/lawrence-practice.json",
-      "sha256": "f62a412df86730b8b1879207bcc903cb15ae496b1b72215a6894e97cc0714b43",
+      "sha256": "08327a797935a881a1bcc06942e59a82b6fa18225c9f2fcb91c926b4a986418d",
       "license": "CC-BY-4.0",
       "title": "A Prática da Presença de Deus",
       "author": "Irmão Lawrence",
@@ -536,7 +536,7 @@
     },
     {
       "path": "theology/luther-small-catechism.json",
-      "sha256": "b7ca1974430e2652dd5dc00980036684e30f25ddbd7420b30fa66f7cea3f4937",
+      "sha256": "269d27440ee4a30ca1f4070adfc4e5ca99796bf608d02ef906dd34296a654061",
       "license": "CC-BY-4.0",
       "title": "O Catecismo Menor (Seleção Doutrinária)",
       "author": "Martinho Lutero",
@@ -547,7 +547,7 @@
     },
     {
       "path": "theology/thirty-nine-articles.json",
-      "sha256": "b8089b443340d3f2232c7ecc99eb835cb960b05c08afe5ff56ec41378659f2f4",
+      "sha256": "18b818781cfc13742b39d5d82fdcc612d5e00446bcc474de165858a89bd360de",
       "license": "CC-BY-4.0",
       "title": "Os Trinta e Nove Artigos de Religião (Seleção Doutrinária)",
       "author": "Igreja da Inglaterra (1571)",
