@@ -3,14 +3,17 @@
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
 from typing import List, Optional
 
+SAFE_SOURCE_ID_REGEX = re.compile(r"^[a-zA-Z0-9_-]+$")
+
 from biblioteca_reformada import __version__
 from biblioteca_reformada.db import init_db, get_connection, get_db_path, reindex_fts, get_stats
-from biblioteca_reformada.importer import import_approved_corpus, parse_blivre_raw_text
+from biblioteca_reformada.importer import import_approved_corpus, CorpusImportError
 from biblioteca_reformada.licenses import audit_corpus
 from biblioteca_reformada.search import execute_search, format_search_results
 
@@ -26,7 +29,7 @@ def find_project_root() -> Path:
 
 
 def cmd_audit(args: argparse.Namespace) -> int:
-    """Executa auditoria de licenças e validação de hashes SHA-256."""
+    """Executa auditoria de licenças e validação bidirecional de hashes SHA-256."""
     root = find_project_root()
     corpus_dir = root / "corpus" / "approved"
     catalog_file = root / "catalog" / "sources.json"
@@ -51,12 +54,13 @@ def cmd_audit(args: argparse.Namespace) -> int:
         print()
 
     print("-" * 80)
-    print(f"Total de arquivos auditados: {report.total_files}")
-    print(f"Arquivos aprovados:          {report.passed_files}")
-    print(f"Arquivos com divergência:    {report.failed_files}")
-    print(f"Fontes no catálogo global:   {report.catalog_sources_count}")
-    print(f"Fontes aprovadas no catálogo:{report.catalog_approved_count}")
-    print(f"Fontes retidas em quarentena:{report.catalog_quarantine_count}")
+    print(f"Total de arquivos no manifesto: {report.total_files}")
+    print(f"Arquivos aprovados:            {report.passed_files}")
+    print(f"Arquivos com divergência:      {report.failed_files}")
+    print(f"Arquivos órfãos sem manifesto: {report.unmanifested_files}")
+    print(f"Fontes no catálogo global:     {report.catalog_sources_count}")
+    print(f"Fontes aprovadas no catálogo:  {report.catalog_approved_count}")
+    print(f"Fontes retidas em quarentena:  {report.catalog_quarantine_count}")
     print("=" * 80)
 
     if report.all_passed:
@@ -81,11 +85,14 @@ def cmd_sync(args: argparse.Namespace) -> int:
         catalog = json.load(f)
 
     sources = catalog.get("sources", [])
-    if args.source:
+    if getattr(args, "source", None):
         sources = [s for s in sources if s.get("id") == args.source]
 
+    # Exclusão mútua e precedência do dry-run
+    is_fetch_mode = bool(args.fetch and not args.dry_run)
+    mode_label = "EXECUÇÃO DE CLONAGEM (--fetch)" if is_fetch_mode else "SIMULAÇÃO (DRY-RUN)"
+
     print("=" * 80)
-    mode_label = "EXECUÇÃO DE CLONAGEM (--fetch)" if args.fetch else "SIMULAÇÃO (DRY-RUN)"
     print(f"SINCRONIZAÇÃO DE FONTES UPSTREAM — {mode_label}")
     print(f"Destino local (ignorado no Git): {sources_dir}")
     print("=" * 80)
@@ -111,17 +118,29 @@ def cmd_sync(args: argparse.Namespace) -> int:
             skipped_count += 1
             continue
 
-        target_path = sources_dir / sid
+        # Validação estrita de identificador seguro e confinamento de destino
+        if not sid or not isinstance(sid, str) or not SAFE_SOURCE_ID_REGEX.match(sid):
+            print(f"  [REJEITADO] ID de fonte inválido ou inseguro: '{sid}'")
+            fail_count += 1
+            continue
+
+        resolved_sources = sources_dir.resolve()
+        target_path = (sources_dir / sid).resolve()
+        if not target_path.is_relative_to(resolved_sources) or target_path == resolved_sources:
+            print(f"  [REJEITADO] Violação de confinamento: destino '{target_path}' fora de '{resolved_sources}'")
+            fail_count += 1
+            continue
+
         if target_path.exists():
             print(f"  -> Já clonado em disco: {target_path}")
             skipped_count += 1
             continue
 
-        if not args.fetch:
+        if not is_fetch_mode:
             print(f"  -> [DRY-RUN] Seria clonado via: git clone --depth 1 {repo_url} {target_path}")
             continue
 
-        # Execução de clone seguro com profundidade 1 sem LFS pesado
+        # Execução de clone seguro com profundidade 1 e bloqueio de LFS pesado
         print(f"  -> Executando clone shallow (--depth 1)...")
         cmd = ["git", "clone", "--depth", "1", repo_url, str(target_path)]
         env = {**os.environ, "GIT_LFS_SKIP_SMUDGE": "1", "GIT_TERMINAL_PROMPT": "0"}
@@ -148,7 +167,7 @@ def cmd_sync(args: argparse.Namespace) -> int:
 
 
 def cmd_import_blivre(args: argparse.Namespace) -> int:
-    """Importa obras auditadas da Bíblia Livre para o banco SQLite."""
+    """Importa exclusivamente obras auditadas e registradas no manifesto de proveniência para o SQLite."""
     root = find_project_root()
     corpus_approved_dir = root / "corpus" / "approved"
     db_path = get_db_path(args.db)
@@ -160,23 +179,13 @@ def cmd_import_blivre(args: argparse.Namespace) -> int:
     print("=" * 80)
 
     conn = init_db(db_path)
-    imported = import_approved_corpus(corpus_approved_dir, conn)
-    print(f"[OK] Versículos importados do corpus aprovado: {imported}")
-
-    # Verifica se há dados brutos em data/sources/blivre
-    blivre_source = root / "data" / "sources" / "blivre"
-    if blivre_source.exists():
-        print(f"[INFO] Varrendo repositório upstream local em {blivre_source}...")
-        # Varre arquivos .txt ou .tsv se disponíveis
-        raw_imported = 0
-        for txt_file in blivre_source.rglob("*.txt"):
-            verses = parse_blivre_raw_text(txt_file)
-            if verses:
-                raw_imported += len(verses)
-                from biblioteca_reformada.db import insert_verses_batch
-                insert_verses_batch(conn, verses)
-        if raw_imported > 0:
-            print(f"[OK] Versículos adicionais extraídos do upstream: {raw_imported}")
+    try:
+        imported = import_approved_corpus(corpus_approved_dir, conn)
+        print(f"[OK] Versículos importados do corpus aprovado e auditado: {imported}")
+    except CorpusImportError as cie:
+        print(f"[ERRO CRÍTICO] Importação abortada: {cie}")
+        conn.close()
+        return 1
 
     # Reindexação FTS5 garantida
     indexed = reindex_fts(conn)
@@ -203,9 +212,10 @@ def cmd_search(args: argparse.Namespace) -> int:
         print("[ERRO] Informe o termo de busca. Exemplo: bref search 'verdade'")
         return 1
 
+    safe_limit = max(1, args.limit) if args.limit > 0 else 20
     db_path = get_db_path(args.db)
     conn = init_db(db_path)
-    results = execute_search(conn, query, limit=args.limit)
+    results = execute_search(conn, query, limit=safe_limit)
     output = format_search_results(query, results)
     print(output)
     conn.close()
@@ -260,13 +270,14 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # sync
     p_sync = subparsers.add_parser("sync", help="Sincroniza fontes upstream em data/sources/.")
-    p_sync.add_argument("--dry-run", action="store_true", default=False, help="Apenas simula a sincronização sem clonar.")
-    p_sync.add_argument("--fetch", action="store_true", default=False, help="Executa a clonagem rasa real das fontes.")
+    sync_group = p_sync.add_mutually_exclusive_group()
+    sync_group.add_argument("--dry-run", action="store_true", default=False, help="Simula a sincronização sem clonar.")
+    sync_group.add_argument("--fetch", action="store_true", default=False, help="Executa a clonagem rasa real das fontes.")
     p_sync.add_argument("--source", type=str, default=None, help="Filtra por identificador de fonte específico.")
     p_sync.set_defaults(func=cmd_sync)
 
     # import-blivre
-    p_imp = subparsers.add_parser("import-blivre", help="Importa o acervo auditado da Bíblia Livre para o SQLite.")
+    p_imp = subparsers.add_parser("import-blivre", help="Importa exclusivamente o acervo auditado para o SQLite.")
     p_imp.set_defaults(func=cmd_import_blivre)
 
     # index
