@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "canonical_id": "baptist:confession-1689",
+    "title": "A Confissão de Fé Batista de 1689",
+    "title_en": "The 1689 London Baptist Confession of Faith",
+    "author_full": "Ministros e Mensageiros de Igrejas Batistas Particulares",
+    "author_short": "Assembleia Batista de Londres (1689)",
+    "author_pt": "Batistas Particulares (1689)",
+    "year": 1689,
+    "language": "pt",
+    "rights": "Public Domain",
+    "license": "Public Domain",
+    "tradition": "Batista Particular Reformada",
+    "subjects": [
+      "Confissões de Fé",
+      "Teologia Reformada Federal",
+      "Batismo de Crentes",
+      "Puritanismo Batista"
+    ],
+    "source_edition": "Londres, 1689 (Domínio Público)",
+    "human_reviewed": false
+  },
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Da Sagrada Escritura",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "1. A Santa Escritura é a única regra suficiente, correta e infalível de todo conhecimento, fé e obediência salvíficos. Embora a luz da natureza e as obras da criação e da providência manifestem a bondade, sabedoria e poder de Deus, a ponto de deixar os homens inescusáveis, contudo não são suficientes para dar aquele conhecimento de Deus e de Sua vontade que é necessário para a salvação."
+        },
+        {
+          "id": "p2",
+          "text": "2. Sob o título de Santa Escritura, ou a Palavra de Deus escrita, estão agora contidos todos os livros do Antigo e do Novo Testamento, a saber, trinta e nove livros do Antigo e vinte e sete do Novo, todos dados por inspiração de Deus para serem a regra de fé e vida."
+        },
+        {
+          "id": "p3",
+          "text": "3. A autoridade da Santa Escritura, pela qual ela deve ser crida, não depende do testemunho de qualquer homem ou igreja, mas inteiramente de Deus (que é a própria verdade), seu Autor; portanto, ela deve ser recebida porque é a Palavra de Deus."
+        },
+        {
+          "id": "p4",
+          "text": "4. Todo o conselho de Deus a respeito de todas as coisas necessárias para Sua própria glória, para a salvação, fé e vida do homem, está expressamente registrado na Escritura, ou pode ser lógica e necessariamente deduzido dela; à qual nada, em tempo algum, deve ser acrescentado, seja por novas revelações do Espírito, ou por tradições de homens."
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "De Deus e da Santíssima Trindade",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "1. O Senhor nosso Deus é um único Deus vivo e verdadeiro; cuja subsistência está em Si mesmo e provém de Si mesmo; infinito em ser e perfeição; cuja essência não pode ser compreendida por ninguém a não ser por Si mesmo; espírito puríssimo, invisível, sem corpo, partes ou paixões; imutável, imenso, eterno, Todo-Poderoso, sumamente sábio, santo, livre e absoluto."
+        },
+        {
+          "id": "p2",
+          "text": "2. Nesta divina e infinita substância há três subsistências, o Pai, o Verbo ou Filho, e o Espírito Santo, de uma só substância, poder e eternidade, cada um tendo toda a essência divina, contudo a essência indivisa. O Pai não procede de ninguém, nem é gerado nem procedente; o Filho é eternamente gerado do Pai; o Espírito Santo eternamente procedente do Pai e do Filho; todos infinitos, sem princípio, sendo, portanto, um só Deus."
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Do Decreto de Deus e da Salvação em Cristo",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "1. Deus decretou em Si mesmo, desde toda a eternidade, pelo conselho sapientíssimo e santo de Sua própria vontade, livre e imutavelmente, todas as coisas que haviam de acontecer; contudo, de tal modo que nem Deus é o autor do pecado, nem tem comunhão com ele, nem violência é feita à vontade da criatura, nem a contingência das causas secundárias é tirada, antes estabelecida."
+        },
+        {
+          "id": "p2",
+          "text": "2. Aprouve a Deus, em Seu eterno propósito, escolher e ordenar o Senhor Jesus, Seu Filho unigênito, segundo a aliança feita entre ambos, para ser o Mediador entre Deus e o homem; o Profeta, Sacerdote e Rei; a Cabeça e Salvador de Sua Igreja; o Herdeiro de todas as coisas e o Juiz do mundo; a quem Ele, desde toda a eternidade, deu um povo para ser Sua semente, e para ser por Ele, no tempo, redimido, chamado, justificado, santificado e glorificado."
+        },
+        {
+          "id": "p3",
+          "text": "3. Aqueles a quem Deus eficazmente chama, Ele também justifica livremente; não por infundir justiça neles, mas por perdoar os seus pecados e por considerar e aceitar as suas pessoas como justas; não por qualquer coisa operada neles ou feita por eles, mas somente por amor de Cristo; não por imputar a fé mesma, o ato de crer, ou qualquer outra obediência evangélica a eles como justiça, mas por imputar a ativa obediência de Cristo a toda a lei e Sua passiva obediência na morte para a total e única justiça deles pela fé."
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Da Igreja e dos Sacramentos (Batismo e Ceia)",
+      "paragraphs": [
+        {
+          "id": "p1",
+          "text": "1. A Igreja católica ou universal, que (com respeito à obra interna do Espírito e da verdade da graça) pode ser chamada invisível, consiste do número total dos eleitos que já foram, são ou ainda serão reunidos em um sob Cristo, sua Cabeça; e é a esposa, o corpo, a plenitude Daquele que enche tudo em todos."
+        },
+        {
+          "id": "p2",
+          "text": "2. O Batismo é uma ordenança do Novo Testamento, instituída por Jesus Cristo, para ser para aquele que é batizado um sinal de sua comunhão com Ele em Sua morte e ressurreição; de seu enxerto Nele; da remissão dos pecados; e de sua entrega a Deus por Jesus Cristo, para viver e andar em novidade de vida."
+        },
+        {
+          "id": "p3",
+          "text": "3. Aqueles que realmente professam arrependimento para com Deus e fé em nosso Senhor Jesus Cristo, e obediência a Ele, são os únicos sujeitos apropriados desta ordenança. O elemento exterior a ser usado nesta ordenança é a água, na qual a pessoa deve ser imersa em nome do Pai e do Filho e do Espírito Santo."
+        },
+        {
+          "id": "p4",
+          "text": "4. A Ceia do Senhor Jesus foi instituída por Ele na mesma noite em que foi traído, para ser observada em Suas igrejas até o fim do mundo, para perpétua lembrança e demonstração ao mundo do sacrifício de Si mesmo em Sua morte; confirmação da fé dos crentes em todos os benefícios dela, seu alimento espiritual e crescimento Nele, e para ser um vínculo e penhor de sua comunhão com Ele e uns com os outros."
+        }
+      ]
+    }
+  ]
+}
