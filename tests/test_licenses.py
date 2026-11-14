@@ -38,12 +38,12 @@ def test_audit_approved_corpus():
     report = audit_corpus(corpus_dir, catalog_path=catalog_path)
     assert report.total_files > 0
     assert report.failed_files == 0
+    assert report.unmanifested_files == 0
     assert report.passed_files == report.total_files
     assert report.all_passed is True
 
 
 def test_audit_detects_corrupted_hash(tmp_path: Path):
-    # Cria corpus temporário com hash forjado
     c_dir = tmp_path / "approved"
     c_dir.mkdir()
     f = c_dir / "obra.json"
@@ -66,3 +66,108 @@ def test_audit_detects_corrupted_hash(tmp_path: Path):
     assert rep.failed_files == 1
     assert rep.all_passed is False
     assert "divergente" in rep.file_results[0].error.lower()
+
+
+def test_audit_detects_unmanifested_orphan_file(tmp_path: Path):
+    c_dir = tmp_path / "approved"
+    c_dir.mkdir()
+    f_ok = c_dir / "obra_ok.json"
+    f_ok.write_text('{"ok": true}', encoding="utf-8")
+    hash_ok = compute_sha256(f_ok)
+
+    # Arquivo órfão não declarado
+    f_orphan = c_dir / "intruso.json"
+    f_orphan.write_text('{"intruso": true}', encoding="utf-8")
+
+    manifest = {
+        "version": "1.0.0",
+        "files": [
+            {
+                "path": "obra_ok.json",
+                "sha256": hash_ok,
+                "license": "CC-BY-3.0-BR"
+            }
+        ]
+    }
+    m_file = c_dir / "manifest.json"
+    m_file.write_text(json.dumps(manifest), encoding="utf-8")
+
+    rep = audit_corpus(c_dir, manifest_path=m_file)
+    assert rep.unmanifested_files == 1
+    assert rep.failed_files == 1
+    assert rep.all_passed is False
+
+
+def test_audit_rejects_path_traversal_escape(tmp_path: Path):
+    c_dir = tmp_path / "approved"
+    c_dir.mkdir()
+    manifest = {
+        "version": "1.0.0",
+        "files": [
+            {
+                "path": "../../outside.json",
+                "sha256": "abc",
+                "license": "CC-BY-3.0-BR"
+            }
+        ]
+    }
+    m_file = c_dir / "manifest.json"
+    m_file.write_text(json.dumps(manifest), encoding="utf-8")
+
+    rep = audit_corpus(c_dir, manifest_path=m_file)
+    assert rep.failed_files == 1
+    assert rep.all_passed is False
+    assert "escape" in rep.file_results[0].error.lower() or "confinamento" in rep.file_results[0].error.lower()
+
+
+def test_audit_rejects_empty_or_invalid_sha(tmp_path: Path):
+    c_dir = tmp_path / "approved"
+    c_dir.mkdir()
+    f = c_dir / "obra.json"
+    f.write_text('{"ok": true}', encoding="utf-8")
+
+    manifest = {
+        "version": "1.0.0",
+        "files": [
+            {
+                "path": "obra.json",
+                "sha256": "invalido",
+                "license": "CC-BY-3.0-BR"
+            }
+        ]
+    }
+    m_file = c_dir / "manifest.json"
+    m_file.write_text(json.dumps(manifest), encoding="utf-8")
+
+    rep = audit_corpus(c_dir, manifest_path=m_file)
+    assert rep.failed_files == 1
+    assert rep.all_passed is False
+    assert "sha256" in rep.file_results[0].error.lower()
+
+
+def test_audit_rejects_sibling_prefix_traversal(tmp_path: Path):
+    root = tmp_path / "root"
+    root.mkdir()
+    c_dir = root / "approved"
+    c_dir.mkdir()
+    sibling = root / "approved-extra"
+    sibling.mkdir()
+    f_extra = sibling / "extra.json"
+    f_extra.write_text('{"extra": true}', encoding="utf-8")
+
+    manifest = {
+        "version": "1.0.0",
+        "files": [
+            {
+                "path": "../approved-extra/extra.json",
+                "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+                "license": "CC-BY-3.0-BR"
+            }
+        ]
+    }
+    m_file = c_dir / "manifest.json"
+    m_file.write_text(json.dumps(manifest), encoding="utf-8")
+
+    rep = audit_corpus(c_dir, manifest_path=m_file)
+    assert rep.failed_files == 1
+    assert rep.all_passed is False
