@@ -92,34 +92,45 @@ def init_db(db_path: Optional[Path] = None) -> sqlite3.Connection:
     return conn
 
 
-def insert_verses_batch(conn: sqlite3.Connection, verses: List[Verse]) -> int:
-    """Insere em lote versículos na tabela relacional e no índice FTS5."""
+def insert_verses_batch(
+    conn: sqlite3.Connection,
+    verses: List[Verse],
+    sync_fts: bool = True,
+    in_transaction: bool = False
+) -> int:
+    """Insere ou atualiza em lote versículos com controle transacional e sincronização do FTS5."""
     if not verses:
         return 0
 
-    inserted_count = 0
-    with conn:
-        # Inserção relacional com IGNORE para duplicatas
+    inserted_or_updated = 0
+
+    def _execute_inserts():
+        nonlocal inserted_or_updated
         cursor = conn.cursor()
         for v in verses:
             cursor.execute("""
-                INSERT OR IGNORE INTO verses (book, chapter, verse, text, version_id, testament)
+                INSERT INTO verses (book, chapter, verse, text, version_id, testament)
                 VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT(book, chapter, verse, version_id)
+                DO UPDATE SET text = excluded.text, testament = excluded.testament
             """, (v.book, v.chapter, v.verse, v.text, v.version_id, v.testament))
-            if cursor.rowcount > 0:
-                inserted_count += 1
-                # Inserção no FTS5
-                conn.execute("""
-                    INSERT INTO verses_fts (book, chapter, verse, text, version_id)
-                    VALUES (?, ?, ?, ?, ?)
-                """, (v.book, str(v.chapter), str(v.verse), v.text, v.version_id))
+            inserted_or_updated += 1
 
-    return inserted_count
+        if sync_fts:
+            reindex_fts(conn, in_transaction=True)
+
+    if in_transaction:
+        _execute_inserts()
+    else:
+        with conn:
+            _execute_inserts()
+
+    return inserted_or_updated
 
 
-def reindex_fts(conn: sqlite3.Connection) -> int:
+def reindex_fts(conn: sqlite3.Connection, in_transaction: bool = False) -> int:
     """Reconstrói completamente o índice FTS5 a partir da tabela relacional."""
-    with conn:
+    def _execute_reindex():
         conn.execute("DELETE FROM verses_fts")
         cursor = conn.execute("""
             INSERT INTO verses_fts (book, chapter, verse, text, version_id)
@@ -128,21 +139,38 @@ def reindex_fts(conn: sqlite3.Connection) -> int:
         """)
         return cursor.rowcount
 
+    if in_transaction:
+        return _execute_reindex()
+    else:
+        with conn:
+            return _execute_reindex()
 
-def search_fts(conn: sqlite3.Connection, query: str, limit: int = 25, offset: int = 0) -> List[SearchResult]:
-    """Executa busca textual FTS5 com suporte a ranking por relevância (bm25)."""
-    # Trata termos vazios
+
+def _escape_fts_token(token: str) -> str:
+    """Escapa aspas duplas internas de um token para sintaxe FTS5."""
+    clean = token.replace('"', '""')
+    return f'"{clean}"'
+
+
+def search_fts(conn: sqlite3.Connection, query: str, limit: int = 20, offset: int = 0) -> List[SearchResult]:
+    """Executa busca textual FTS5 com sanitização, escape de aspas e ranking bm25."""
     clean_query = query.strip()
     if not clean_query:
         return []
 
-    # Sanitiza a query para syntax FTS5 se necessário
-    # Se não contiver operadores lógicos ou aspas, faz busca por prefixo em cada palavra
+    # Validação de limites
+    safe_limit = max(1, limit) if limit > 0 else 20
+    safe_offset = max(0, offset)
+
+    # Sanitiza a query para syntax FTS5
     terms = clean_query.split()
     if len(terms) == 1 and not any(c in clean_query for c in ('"', '*', 'NEAR', 'AND', 'OR', 'NOT')):
-        fts_query = f"{clean_query}*"
+        # Busca por prefixo se termo único sem operadores
+        safe_term = clean_query.replace('"', '""')
+        fts_query = f'"{safe_term}"*'
     elif all(not any(c in t for c in ('"', '*', 'NEAR', 'AND', 'OR', 'NOT')) for t in terms):
-        fts_query = " ".join([f'"{t}"' for t in terms])
+        # Múltiplos termos simples: envolve cada palavra em aspas escapadas
+        fts_query = " ".join([_escape_fts_token(t) for t in terms])
     else:
         fts_query = clean_query
 
@@ -153,19 +181,26 @@ def search_fts(conn: sqlite3.Connection, query: str, limit: int = 25, offset: in
             WHERE verses_fts MATCH ?
             ORDER BY rank
             LIMIT ? OFFSET ?
-        """, (fts_query, limit, offset))
+        """, (fts_query, safe_limit, safe_offset))
+        rows = cursor.fetchall()
     except sqlite3.OperationalError:
-        # Fallback para busca literal com aspas em caso de sintaxe FTS5 inválida
-        cursor = conn.execute("""
-            SELECT book, chapter, verse, text, version_id, bm25(verses_fts) as rank
-            FROM verses_fts
-            WHERE verses_fts MATCH ?
-            ORDER BY rank
-            LIMIT ? OFFSET ?
-        """, (f'"{clean_query}"', limit, offset))
+        # Fallback defensivo com escape completo de aspas duplas
+        escaped_literal = clean_query.replace('"', '""')
+        try:
+            cursor = conn.execute("""
+                SELECT book, chapter, verse, text, version_id, bm25(verses_fts) as rank
+                FROM verses_fts
+                WHERE verses_fts MATCH ?
+                ORDER BY rank
+                LIMIT ? OFFSET ?
+            """, (f'"{escaped_literal}"', safe_limit, safe_offset))
+            rows = cursor.fetchall()
+        except sqlite3.OperationalError:
+            # Em caso de qualquer falha terminal de parser FTS5, retorna vazio controlado
+            return []
 
     results = []
-    for row in cursor.fetchall():
+    for row in rows:
         results.append(SearchResult(
             book=row["book"],
             chapter=int(row["chapter"]),
