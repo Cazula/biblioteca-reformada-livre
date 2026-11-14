@@ -1,0 +1,669 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-11-14T00:50:00Z",
+  "project": "Biblioteca Reformada Livre",
+  "total_books": 66,
+  "total_verses": 31100,
+  "files": [
+    {
+      "path": "bible/blivre/01-genesis.json",
+      "sha256": "f8d5df028b7d48247f96e08c4c57435cb3ab3b7a9b09ab20e24bea386fcbb171",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Gênesis",
+      "verses_count": 1533,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/02-exodo.json",
+      "sha256": "1b2cc2014264d8d6fe8626295e5b815a73947e996e1c0ed05b6ac6db0b825452",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Êxodo",
+      "verses_count": 1213,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/03-levitico.json",
+      "sha256": "890d72d655645e5264747be4596f46c8af86bb5d47da82c305c6e91d518fef94",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Levítico",
+      "verses_count": 859,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/04-numeros.json",
+      "sha256": "d96e6aeb6812652ead4229f5bb72520b530ab27429980002174c5a5df7093a75",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Números",
+      "verses_count": 1288,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/05-deuteronomio.json",
+      "sha256": "a86e338bd5716de7e25651998e3dc760e2ecae770ae634dd8815d6d7711502b8",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Deuteronômio",
+      "verses_count": 959,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/06-josue.json",
+      "sha256": "59897613f5b0db8caf7006150976af5bae45c029efc00ae9703169c2bd8acad3",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Josué",
+      "verses_count": 658,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/07-juizes.json",
+      "sha256": "d983a469f89de86c1c471ee18534620c327962884a275c1990adc2209385c261",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Juízes",
+      "verses_count": 618,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/08-rute.json",
+      "sha256": "7446ff088dbae198abfb7eb7385757edd16a5e906682004541e9984766d46b2d",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Rute",
+      "verses_count": 85,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/09-1-samuel.json",
+      "sha256": "c43b23db0e790e59e9c82baeaa810f62b58c22d859ce38291f011a371f37b75b",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "1 Samuel",
+      "verses_count": 810,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/10-2-samuel.json",
+      "sha256": "a62996fd60d751a1ba045f88208920fcd1f1fc1fcc0e56d0a2b41c3285f1537d",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "2 Samuel",
+      "verses_count": 695,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/11-1-reis.json",
+      "sha256": "28cf7b32c2ba8d421a0e17f31445534cbde895d358e34afb9cf18be04213b4ef",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "1 Reis",
+      "verses_count": 816,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/12-2-reis.json",
+      "sha256": "f30e390d469d4f0c7439c25bb3acc86761ac9c6b6a3eac88f39b35b99b70ebbb",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "2 Reis",
+      "verses_count": 719,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/13-1-cronicas.json",
+      "sha256": "3c0ce6604c17c242c085fe0ca66354af8e9c430677a3a3e78031a15fd5c46ac6",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "1 Crônicas",
+      "verses_count": 942,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/14-2-cronicas.json",
+      "sha256": "383acd71b51119f74fbf4344a59baaeae74c4309b68b7a777e1e149c280a6b46",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "2 Crônicas",
+      "verses_count": 822,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/15-esdras.json",
+      "sha256": "d81ec30c244e578745952f46c75f7a5e0c3c06f05500d03e843baaa6d102c159",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Esdras",
+      "verses_count": 280,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/16-neemias.json",
+      "sha256": "3004dbd2a6ccbcdd349cc6f48b093131af31b4e832b1d81596a22c10f1a9fb73",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Neemias",
+      "verses_count": 406,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/17-ester.json",
+      "sha256": "e506ee921bc02ffa7611120c3afa0cef9d6d56673088c6047f08a41b81e775cd",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Ester",
+      "verses_count": 167,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/18-jo.json",
+      "sha256": "60e005a0a757fd9045d5cdf41570abbadc6d83e706bc178d9ee3f47589793150",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Jó",
+      "verses_count": 1070,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/19-salmos.json",
+      "sha256": "79b53f1682b2f12d99617ece78a613d35b061ec886be4a02dba4466c21d61a10",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Salmos",
+      "verses_count": 2461,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/20-proverbios.json",
+      "sha256": "d143cab42c44c54f08b60668775c5febb0bd035bfcc7b9bef37990a107d1689b",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Provérbios",
+      "verses_count": 915,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/21-eclesiastes.json",
+      "sha256": "daa94ada343703330c3d35902a4a60c1ad8af8c930288226a1d30d540686a7cd",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Eclesiastes",
+      "verses_count": 222,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/22-cantico-dos-canticos.json",
+      "sha256": "5653a3a4019a84bb4af98de50cf3fd4e4bb556d75b4befa811373325e87efd06",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Cântico dos Cânticos",
+      "verses_count": 117,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/23-isaias.json",
+      "sha256": "7a4fe24411abcedb04b2bb49c3547a7391247fb89d48e37b6209ced6cce48fa4",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Isaías",
+      "verses_count": 1292,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/24-jeremias.json",
+      "sha256": "ba03e6d1cb35c6f01fc8a0c1c73b59090c7d3f234f52a248ceac2cb4816e3e5f",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Jeremias",
+      "verses_count": 1364,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/25-lamentacoes.json",
+      "sha256": "ac30c1eb66f18c2a08deb01e651d66a4b1f65c13186d6fbccc13e1506e7960e0",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Lamentações",
+      "verses_count": 154,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/26-ezequiel.json",
+      "sha256": "b15441a3017948a7fc8c4bb0b4ca06077b2ebacc61ea68e2945d803f69c81467",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Ezequiel",
+      "verses_count": 1273,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/27-daniel.json",
+      "sha256": "8692bd0de94d3ca4e31f596f4d0a86cd2c2fed534095511fe286c7537411bc5c",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Daniel",
+      "verses_count": 357,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/28-oseias.json",
+      "sha256": "eb2fcaad39092ef0f7fb6fdc0e94efe8657b6dccfabc10c9abef691f734e3b7b",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Oseias",
+      "verses_count": 197,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/29-joel.json",
+      "sha256": "21ea43837584383787a0ce42f87256b35d1831d553e59bd579daca412205213a",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Joel",
+      "verses_count": 73,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/30-amos.json",
+      "sha256": "e7372d780de4211a20c5e4ea01fbfad7c0060e8bf859b429f893de93bfa94760",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Amós",
+      "verses_count": 146,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/31-obadias.json",
+      "sha256": "ee272946b4df5b0095e446ee4136fe8bfe8f62be28ae8b45a845e64d95841b11",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Obadias",
+      "verses_count": 21,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/32-jonas.json",
+      "sha256": "0f17e113fe499bbb9a7a906e9ec1787f8e9d3b62aae018f92d67808d5702104c",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Jonas",
+      "verses_count": 48,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/33-miqueias.json",
+      "sha256": "8691bc6444c1bdcadea32e03e5e06d478cbaafaaf04a1ec8655414a4f9a65d37",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Miqueias",
+      "verses_count": 105,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/34-naum.json",
+      "sha256": "dcc822ac7b2f0482e9f05540edb79a9e1d8a9e3a339d70c3dbf5cb03c65d3448",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Naum",
+      "verses_count": 47,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/35-habacuque.json",
+      "sha256": "562945576bf3f95dfd6f90b4bb0875f56c962db20cf7328b0c62f9ab98616d94",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Habacuque",
+      "verses_count": 56,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/36-sofonias.json",
+      "sha256": "33632b70551e18a6b7cbb5d54e25082973a1be864d50d09f045e67081c25bc84",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Sofonias",
+      "verses_count": 53,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/37-ageu.json",
+      "sha256": "953c91286f29fc54a81a974044de218967c74e35cfe5d77931fe691500a2d60c",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Ageu",
+      "verses_count": 38,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/38-zacarias.json",
+      "sha256": "0b23a84e923058c44fefff466bf616435bf988aaec71fdccaee4e0894ee36ea5",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Zacarias",
+      "verses_count": 211,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/39-malaquias.json",
+      "sha256": "f13fbfe309c56d7c0822136a4ed314bff641db179dc8e5e52a3e65711679c932",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Malaquias",
+      "verses_count": 55,
+      "testament": "AT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/40-mateus.json",
+      "sha256": "7978efb1f3c99a277ef991554da1569cc90a968a10fff39da3b2e000aabff146",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Mateus",
+      "verses_count": 1071,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/41-marcos.json",
+      "sha256": "7b87938bcc2d4a280871a4c382d03c69698fca6094a8f84410de068c70945b83",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Marcos",
+      "verses_count": 677,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/42-lucas.json",
+      "sha256": "c7b4bd7934f4cbf5b2cd282d4a0e3643ac824a5988880537645054ec224ffae1",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Lucas",
+      "verses_count": 1151,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/43-joao.json",
+      "sha256": "1a958d09880d477313366f8f7480cacaba860a61943f771e34337aac9fa4ac98",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "João",
+      "verses_count": 879,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/44-atos.json",
+      "sha256": "4e475b6651acd941da94f8a75590e604e17b229a8aa77f6878ae2834ccb10e31",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Atos",
+      "verses_count": 1006,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/45-romanos.json",
+      "sha256": "7bfb66ea3827b089c2234bb384b74252ee3eb5de4d5aa6c4aa265587c0a746d1",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Romanos",
+      "verses_count": 433,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/46-1-corintios.json",
+      "sha256": "a420c7a56049f54678bdcfd5357076f565a3f094d10c57c33767c03ca52ebf6f",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "1 Coríntios",
+      "verses_count": 437,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/47-2-corintios.json",
+      "sha256": "045353bf656e3960da27b7bf365ff19ab436bf4444ca8368f4fd835cf4fbbd26",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "2 Coríntios",
+      "verses_count": 257,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/48-galatas.json",
+      "sha256": "432c87f447a563fa31970d3996d952883cf2b9b960208c8659056a0eba260759",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Gálatas",
+      "verses_count": 149,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/49-efesios.json",
+      "sha256": "121dc4afd0facf0171b06d3b59e537dd54cf970d19c6a7ba2881646b4d0b333a",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Efésios",
+      "verses_count": 155,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/50-filipenses.json",
+      "sha256": "00809bd78f252f103e4a35b57d98232111e62973d784436e6d32ab23dfd7bd0d",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Filipenses",
+      "verses_count": 104,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/51-colossenses.json",
+      "sha256": "356a6978d8b04c612cd2f02feac43285b5dfb4ef716000699cd76c12ad93dc0e",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Colossenses",
+      "verses_count": 95,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/52-1-tessalonicenses.json",
+      "sha256": "ae0bfec5f631bfde062deb68ac7701e13acf65f3754528c01159db7dc5042ab1",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "1 Tessalonicenses",
+      "verses_count": 89,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/53-2-tessalonicenses.json",
+      "sha256": "591be6c75a7687c0f3b9b5c3f1919c9861bfb8032b38c0497fd4b0bdc4eb6e9e",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "2 Tessalonicenses",
+      "verses_count": 47,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/54-1-timoteo.json",
+      "sha256": "01678d8844858116770929e10a6b15b0a8adc0788a1342e234d34dd37857ecb0",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "1 Timóteo",
+      "verses_count": 113,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/55-2-timoteo.json",
+      "sha256": "f1f6b36ebc565658f5feefbce0743abce7c6770aa069d436ba096100bff5a9f7",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "2 Timóteo",
+      "verses_count": 83,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/56-tito.json",
+      "sha256": "79edd08fd15a4396476dc0936c7b5528058ed48f7243719e5b52ad886a76f641",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Tito",
+      "verses_count": 46,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/57-filemom.json",
+      "sha256": "99fbc366dd27d184c8887960b53d77e4998d60eb77e53073273c84cf8b9606f3",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Filemom",
+      "verses_count": 25,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/58-hebreus.json",
+      "sha256": "cabc3da0fbb144ad299b79b5f9e6cc11d5cc5be50713ecd5bb28333fead0802d",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Hebreus",
+      "verses_count": 303,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/59-tiago.json",
+      "sha256": "c74fb067495caa4fb5e787a710e207750191922b398f1b463ba769db35bf0a6a",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Tiago",
+      "verses_count": 108,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/60-1-pedro.json",
+      "sha256": "d9d882d7c65387af43bf534c5cf2ea49f11af0d150727baa90a5c0ba28acfe69",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "1 Pedro",
+      "verses_count": 105,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/61-2-pedro.json",
+      "sha256": "eaa4a3c0ab9d279102de8a8702195b8454c9aea0c55e547e547c91ed8ebbee7b",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "2 Pedro",
+      "verses_count": 61,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/62-1-joao.json",
+      "sha256": "ea22258b55e48f08ac61821046f20322b6fcdd237ed17d53aedd8e2e9f88984b",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "1 João",
+      "verses_count": 105,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/63-2-joao.json",
+      "sha256": "ad564b28df5530a97f6268cc1378fc7034fa236b402ef39ecb642a85dcdd5cbe",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "2 João",
+      "verses_count": 13,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/64-3-joao.json",
+      "sha256": "39520f554a3da9b0514ffd26db5d538af13955f684eeba72d1eb76adb698b5f8",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "3 João",
+      "verses_count": 14,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/65-judas.json",
+      "sha256": "fd137ff765c8cfef133904ca4c0cbd47b3224ad20e84ab33088e2ab2c35e8ae6",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Judas",
+      "verses_count": 25,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    },
+    {
+      "path": "bible/blivre/66-apocalipse.json",
+      "sha256": "82e688a31c8efad2bea2e3dc8331dca69aaf05f33567d366a7f960907c5cedb1",
+      "license": "CC-BY-3.0-BR",
+      "source_id": "blivre",
+      "book": "Apocalipse",
+      "verses_count": 404,
+      "testament": "NT",
+      "attribution": "Bíblia Livre (BLIVRE) por Diego Santos e colaboradores, CC BY 3.0 BR."
+    }
+  ]
+}
