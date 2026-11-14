@@ -40,6 +40,6 @@ Planejamento estratégico de evolução da infraestrutura, acervo e inteligênci
 ---
 
 ## Fase 5: Esteira de Tradução Auditada & Alinhamento Interlinear
-- [ ] Pipeline de extração e alinhamento de textos do Hebraico (Tanakh) e Grego (Textus Receptus / NA28 em Domínio Público).
+- [ ] Pipeline de extração e alinhamento de textos do Hebraico (Tanakh - Westminster Leningrad Codex) e Grego em Domínio Público (Textus Receptus de Stephanus 1550 / Scrivener 1894, Westcott-Hort 1881 e Tischendorf 8ª ed. — notas: edições críticas modernas como NA27/NA28/UBS5 possuem direitos reservados pela Deutsche Bibelgesellschaft e NÃO são de domínio público, sendo vedada sua distribuição).
 - [ ] Mapeamento lexico-morfológico com Strong's Concordance em Domínio Público.
 - [ ] Fluxo de revisão humana-in-the-loop para propostas de melhoria de tradução.
